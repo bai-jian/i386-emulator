@@ -9,7 +9,7 @@ typedef struct breakpoint {
 	int NO;
 	struct breakpoint *next;
 
-	/* TODO: Add more member if necessary */
+	/* TODO: Add more members if necessary */
 
 
 } BP;

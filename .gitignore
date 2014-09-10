@@ -1,0 +1,7 @@
+*.*
+*
+!*/
+!Makefile
+!*.[cSh]
+!test.sh
+!.gitignore
