@@ -6,11 +6,14 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <math.h>
 
 int nemu_state = END;
 
 void cpu_exec(uint32_t);
 void restart();
+
+int str_to_int(char*);
 
 /* We use the readline library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -83,18 +86,39 @@ restart_:
 
 void main_loop() {
 	char *cmd;
-	while(1) {
+ 	while(1) {
 		cmd = rl_gets();
 		char *p = strtok(cmd, " ");
 
-		if(p == NULL) { continue; }
+		if (p == NULL) { continue; }
 
-		if(strcmp(p, "c") == 0) { cmd_c(); }
-		else if(strcmp(p, "r") == 0) { cmd_r(); }
-		else if(strcmp(p, "q") == 0) { return; }
-
+		if (strcmp(p, "c") == 0) { cmd_c(); }
+		else if (strcmp(p, "r") == 0) { cmd_r(); }
+		else if (strcmp(p, "q") == 0) { return; }
+		else if (strncmp(p, "ui", 2) == 0) 
+		{
+			int num;
+			p = strtok(cmd, " ");
+			num = (p == NULL) ? 1 : str_to_int(p);
+			cpu_exec(num);
+		}
 		/* TODO: Add more commands */
 
 		else { printf("Unknown command '%s'\n", p); }
 	}
+}
+int str_to_int(char* p)
+{
+	int sum = 0;
+	int len = strlen(p);
+	int s = 1;
+	int i = 0;
+	for (i = 0; i < len-1; ++i)
+		s *= 10;
+	for (i = 0; i < len; ++i)
+	{
+		sum += s * (p[i] - 0x30);
+		s /= 10;
+	}
+	return sum;
 }

@@ -3,14 +3,6 @@
 
 #include "common.h"
 
-/* TODO: Re-organize the 'CPU_state' structure to match
- * the GPR encoding scheme in i386 instruction format.
- * For example, if we access reg_w(R_BX) we will get the 'bx' register;
- * if we access reg_b(R_CH), we will get the 'ch' register.
- * Hint: Use 'union'.
- * For more details about the GPR encoding scheme, see i386 manual.
- */
-
 typedef union
 {
 	union
