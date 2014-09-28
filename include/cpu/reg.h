@@ -11,7 +11,7 @@
  * For more details about the GPR encoding scheme, see i386 manual.
  */
 
-typedef struct
+typedef union
 {
 	union
    	{
