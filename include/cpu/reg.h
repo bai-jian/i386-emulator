@@ -20,11 +20,14 @@ typedef union
 		uint8_t _8[2];
 	} gpr[8];
 
-	uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
+	struct
+	{
+		uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
 
-	swaddr_t eip;
-	uint32_t eflags;
-	uint16_t CS, SS, DS, ES, FS, GS;
+		swaddr_t eip;
+		uint32_t eflags;
+		uint16_t CS, SS, DS, ES, FS, GS;
+	};
 } CPU_state;
 
 extern CPU_state cpu;
