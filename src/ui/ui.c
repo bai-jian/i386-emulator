@@ -95,7 +95,7 @@ void main_loop() {
 		if (strcmp(p, "c") == 0) { cmd_c(); }
 		else if (strcmp(p, "r") == 0) { cmd_r(); }
 		else if (strcmp(p, "q") == 0) { return; }
-		else if (strncmp(p, "ui", 2) == 0) 
+		else if (strncmp(p, "si", 2) == 0) 
 		{
 			int num;
 			p = strtok(cmd, " ");
