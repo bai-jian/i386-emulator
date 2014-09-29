@@ -84,6 +84,18 @@ restart_:
 	cmd_c();
 }
 
+static void cmd_printstate(char* p)
+{
+	if (strcmp(p, "r") == 0)
+		printf("eax = %X\tecx = %X\tedx = %X\tebx = %X\n \
+				ebp = %X\tesp = %X\tesi = %X\tedi = %X\n", \
+				cpu.eax, cpu.ecx, cpu.edx, cpu.ebx, \
+				cpu.ebp, cpu.esp, cpu.esi, cpu.edi);
+	else 
+		printf("Unknown command '%s'", p);
+	return;
+}
+
 void main_loop() {
 	char *cmd;
  	while(1) {
@@ -95,13 +107,17 @@ void main_loop() {
 		if (strcmp(p, "c") == 0) { cmd_c(); }
 		else if (strcmp(p, "r") == 0) { cmd_r(); }
 		else if (strcmp(p, "q") == 0) { return; }
-		else if (strncmp(p, "si", 2) == 0) 
-		{
+		else if (strcmp(p, "si") == 0) 
+		{ 
 			int num;
 			p = strtok(cmd, " ");
 			num = (p == NULL) ? 1 : str_to_int(p);
 			cpu_exec(num);
 		}
+		else if (strcmp(p, "info") == 0) {
+			p = strtok(cmd, " ");
+			cmd_printstate(p); }
+
 		/* TODO: Add more commands */
 
 		else { printf("Unknown command '%s'\n", p); }
