@@ -115,7 +115,9 @@ void main_loop() {
 			cpu_exec(num);
 		}
 		else if (strcmp(p, "info") == 0) {
-			p = strtok(cmd, " ");
+			char* saveptr;
+			strtok_r(cmd, " ", &saveptr);
+			p = strtok_r(cmd, " ", &saveptr);
 			cmd_printstate(p); }
 
 		/* TODO: Add more commands */
