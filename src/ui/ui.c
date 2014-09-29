@@ -117,6 +117,7 @@ void main_loop() {
 		else if (strcmp(p, "info") == 0) {
 			char* saveptr;
 			strtok_r(cmd, " ", &saveptr);
+			cmd = NULL;
 			p = strtok_r(cmd, " ", &saveptr);
 			cmd_printstate(p); }
 
