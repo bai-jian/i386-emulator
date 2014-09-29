@@ -109,16 +109,16 @@ void main_loop() {
 }
 int str_to_int(char* p)
 {
-	int sum = 0;
-	int len = strlen(p);
-	int s = 1;
-	int i = 0;
+	int weight = 1;
+	int i = 0, len = strlen(p);
 	for (i = 0; i < len-1; ++i)
-		s *= 10;
-	for (i = 0; i < len; ++i)
+		weight *= 10;
+
+	int sum = 0;
+	for (i = 0; p[i]; ++i)
 	{
-		sum += s * (p[i] - 0x30);
-		s /= 10;
+		sum += weight * (p[i] - 0x30);
+		weight /= 10;
 	}
 	return sum;
 }
