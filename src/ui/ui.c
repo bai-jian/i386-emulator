@@ -89,8 +89,11 @@ static void cmd_si(char* cmd)
 	char* ptr = cmd, * saveptr = NULL;
 	strtok_r(ptr, " ", &saveptr);
 	ptr = strtok_r(NULL, " ", &saveptr);
+
 	long num = (ptr == NULL) ? 1 : strtol(ptr, NULL, 0);
+
 	cpu_exec(num);
+
 	return;
 }
 static void cmd_info(char* cmd)
