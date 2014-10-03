@@ -102,9 +102,8 @@ static void cmd_info()
 	char* p = strtok_r(NULL, " ", &saveptr);
 
 	if (strcmp(p, "r") == 0)
-		printf("eax = %8X\tecx = %8X\tedx = %8X\tebx = %8X\n \
-				ebp = %8X\tesp = %8X\tesi = %8X\tedi = %8X\n", \
-				cpu.eax, cpu.ecx, cpu.edx, cpu.ebx, \
+		printf("eax = %8X\tecx = %8X\tedx = %8X\tebx = %8X\nebp = %8X\tesp = %8X\tesi = %8X\tedi = %8X\n",\
+				cpu.eax, cpu.ecx, cpu.edx, cpu.ebx,\
 				cpu.ebp, cpu.esp, cpu.esi, cpu.edi);
 	else 
 		printf("Unknown command '%s'\n", line_read);
