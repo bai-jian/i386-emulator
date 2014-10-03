@@ -84,6 +84,15 @@ restart_:
 	cmd_c();
 }
 
+static void cmd_si(char* cmd)
+{
+	char* ptr = cmd, * saveptr = NULL;
+	strtok_r(ptr, " ", &saveptr);
+	ptr = strtok_r(NULL, " ", &saveptr);
+	long num = (ptr == NULL) ? 1 : strtol(ptr, NULL, 0);
+	cpu_exec(num);
+	return;
+}
 static void cmd_printstate(char* p)
 {
 	if (strcmp(p, "r") == 0)
@@ -107,13 +116,7 @@ void main_loop() {
 		if (strcmp(p, "c") == 0) { cmd_c(); }
 		else if (strcmp(p, "r") == 0) { cmd_r(); }
 		else if (strcmp(p, "q") == 0) { return; }
-		else if (strcmp(p, "si") == 0) 
-		{ 
-			int num;
-			p = strtok(cmd, " ");
-			num = (p == NULL) ? 1 : str_to_int(p);
-			cpu_exec(num);
-		}
+		else if (strcmp(p, "si") == 0) { cmd_si(cmd); }
 		else if (strcmp(p, "info") == 0) {
 			char** saveptr;
 			p = strtok_r(cmd, " ", saveptr);
