@@ -15,8 +15,9 @@ void cpu_exec(uint32_t);
 void restart();
 
 /* We use the readline library to provide more flexibility to read from stdin. */
+
+static char *line_read = NULL;
 char* rl_gets() {
-	static char *line_read = NULL;
 
 	if (line_read) {
 		free(line_read);
@@ -82,7 +83,7 @@ restart_:
 	nemu_state = STOP;
 	cmd_c();
 }
-
+/*
 static void cmd_si(char* cmd)
 {
 	char* ptr = cmd, * saveptr = NULL;
@@ -95,13 +96,11 @@ static void cmd_si(char* cmd)
 
 	return;
 }
-
-static void cmd_info(char* cmd)
+*/
+static char* saveptr = NULL;
+static void cmd_info()
 {
-	printf("success\n");
-	char* ptr = cmd, * saveptr = NULL;
-	char* p = strtok_r(ptr, " ", &saveptr);
-	p = strtok_r(NULL, " ", &saveptr);
+	char* p = strtok_r(NULL, " ", &saveptr);
 
 	if (strcmp(p, "r") == 0)
 		printf("eax = %X\tecx = %X\tedx = %X\tebx = %X\n \
@@ -109,26 +108,25 @@ static void cmd_info(char* cmd)
 				cpu.eax, cpu.ecx, cpu.edx, cpu.ebx, \
 				cpu.ebp, cpu.esp, cpu.esi, cpu.edi);
 	else 
-		printf("Unknown command '%s'\n", cmd);
+		printf("Unknown command '%s'\n", line_read);
 
 	return;
 }
 
 void main_loop() {
-	char *cmd;
+//	char *cmd;
  	while(1) {
-		cmd = rl_gets();
+//		cmd = rl_gets();
+        rl_gets();
+		char* p = strtok_r(line_read, " ", &saveptr);
 
-		char* p = strtok(cmd, " ");
-
-		printf("%s\n", cmd);
 		if (p == NULL) { continue; }
 
 		if (strcmp(p, "c") == 0) { cmd_c(); }
 		else if (strcmp(p, "r") == 0) { cmd_r(); }
 		else if (strcmp(p, "q") == 0) { return; }
-		else if (strcmp(p, "si") == 0) { cmd_si(cmd); }
-		else if (strcmp(p, "info") == 0) { printf("su\n"); cmd_info(cmd); }
+		else if (strcmp(p, "si") == 0) {/* cmd_si();*/ }
+		else if (strcmp(p, "info") == 0) { cmd_info(); }
 
 		/* TODO: Add more commands */
 
