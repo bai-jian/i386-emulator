@@ -118,10 +118,10 @@ void main_loop() {
 	char *cmd;
  	while(1) {
 		cmd = rl_gets();
-		
-		char *p = strtok(cmd, " ");
 
-		printf("%s\n", cmd);
+		char* p = strtok(cmd, " ");
+
+		printf("%s\n", rl_gets());
 		if (p == NULL) { continue; }
 
 		if (strcmp(p, "c") == 0) { cmd_c(); }
