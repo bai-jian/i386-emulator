@@ -121,7 +121,7 @@ void main_loop() {
 
 		char* p = strtok(cmd, " ");
 
-		printf("%s\n", rl_gets());
+		printf("%s\n", cmd);
 		if (p == NULL) { continue; }
 
 		if (strcmp(p, "c") == 0) { cmd_c(); }
