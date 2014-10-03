@@ -122,7 +122,7 @@ void main_loop() {
 
 		if (p == NULL) { continue; }
 
-		printf("%s\n", p);
+		printf("%s\n", cmd);
 		if (strcmp(p, "c") == 0) { cmd_c(); }
 		else if (strcmp(p, "r") == 0) { cmd_r(); }
 		else if (strcmp(p, "q") == 0) { return; }
