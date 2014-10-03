@@ -100,10 +100,10 @@ static void cmd_info(char* cmd)
 {
 	printf("success\n");
 	char* ptr = cmd, * saveptr = NULL;
-	strtok_r(ptr, " ", &saveptr);
-	ptr = strtok_r(NULL, " ", &saveptr);
+	char* p = strtok_r(ptr, " ", &saveptr);
+	p = strtok_r(NULL, " ", &saveptr);
 
-	if (strcmp(ptr, "r") == 0)
+	if (strcmp(p, "r") == 0)
 		printf("eax = %X\tecx = %X\tedx = %X\tebx = %X\n \
 				ebp = %X\tesp = %X\tesi = %X\tedi = %X\n", \
 				cpu.eax, cpu.ecx, cpu.edx, cpu.ebx, \
@@ -116,6 +116,7 @@ static void cmd_info(char* cmd)
 
 void main_loop() {
 	char *cmd;
+
  	while(1) {
 		cmd = rl_gets();
 		char *p = strtok(cmd, " ");
