@@ -102,7 +102,8 @@ static void cmd_info()
 	char* p = strtok_r(NULL, " ", &saveptr);
 
 	if (strcmp(p, "r") == 0)
-		printf("eax = %8X\tecx = %8X\tedx = %8X\tebx = %8X\nebp = %8X\tesp = %8X\tesi = %8X\tedi = %8X\n",\
+		printf("eax = 0x%8X\t ecx = 0x%8X\t edx = 0x%8X\t ebx = 0x%8X\n\
+				ebp = 0x%8X\t esp = 0x%8X\t esi = 0x%8X\t edi = 0x%8X\n",\
 				cpu.eax, cpu.ecx, cpu.edx, cpu.ebx,\
 				cpu.ebp, cpu.esp, cpu.esi, cpu.edi);
 	else 
