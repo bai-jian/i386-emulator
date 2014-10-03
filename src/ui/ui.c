@@ -95,8 +95,10 @@ static void cmd_si(char* cmd)
 
 	return;
 }
+
 static void cmd_info(char* cmd)
 {
+	printf("success\n");
 	char* ptr = cmd, * saveptr = NULL;
 	strtok_r(ptr, " ", &saveptr);
 	ptr = strtok_r(NULL, " ", &saveptr);
@@ -129,5 +131,5 @@ void main_loop() {
 		/* TODO: Add more commands */
 
 		else { printf("Unknown command '%s'\n", p); }
-	}
+ 	}
 }
