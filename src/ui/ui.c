@@ -116,7 +116,7 @@ static void cmd_info(char* cmd)
 
 void main_loop() {
 	char *cmd;
-
+	printf("fda\n");
  	while(1) {
 		cmd = rl_gets();
 		char *p = strtok(cmd, " ");
