@@ -102,7 +102,8 @@ static void cmd_info()
 	char* p = strtok_r(NULL, " ", &saveptr);
 
 	if (strcmp(p, "r") == 0)
-		printf("eax = 0x%8X    %d\n\
+		printf("\n\
+				eax = 0x%8X    %d\n\
 				ecx = 0x%8X    %d\n\
 				edx = 0x%8X    %d\n\
 				ebx = 0x%8X    %d\n\
