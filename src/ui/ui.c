@@ -9,6 +9,9 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+
+static char* line_read = NULL;
+static char* saveptr = NULL;
 int nemu_state = END;
 
 void cpu_exec(uint32_t);
@@ -16,7 +19,6 @@ void restart();
 
 /* We use the readline library to provide more flexibility to read from stdin. */
 
-static char *line_read = NULL;
 char* rl_gets() {
 
 	if (line_read) {
@@ -83,21 +85,18 @@ restart_:
 	nemu_state = STOP;
 	cmd_c();
 }
-/*
-static void cmd_si(char* cmd)
-{
-	char* ptr = cmd, * saveptr = NULL;
-	strtok_r(ptr, " ", &saveptr);
-	ptr = strtok_r(NULL, " ", &saveptr);
 
-	long num = (ptr == NULL) ? 1 : strtol(ptr, NULL, 0);
+static void cmd_si()
+{
+	char* p = strtok_r(NULL, " ", &saveptr);
+
+	long num = p ? 1 : strtol(p, NULL, 0);
 
 	cpu_exec(num);
 
 	return;
 }
-*/
-static char* saveptr = NULL;
+
 static void cmd_info()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
@@ -113,10 +112,10 @@ static void cmd_info()
 	return;
 }
 
-void main_loop() {
-//	char *cmd;
- 	while(1) {
-//		cmd = rl_gets();
+void main_loop() 
+{
+ 	while(1)
+	{
         rl_gets();
 		char* p = strtok_r(line_read, " ", &saveptr);
 
@@ -125,11 +124,13 @@ void main_loop() {
 		if (strcmp(p, "c") == 0) { cmd_c(); }
 		else if (strcmp(p, "r") == 0) { cmd_r(); }
 		else if (strcmp(p, "q") == 0) { return; }
-		else if (strcmp(p, "si") == 0) {/* cmd_si();*/ }
+		else if (strcmp(p, "si") == 0) { cmd_si(); }
 		else if (strcmp(p, "info") == 0) { cmd_info(); }
 
 		/* TODO: Add more commands */
 
 		else { printf("Unknown command '%s'\n", p); }
- 	}
+ 	} 
+
+	return;
 }
