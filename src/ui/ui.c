@@ -103,7 +103,7 @@ static void cmd_info()
 
 	if (strcmp(p, "r") == 0)
 		printf("eax = 0x%8X\t %d\t ecx = 0x%8X\t %d\n\
-			   	edx = 0x%8X\t %d\t ebx = 0x%8X\t %d\n\
+				edx = 0x%8X\t %d\t ebx = 0x%8X\t %d\n\
 				ebp = 0x%8X\t   \t esp = 0x%8X\t   \n\
 				esi = 0x%8X\t %d\t edi = 0x%8X\t %d\n",\
 				cpu.eax, cpu.eax, cpu.ecx, cpu.ecx,\
