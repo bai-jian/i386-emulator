@@ -2,18 +2,17 @@
 
 #include "nemu.h"
 
+#include <stdio.h>
+#include <string.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <math.h>
 
 int nemu_state = END;
 
 void cpu_exec(uint32_t);
 void restart();
-
-int str_to_int(char*);
 
 /* We use the readline library to provide more flexibility to read from stdin. */
 char* rl_gets() {
