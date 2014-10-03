@@ -116,7 +116,6 @@ static void cmd_info(char* cmd)
 
 void main_loop() {
 	char *cmd;
-	printf("fda\n");
  	while(1) {
 		cmd = rl_gets();
 		char *p = strtok(cmd, " ");
@@ -127,7 +126,7 @@ void main_loop() {
 		else if (strcmp(p, "r") == 0) { cmd_r(); }
 		else if (strcmp(p, "q") == 0) { return; }
 		else if (strcmp(p, "si") == 0) { cmd_si(cmd); }
-		else if (strcmp(p, "info") == 0) { cmd_info(cmd); }
+		else if (strcmp(p, "info") == 0) { printf("su\n"); cmd_info(cmd); }
 
 		/* TODO: Add more commands */
 
