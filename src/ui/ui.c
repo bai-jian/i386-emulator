@@ -102,15 +102,16 @@ static void cmd_info()
 	char* p = strtok_r(NULL, " ", &saveptr);
 
 	if (strcmp(p, "r") == 0)
-		printf("\n\
-				eax = 0x%8X    %d\n\
-				ecx = 0x%8X    %d\n\
-				edx = 0x%8X    %d\n\
-				ebx = 0x%8X    %d\n\
-				ebp = 0x%8X\n\
-				esp = 0x%8X\n\
-				esi = 0x%8X    %d\n\
-				edi = 0x%8X    %d\n",\
+
+printf("\
+eax = 0x%8X    %d\n\
+ecx = 0x%8X    %d\n\
+edx = 0x%8X    %d\n\
+ebx = 0x%8X    %d\n\
+ebp = 0x%8X\n\
+esp = 0x%8X\n\
+esi = 0x%8X    %d\n\
+edi = 0x%8X    %d\n",\
 				cpu.eax, cpu.eax,\
 				cpu.ecx, cpu.ecx,\
 				cpu.edx, cpu.edx,\
