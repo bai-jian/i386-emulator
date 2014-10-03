@@ -95,13 +95,17 @@ static void cmd_si(char* cmd)
 }
 static void cmd_info(char* cmd)
 {
-	if (strcmp(cmd, "info r") == 0)
+	char* ptr = cmd, * saveptr = NULL;
+	strtok_r(ptr, " ", &saveptr);
+	ptr = strtok_r(NULL, " ", &saveptr);
+
+	if (strcmp(ptr, "r") == 0)
 		printf("eax = %X\tecx = %X\tedx = %X\tebx = %X\n \
 				ebp = %X\tesp = %X\tesi = %X\tedi = %X\n", \
 				cpu.eax, cpu.ecx, cpu.edx, cpu.ebx, \
 				cpu.ebp, cpu.esp, cpu.esi, cpu.edi);
 	else 
-		printf("Unknown command '%s'", cmd);
+		printf("Unknown command '%s'\n", cmd);
 
 	return;
 }
@@ -124,19 +128,4 @@ void main_loop() {
 
 		else { printf("Unknown command '%s'\n", p); }
 	}
-}
-int str_to_int(char* p)
-{
-	int weight = 1;
-	int i = 0, len = strlen(p);
-	for (i = 0; i < len-1; ++i)
-		weight *= 10;
-
-	int sum = 0;
-	for (i = 0; p[i]; ++i)
-	{
-		sum += weight * (p[i] - 0x30);
-		weight /= 10;
-	}
-	return sum;
 }
