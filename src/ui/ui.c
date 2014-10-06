@@ -132,11 +132,10 @@ static void cmd_x()
 	int num = strtol(p1, NULL, 0);
 	unsigned int addr = strtol(p2, NULL, 16);
 
-	printf("%d\n", num);
-	printf("0x%X\n", addr);
 	int i = 0;
 	for (i = 0; i < num; ++i) 
-		printf("0x%X\t", swaddr_read(addr+4*i, 4)); 
+	//	unsigned int info = swaddr_read(addr+
+		printf("%2X\t", swaddr_read(addr+4*i, 4)); 
 	printf("\n");
 
 	return;
