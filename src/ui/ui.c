@@ -136,7 +136,7 @@ static void cmd_x()
 	printf("0x%X\n", addr);
 	int i = 0;
 	for (i = 0; i < num; ++i) 
-		printf("0x%X\t", swaddr_read(addr+i, 4)); 
+		printf("0x%X\t", swaddr_read(addr+4*i, 4)); 
 	printf("\n");
 
 	return;
