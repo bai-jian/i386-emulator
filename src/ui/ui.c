@@ -129,12 +129,15 @@ static void cmd_x()
 	char* p1 = strtok_r(NULL, " ", &saveptr);
 	char* p2 = strtok_r(NULL, " ", &saveptr);
 
-	unsigned long int num = strtoul(p1, NULL, 0);
-	unsigned long int addr = strtoul(p2, NULL, 16);
-	
+	int num = strtol(p1, NULL, 0);
+	unsigned int addr = strtol(p2, NULL, 16);
+	printf("%d\n", num);
+	printf("0x%X\n", addr);
+
 	int i = 0;
 	for (i = 0; i < num; ++i) 
 		printf("0x%X\t", swaddr_read(addr+i, 4));
+	printf("\n");
 
 	return;
 }
