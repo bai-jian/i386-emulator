@@ -134,9 +134,9 @@ static void cmd_x()
 
 	int i = 0;
 	for (i = 0; i < num; ++i) 
-	//	unsigned int info = swaddr_read(addr+
-		printf("%2X\t", swaddr_read(addr+4*i, 4)); 
-	printf("\n");
+		printf("%2X\t %2X\t %2X\t %2X\n", \
+				swaddr_read(addr+4*i+0, 1), swaddr_read(addr+4*i+1, 1),\
+				swaddr_read(addr+4*i+2, 1), swaddr_read(addr+4*i+3, 1));
 
 	return;
 }
