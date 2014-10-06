@@ -124,7 +124,20 @@ edi = 0x%8X    %d\n",\
 
 	return;
 }
+static void cmd_x()
+{
+	char* p1 = strtok_r(NULL, " ", &saveptr);
+	char* p2 = strtok_r(NULL, " ", &saveptr);
 
+	unsigned long int num = strtoul(p1, NULL, 0);
+	unsigned long int addr = strtoul(p2, NULL, 16);
+	
+	int i = 0;
+	for (i = 0; i < num; ++i) 
+		printf("0x%X\t", swaddr_read(addr+i, 4));
+
+	return;
+}
 void main_loop() 
 {
  	while(1)
@@ -139,6 +152,7 @@ void main_loop()
 		else if (strcmp(p, "q") == 0) { return; }
 		else if (strcmp(p, "si") == 0) { cmd_si(); }
 		else if (strcmp(p, "info") == 0) { cmd_info(); }
+		else if (strcmp(p, "x") == 0) { cmd_x(); }
 
 		/* TODO: Add more commands */
 
