@@ -70,5 +70,5 @@ void print_bp()
 {
 	BP* p;
 	for (p = used_head; p; p = p->next)
-		printf("Breakpoint %d at 0x%8X\n", p->NO, p->addr);
+		printf("Breakpoint %d at 0x%X\n", p->NO, p->addr);
 }
