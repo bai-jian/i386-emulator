@@ -88,7 +88,7 @@ restart_:
 }
 
 static void cmd_si()
-{	cpu.eip = 0x100000;
+{	cpu.eip = 0x100000; nemu_state = RUNNING;
 	char* p = strtok_r(NULL, " ", &saveptr);
 	int num = p ? strtol(p, NULL, 0) : 1;
 

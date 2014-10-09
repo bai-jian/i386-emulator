@@ -44,7 +44,8 @@ void cpu_exec(volatile uint32_t n) {
 	volatile uint32_t n_temp = n;
 
 	setjmp(jbuf);
-	for(; n > 0; n --) {
+	for(; n > 0; n --) 
+	{
 		swaddr_t eip_temp = cpu.eip;
 		int instr_len = exec(cpu.eip);
 
@@ -54,6 +55,7 @@ void cpu_exec(volatile uint32_t n) {
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
 		}
+
 		switch (bp_state) 
 		{
 			case OFF: 
@@ -63,10 +65,10 @@ void cpu_exec(volatile uint32_t n) {
 				--cpu.eip;
 				uint8_t instr = search_bp(cpu.eip);
 				swaddr_write(cpu.eip, 1, instr);
-				printf("Breakpoint at %08X\n", cpu.eip);
+	     		printf("Breakpoint at %08X\n", cpu.eip);
 		
 				bp_state = RESET;
-							nemu_state = STOP;
+						
 				return; 
 
 			case RESET:
