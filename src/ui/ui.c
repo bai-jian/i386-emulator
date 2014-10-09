@@ -92,8 +92,8 @@ static void cmd_si()
 	cpu.eip = 0x100000;
 	char* p = strtok_r(NULL, " ", &saveptr);
 
-	long num = p ? strtol(p, NULL, 0) : 1;
-
+	int num = p ? strtol(p, NULL, 0) : 1;
+printf("%d\n", num);
 	cpu_exec(num);
 
 	return;
