@@ -35,6 +35,8 @@ void new_bp(swaddr_t addr)
 	
 	used_head = newbp;
 
+	printf("New Breakpoint %d at 0x%08X\n", newbp->NO, newbp->addr);
+
 	return ;
 }
 void free_bp(int num)
@@ -55,11 +57,11 @@ void free_bp(int num)
 		if (p == NULL)
 			printf("No Breakpoint %d\n", num);
 		else if (pre == NULL) {
-		    printf("Delete Breakpoint %d at 0x%08X", p->NO, p->addr); 	
-			used_head = NULL;
+		    printf("Delete Breakpoint %d at 0x%08X\n", p->NO, p->addr); 	
+			used_head = p->next;
 			p->next = free_head; free_head = p; }
 		else {
-			printf("Delete Breakpoint %d at 0x%08X", p->NO, p->addr);
+			printf("Delete Breakpoint %d at 0x%08X\n", p->NO, p->addr);
 			pre->next = p->next;
 			p->next = free_head; free_head = p; }
 	}
