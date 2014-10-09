@@ -145,6 +145,7 @@ static void cmd_b()
 static void cmd_d()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
+	assert (p == NULL);
 	int n = strtol(p, NULL, 0);
 
 	free_bp(n);
