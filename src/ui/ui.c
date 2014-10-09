@@ -89,6 +89,7 @@ restart_:
 
 static void cmd_si()
 {
+	cpu.eip = 0x100000;
 	char* p = strtok_r(NULL, " ", &saveptr);
 
 	long num = p ? 1 : strtol(p, NULL, 0);
