@@ -23,9 +23,8 @@ void init_bp_pool()
 
 void new_bp(swaddr_t addr)
 {
-	BP* newbp = free_head;
+	BP* newbp = free_head; assert(free_head);
 	free_head = free_head->next;
-	assert(free_head);
 
 	newbp->NO = ++num;
 	newbp->addr = addr;
@@ -71,5 +70,5 @@ void print_bp()
 {
 	BP* p;
 	for (p = used_head; p; p = p->next)
-		printf("Breakpoint %d: %8X\n", p->NO, p->addr);
+		printf("Breakpoint %d at 0x%8X\n", p->NO, p->addr);
 }
