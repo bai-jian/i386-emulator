@@ -54,7 +54,7 @@ void cpu_exec(volatile uint32_t n) {
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
 		}
-		printf("fail\n");
+		printf("%d\n", bp_state);
 		if(bp_state != OFF)
 	   	{
 			printf("Success\n");
