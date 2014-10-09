@@ -65,7 +65,7 @@ void cpu_exec(volatile uint32_t n) {
 				--cpu.eip;
 				uint8_t instr = search_bp(cpu.eip);
 				swaddr_write(cpu.eip, 1, instr);
-	     		printf("Breakpoint at %08X\n", cpu.eip);
+	     		printf("Breakpoint at 0x%08X\n", cpu.eip);
 		
 				bp_state = RESET;
 						
