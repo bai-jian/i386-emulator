@@ -4,7 +4,7 @@
 #include "nemu.h"
 
 #include <setjmp.h>
-#include <stdio.h>
+
 #define LOADER_START 0x100000
 
 int exec(swaddr_t);
@@ -54,17 +54,16 @@ void cpu_exec(volatile uint32_t n) {
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
 		}
-		printf("%d\n", bp_state);
+
 		if(bp_state != OFF)
 	   	{
-			printf("Success\n");
 			switch (bp_state) 
 			{
 				case TRIG:
 					--cpu.eip;
 					uint8_t instr = search_bp(cpu.eip);
 					swaddr_write(cpu.eip, 1, instr);
-					printf("Breakpoint at %8X\n", cpu.eip);
+					printf("Breakpoint at %08X\n", cpu.eip);
 					
 					bp_state = RESET;
 
