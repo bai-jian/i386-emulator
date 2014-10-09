@@ -88,15 +88,13 @@ restart_:
 }
 
 static void cmd_si()
-{
-	cpu.eip = 0x100000;
+{	cpu.eip = 0x100000;
 	char* p = strtok_r(NULL, " ", &saveptr);
-
 	int num = p ? strtol(p, NULL, 0) : 1;
 
-	cpu_exec(num);
+	cpu_exec(num); 
 
-	return;
+	return; 
 }
 
 static void cmd_info()

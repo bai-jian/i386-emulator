@@ -54,30 +54,27 @@ void cpu_exec(volatile uint32_t n) {
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
 		}
+		switch (bp_state) 
+		{
+			case OFF: 
+				break;
 
-		if(bp_state != OFF)
-	   	{
-			switch (bp_state) 
-			{
-				case TRIG:
-					--cpu.eip;
-					uint8_t instr = search_bp(cpu.eip);
-					swaddr_write(cpu.eip, 1, instr);
-					printf("Breakpoint at %08X\n", cpu.eip);
-					
-					bp_state = RESET;
+			case TRIG:
+				--cpu.eip;
+				uint8_t instr = search_bp(cpu.eip);
+				swaddr_write(cpu.eip, 1, instr);
+				printf("Breakpoint at %08X\n", cpu.eip);
+		
+				bp_state = RESET;
+							nemu_state = STOP;
+				return; 
 
-					return; 
-
-				case RESET:
-					swaddr_write(eip_temp, 1, INT3_CODE);
-					bp_state = OFF;
-					break;
-			}
+			case RESET:
+				swaddr_write(eip_temp, 1, INT3_CODE);
+				bp_state = OFF;
+				break;
 		}
 			
-		if (nemu_state == INT)
-		{}
-		else if(nemu_state == END) { return; }
+		if(nemu_state == END) { return; }
 	}
 }
