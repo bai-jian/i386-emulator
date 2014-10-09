@@ -1,4 +1,5 @@
 #include "ui/ui.h"
+#include "ui/breakpoint.h"
 
 #include "nemu.h"
 
@@ -12,6 +13,7 @@
 
 static char* line_read = NULL;
 static char* saveptr = NULL;
+
 int nemu_state = END;
 
 void cpu_exec(uint32_t);
@@ -23,8 +25,7 @@ char* rl_gets() {
 
 	if (line_read) {
 		free(line_read);
-		line_read = NULL;
-	}
+		line_read = NULL; }
 
 	line_read = readline("(nemu) ");
 
@@ -57,8 +58,7 @@ void init_signal() {
 static void cmd_c() {
 	if(nemu_state == END) {
 		puts("The Program does not start. Use 'r' command to start the program.");
-		return;
-	}
+		return; } 
 
 	nemu_state = RUNNING;
 	cpu_exec(-1);
@@ -66,19 +66,20 @@ static void cmd_c() {
 }
 
 static void cmd_r() {
-	if(nemu_state != END) { 
+	if(nemu_state != END) 
+	{
 		char c;
-		while(1) {
+		while(1) 
+		{
 			printf("The program is already running. Restart the program? (y or n)");
 			fflush(stdout);
 			scanf(" %c", &c);
 			switch(c) {
 				case 'y': goto restart_;
 				case 'n': return;
-				default: puts("Please answer y or n.");
-			}
+				default: puts("Please answer y or n."); }
 		}
-	}
+	} 
 
 restart_:
 	restart();
@@ -101,25 +102,20 @@ static void cmd_info()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
 
-	if (strcmp(p, "r") == 0)
-
-printf("\
-eax = 0x%8X    %d\n\
-ecx = 0x%8X    %d\n\
-edx = 0x%8X    %d\n\
-ebx = 0x%8X    %d\n\
-ebp = 0x%8X\n\
-esp = 0x%8X\n\
-esi = 0x%8X    %d\n\
-edi = 0x%8X    %d\n",\
-				cpu.eax, cpu.eax,\
-				cpu.ecx, cpu.ecx,\
-				cpu.edx, cpu.edx,\
-				cpu.ebx, cpu.ebx,\
-				cpu.ebp, cpu.esp,\
-			   	cpu.esi, cpu.esi,\
-				cpu.edi, cpu.edi);
-	else 
+ 	if (strcmp(p, "r") == 0) {
+		printf("eax = 0x%8X    %d\n", cpu.eax, cpu.eax);
+		printf("ecx = 0x%8X    %d\n", cpu.ecx, cpu.ecx);
+		printf("edx = 0x%8X    %d\n", cpu.edx, cpu.edx);
+		printf("ebx = 0x%8X    %d\n", cpu.ebx, cpu.ebx);
+		printf("ebp = 0x%8X\n", cpu.ebp);
+		printf("esp = 0x%8X\n", cpu.esp);
+		printf("esi = 0x%8X    %d\n", cpu.esi, cpu.esi);
+		printf("edi = 0x%8X    %d\n", cpu.edi, cpu.edi); }
+/*	else  if (strcmp(p, "b") == 0) {
+		BP* p;
+		for (p = used_head; p; p = p->next)
+			printf("Breakpoint %d: %8X\n", p->NO, p->addr); }
+*/	else 
 		printf("Unknown command '%s'\n", line_read);
 
 	return;
@@ -140,8 +136,32 @@ static void cmd_x()
 
 	return;
 }
-void main_loop() 
+static void cmd_b()
 {
+	char* p = strtok_r(NULL, " ", &saveptr);
+	swaddr_t addr = strtol(p+1, NULL, 16);
+
+	new_bp(addr);
+
+	return;
+}
+/*
+static void cmd_d()
+{
+	char* p = strtok_r(NULL, " ", &saveptr);
+	int n = strtol(p, NULL, 0);
+
+	if (n == 0)
+		for (++n; head; ++n)
+		   free_bp(n);
+	else
+		free_bp(n);
+
+	return ;
+}
+*/
+void main_loop() 
+{ 
  	while(1)
 	{
         rl_gets();
@@ -155,11 +175,10 @@ void main_loop()
 		else if (strcmp(p, "si") == 0) { cmd_si(); }
 		else if (strcmp(p, "info") == 0) { cmd_info(); }
 		else if (strcmp(p, "x") == 0) { cmd_x(); }
-
-		/* TODO: Add more commands */
-
+		else if (strcmp(p, "b") == 0) { cmd_b(); }
+//		else if (strcmp(p, "d") == 0) { cmd_d(); }
 		else { printf("Unknown command '%s'\n", p); }
- 	} 
+   	} 
 
 	return;
 }

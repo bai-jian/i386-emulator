@@ -1,6 +1,7 @@
 #include "exec/helper.h"
 
 #include "ui/ui.h"
+#include "ui/breakpoint.h"
 
 #include "nemu.h"
 
@@ -16,10 +17,9 @@ make_helper(inv) {
 	assert(0);
 }
 
-make_helper(int3) {
-	/* A breakpoint is hit! Do something here! */
-	assert(0);
-
+make_helper(int3)
+{
+	bp_state = TRIG;
 	return 1;
 }
 
