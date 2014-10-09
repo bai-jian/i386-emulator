@@ -17,6 +17,8 @@ typedef struct breakpoint {
 
 void new_bp(swaddr_t);
 void free_bp(int);
+
 uint8_t search_bp(swaddr_t);
+void print_bp(); 
 
 #endif

@@ -102,7 +102,7 @@ static void cmd_info()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
 
- 	if (strcmp(p, "r") == 0) {
+  	if (strcmp(p, "r") == 0) {
 		printf("eax = 0x%8X    %d\n", cpu.eax, cpu.eax);
 		printf("ecx = 0x%8X    %d\n", cpu.ecx, cpu.ecx);
 		printf("edx = 0x%8X    %d\n", cpu.edx, cpu.edx);
@@ -110,12 +110,9 @@ static void cmd_info()
 		printf("ebp = 0x%8X\n", cpu.ebp);
 		printf("esp = 0x%8X\n", cpu.esp);
 		printf("esi = 0x%8X    %d\n", cpu.esi, cpu.esi);
-		printf("edi = 0x%8X    %d\n", cpu.edi, cpu.edi); }
-/*	else  if (strcmp(p, "b") == 0) {
-		BP* p;
-		for (p = used_head; p; p = p->next)
-			printf("Breakpoint %d: %8X\n", p->NO, p->addr); }
-*/	else 
+ 		printf("edi = 0x%8X    %d\n", cpu.edi, cpu.edi); }
+	else  if (strcmp(p, "b") == 0) { print_bp(); }
+	else 
 		printf("Unknown command '%s'\n", line_read);
 
 	return;

@@ -2,6 +2,8 @@
 
 #include "nemu.h"
 
+#include <stdio.h>
+
 #define NR_BP 32
 static BP bp_pool[NR_BP];
 
@@ -63,4 +65,11 @@ uint8_t search_bp(swaddr_t swaddr)
 	for (p = used_head; ; p = p->next)
 		if (p->addr == swaddr) break;
 	return p->instr;
+}
+
+void print_bp()
+{
+	BP* p;
+	for (p = used_head; p; p = p->next)
+		printf("Breakpoint %d: %8X\n", p->NO, p->addr);
 }
