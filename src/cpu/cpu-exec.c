@@ -4,7 +4,7 @@
 #include "nemu.h"
 
 #include <setjmp.h>
-
+#include <stdio.h>
 #define LOADER_START 0x100000
 
 int exec(swaddr_t);
@@ -57,6 +57,7 @@ void cpu_exec(volatile uint32_t n) {
 
 		if(bp_state != OFF)
 	   	{
+			printf("Success\n");
 			switch (bp_state) 
 			{
 				case TRIG:
