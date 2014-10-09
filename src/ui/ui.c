@@ -141,21 +141,17 @@ static void cmd_b()
 
 	return;
 }
-/*
+
 static void cmd_d()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
 	int n = strtol(p, NULL, 0);
 
-	if (n == 0)
-		for (++n; head; ++n)
-		   free_bp(n);
-	else
-		free_bp(n);
+	free_bp(n);
 
 	return ;
 }
-*/
+
 void main_loop() 
 { 
  	while(1)
@@ -172,7 +168,7 @@ void main_loop()
 		else if (strcmp(p, "info") == 0) { cmd_info(); }
 		else if (strcmp(p, "x") == 0) { cmd_x(); }
 		else if (strcmp(p, "b") == 0) { cmd_b(); }
-//		else if (strcmp(p, "d") == 0) { cmd_d(); }
+		else if (strcmp(p, "d") == 0) { cmd_d(); }
 		else { printf("Unknown command '%s'\n", p); }
    	} 
 

@@ -39,21 +39,30 @@ void new_bp(swaddr_t addr)
 }
 void free_bp(int num)
 {
-	int n = 0;
-	BP* bp, * prec;
-	for (prec = NULL, bp = used_head; bp; prec = bp, bp = bp->next)
-		if (++n == num) break;
+	if (num == 0)
+	{
+		while(used_head) {
+			BP* p = used_head;
+			used_head = used_head->next;
+			p->next = free_head; free_head = p; }
+	}
+	else
+	{
+		BP* p, * pre;
+		for (pre = NULL, p = used_head; p; pre = p, p = p->next)
+			if (p->NO == num) break;
 
-	if (bp == NULL)
-		printf("No Breakpoint %d!\n", num);
-	else if (prec == NULL) {
-		used_head = NULL;
-
-		bp->next = free_head;
-		free_head = bp; }
-	else {
-		bp->next = free_head;
-		free_head = bp; } 
+		if (p == NULL)
+			printf("No Breakpoint %d\n", num);
+		else if (pre == NULL) {
+		    printf("Delete Breakpoint %d at 0x%08X", p->NO, p->addr); 	
+			used_head = NULL;
+			p->next = free_head; free_head = p; }
+		else {
+			printf("Delete Breakpoint %d at 0x%08X", p->NO, p->addr);
+			pre->next = p->next;
+			p->next = free_head; free_head = p; }
+	}
 		
 	return ;
 }
@@ -70,5 +79,5 @@ void print_bp()
 {
 	BP* p;
 	for (p = used_head; p; p = p->next)
-		printf("Breakpoint %d at 0x%X\n", p->NO, p->addr);
+		printf("Breakpoint %d at 0x%08X\n", p->NO, p->addr);
 }
