@@ -93,7 +93,7 @@ static void cmd_si()
 	char* p = strtok_r(NULL, " ", &saveptr);
 
 	int num = p ? strtol(p, NULL, 0) : 1;
-printf("%d\n", num);
+
 	cpu_exec(num);
 
 	return;
