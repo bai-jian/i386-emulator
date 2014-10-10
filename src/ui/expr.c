@@ -1,6 +1,4 @@
-
 #include "common.h"
-
 
 #include <sys/types.h>
 #include <regex.h>
@@ -23,7 +21,8 @@ static struct rule
 	char *regex;
 	int token_type;
 	int precedence;
-}  rules[] = {
+} rules[] = 
+{
 	/*white space*/			{" +", NOTYPE, 0},
 	/*number     */			{"-?[0-9]+|0x[0-9A-Fa-f]+",NUM, 0},
 	/*left par   */			{"\\(", LPA, 0},
@@ -55,7 +54,7 @@ static struct rule
 
 	/*bitwise and*/			{"\\&", BAD, 7},
 	/*bitwise xor*/			{"\\^", BXO, 8},
-	/*bitwise or */			{"", BOR, 9},
+	/*bitwise or */			{"\\|", BOR, 9},
 
 	/*logical and*/			{"\\&&",LAD, 10},
 	/*logical or */			{"\\||",LOR, 11}
@@ -80,15 +79,16 @@ void init_regex()
 	}
 }
 
-/*
+
 struct token 
 {
 	int type;
+	int prec;
 	char str[32];
 } tokens[32];
 int nr_token = 0;
 
-static bool make_token(char *e) 
+bool make_token(char *e) 
 {
 	int position = 0;
 	while(e[position]) 
@@ -101,8 +101,7 @@ static bool make_token(char *e)
 			{
 				char* substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
-
-				//Log("match regex[%d] at position %d with len %d: %.*s", i, position, substr_len, substr_len, substr_start);
+				Log("match regex[%d] at position %d with len %d: %.*s", i, position, substr_len, substr_len, substr_start);
 
 				switch(rules[i].token_type) {
 					case NOTYPE: 
@@ -118,10 +117,10 @@ static bool make_token(char *e)
 
 						break;
 					default: 
-						tokens[nr_token++].type = rules[i].token_type; }
+						tokens[nr_token].type = rules[i].token_type; 
+						tokens[nr_token].prec = rules[i].precedence;}
 
-				position += substr_len;
-				break;
+				position += substr_len;  break;
 			}
 		}
 		if(i == NR_REGEX) {
@@ -131,43 +130,56 @@ static bool make_token(char *e)
 	return true; 
 }
 
+size_t eval_expr(int, int);
 uint32_t expr(char *e, bool *success) 
 {
-	if(!make_token(e)) {
+	bool make = make_token(e);
+	if(!make) 
+	{
 		*success = false;
-		return 0; }
+		return 0; 
+	}
 
-	assert(0);
-	return 0;
+	int i;
+	for(i = 0; i < nr_token; ++i) 
+	{
+		if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type!=NUM || tokens[i-1].type!= RPA)) 
+			tokens[i].type = DER, tokens[i].prec = 1;
+    }
+
+	size_t val = eval_expr(0, nr_token-1);
+
+	return val;
 }
 
+bool check_parentheses(int, int);
+int dom_op(int, int);
 size_t eval_expr(int p, int q)
 {
 	if (p == q)
-	{
-		unsigned val = strtoul(tokens[p].str, NULL, 10);
-		return val;
+	{ 
+	//	unsigned val = strtol(tokens[p].str, NULL, 0);
+		return 0;
 	}
 	else
 	{
 		if (check_parentheses(p, q))
 			return eval_expr(p+1, q-1);
 		else
-			char op = dom_op(p, q);
+			dom_op(p, q);
 
 	}
+	return 0;
 }
-
-bool check_parentheses(int, int);
 bool check_parentheses(int p, int q)
 {
-	if (tokens[p].type == '(' && tokens[q].type == ')')
+	if (tokens[p].type == LPA && tokens[q].type == RPA)
 	{
 		int weight = 1, i;
 		for (i = p+1; i <= q; ++i)
 		{
-			if (tokens[p].type == '(') ++weight;
-			if (tokens[q].type == ')') --weight;
+			if (tokens[p].type == LPA) ++weight;
+			if (tokens[q].type == RPA) --weight;
 			if (weight == 0) break;
 		}
 		return (i == q) ? true : false;
@@ -175,4 +187,23 @@ bool check_parentheses(int p, int q)
 	else
 		return false;
 }
-*/
+int dom_op(int p, int q)
+{
+	int op = p;
+
+	int weight = 0;
+	int i;
+	for (i = p; i <= q; ++i)
+	{
+		switch(tokens[i].type)
+		{
+			case NUM:	break;
+			case LPA:	++weight; break;
+			case RPA:	--weight; break;
+			default:
+				if (tokens[i].prec >= tokens[op].prec)
+					op = i;
+	 	}
+	} 
+	return op;
+}
