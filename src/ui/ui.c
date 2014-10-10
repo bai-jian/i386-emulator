@@ -145,7 +145,6 @@ static void cmd_b()
 static void cmd_d()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
-	if (p == NULL) printf("fda\n");
 	int n = strtol(p, NULL, 0);
 
 	free_bp(n);
