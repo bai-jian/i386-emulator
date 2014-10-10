@@ -55,7 +55,7 @@ static struct rule
 
 	/*bitwise and*/			{"\\&", BAD, 7},
 	/*bitwise xor*/			{"\\^", BXO, 8},
-	/*bitwise or */			{"\\|", BOR, 9},
+	/*bitwise or */			{"", BOR, 9},
 
 	/*logical and*/			{"\\&&",LAD, 10},
 	/*logical or */			{"\\||",LOR, 11}
