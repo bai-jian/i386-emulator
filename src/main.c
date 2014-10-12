@@ -6,6 +6,7 @@ void load_table();
 void main_loop();
 void set_main_args(int, char * []);
 void init_bp_pool();
+void init_wp_pool();
 void init_regex();
 void init_signal();
 void reg_test();
@@ -41,6 +42,7 @@ int main(int argc, char *argv[]) {
 	init_regex();
 	init_signal();
 	init_bp_pool();
+	init_wp_pool();
 	load_table();
 
 
