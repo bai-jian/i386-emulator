@@ -90,7 +90,3 @@ bool test_wp()
 	}
 	return true;
 }
-
-
-
-
