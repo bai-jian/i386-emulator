@@ -1,5 +1,6 @@
 #include "ui/ui.h"
 #include "ui/breakpoint.h"
+#include "ui/expr.h"
 
 #include "nemu.h"
 
@@ -27,6 +28,8 @@ static void cmd_x();
 static void cmd_b();
 static void cmd_d();
 
+static void cmd_p();
+
 void main_loop() 
 { 
  	while(1)
@@ -47,6 +50,8 @@ void main_loop()
 
 		if (strcmp(p, "b") == 0)	{ cmd_b();    continue; }
 		if (strcmp(p, "d") == 0)	{ cmd_d();    continue; }
+
+		if (strcmp(p, "p") == 0)	{ cmd_p();    continue; }
 
 		printf("Unknown command '%s'\n", p); 
     	} 
@@ -192,5 +197,15 @@ static void cmd_d()
 	free_bp(n);
 
 	return ;
+}
+
+static void cmd_p()
+{
+	char* e = strtok_r(NULL, " ", &saveptr);
+	size_t val = expr(e);
+
+	printf("%s = %u", e, val);
+
+	return;
 }
 
