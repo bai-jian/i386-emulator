@@ -204,7 +204,7 @@ static void cmd_p()
 	char* e = strtok_r(NULL, " ", &saveptr);
 	size_t val = expr(e);
 
-	printf("%s = %u", e, val);
+	printf("%s = %u\n", e, val);
 
 	return;
 }
