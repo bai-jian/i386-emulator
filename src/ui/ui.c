@@ -185,8 +185,8 @@ static void cmd_x()
 
 static void cmd_b()
 {
-	char* p = strtok_r(NULL, " ", &saveptr);
-	swaddr_t addr = strtol(p+1, NULL, 16);
+	char* e = strtok_r(NULL, " ", &saveptr);
+	size_t addr = expr(e);
 
 	new_bp(addr);
 
@@ -212,7 +212,7 @@ static void cmd_w()
 }
 static void cmd_p()
 {
-	char* e = strtok_r(NULL, " ", &saveptr);
+	char* e = strtok_r(NULL, "", &saveptr);
 	size_t val = expr(e);
 
 	printf("%s = %u\n", e, val);
