@@ -52,7 +52,11 @@ void cpu_exec(volatile uint32_t n)
 				break;
 		} 
 			
-		if (WP_STATE) { nemu_state = STOP; test_wp(); return; }
+		if (WP_STATE) 
+		{ 
+			bool changed = test_wp();
+			if (changed) { nemu_state = STOP; return; }
+		}
 		if (nemu_state == END)  { return;    }
 	}
 }

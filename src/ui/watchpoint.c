@@ -73,20 +73,22 @@ void free_wp(int num)
 	return ;
 }
 
-void test_wp()
+bool test_wp()
 {
+	bool changed = false;
 	WP* p;
 	for (p = used_head; p; p = p->next)
-	{
+	 {
 		size_t val = expr(p->expr);
 		if (val != p->val)
-		{
+	 	{
+			if (!changed) changed = true;
 			printf("Watchpoint %d \"%s\": %u -> %u\n", \
 					p->num, p->expr, p->val, val);
 			p->val = val;
 		}
 	}
-	return;
+	return true;
 }
 
 
