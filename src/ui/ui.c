@@ -10,28 +10,65 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+int nemu_state = END;
 
 static char* line_read = NULL;
 static char* saveptr = NULL;
 
-int nemu_state = END;
+char* rl_gets();
+static void cmd_r();
+static void cmd_c();
+
+static void cmd_si();
+
+static void cmd_info();
+static void cmd_x();
+
+static void cmd_b();
+static void cmd_d();
+
+void main_loop() 
+{ 
+ 	while(1)
+	{
+        rl_gets();
+		char* p = strtok_r(line_read, " ", &saveptr);
+
+		if (p == NULL) { continue; }
+
+		if (strcmp(p, "r") == 0)	{ cmd_r();	  continue; }
+		if (strcmp(p, "c") == 0)	{ cmd_c();	  continue; }
+		if (strcmp(p, "q") == 0) 	{ return;               }
+
+		if (strcmp(p, "si") == 0)   { cmd_si();   continue; }
+
+		if (strcmp(p, "info") == 0) { cmd_info(); continue; }
+		if (strcmp(p, "x") == 0)	{ cmd_x();	  continue; }
+
+		if (strcmp(p, "b") == 0)	{ cmd_b();    continue; }
+		if (strcmp(p, "d") == 0)	{ cmd_d();    continue; }
+
+		printf("Unknown command '%s'\n", p); 
+    	} 
+
+	return;
+}
+
 
 void cpu_exec(uint32_t);
 void restart();
-
-/* We use the readline library to provide more flexibility to read from stdin. */
-
-char* rl_gets() {
-
-	if (line_read) {
+char* rl_gets() 
+{
+	if (line_read) 
+	{
 		free(line_read);
-		line_read = NULL; }
+		line_read = NULL; 
+	}
 
 	line_read = readline("(nemu) ");
 
-	if (line_read && *line_read) {
+	if (line_read && *line_read)
 		add_history(line_read);
-	}
 
 	return line_read;
 }
@@ -40,13 +77,14 @@ char* rl_gets() {
  * where you press <C-c>. If you are interesting in how it works, please
  * search for "Unix signal" in the Internet.
  */
-static void control_C(int signum) {
-	if(nemu_state == RUNNING) {
+static void control_C(int signum) 
+{
+	if(nemu_state == RUNNING) 
 		nemu_state = INT;
-	}
 }
 
-void init_signal() {
+void init_signal() 
+{
 	/* Register a signal handler. */
 	struct sigaction s;
 	memset(&s, 0, sizeof(s));
@@ -55,7 +93,8 @@ void init_signal() {
 	assert(ret == 0);
 }
 
-static void cmd_c() {
+static void cmd_c() 
+{
 	if(nemu_state == END) {
 		puts("The Program does not start. Use 'r' command to start the program.");
 		return; } 
@@ -65,13 +104,14 @@ static void cmd_c() {
 	if(nemu_state != END) { nemu_state = STOP; }
 }
 
-static void cmd_r() {
+static void cmd_r() 
+{
 	if(nemu_state != END) 
 	{
 		char c;
 		while(1) 
 		{
-			printf("The program is already running. Restart the program? (y or n)");
+			printf("The program is running. Restart the program? (y or n)");
 			fflush(stdout);
 			scanf(" %c", &c);
 			switch(c) {
@@ -116,6 +156,7 @@ static void cmd_info()
 
 	return;
 }
+
 static void cmd_x()
 {
 	char* p1 = strtok_r(NULL, " ", &saveptr);
@@ -132,6 +173,7 @@ static void cmd_x()
 
 	return;
 }
+
 static void cmd_b()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
@@ -152,25 +194,3 @@ static void cmd_d()
 	return ;
 }
 
-void main_loop() 
-{ 
- 	while(1)
-	{
-        rl_gets();
-		char* p = strtok_r(line_read, " ", &saveptr);
-
-		if (p == NULL) { continue; }
-
-		if (strcmp(p, "c") == 0) { cmd_c(); }
-		else if (strcmp(p, "r") == 0) { cmd_r(); }
-		else if (strcmp(p, "q") == 0) { return; }
-		else if (strcmp(p, "si") == 0) { cmd_si(); }
-		else if (strcmp(p, "info") == 0) { cmd_info(); }
-		else if (strcmp(p, "x") == 0) { cmd_x(); }
-		else if (strcmp(p, "b") == 0) { cmd_b(); }
-		else if (strcmp(p, "d") == 0) { cmd_d(); }
-		else { printf("Unknown command '%s'\n", p); }
-   	} 
-
-	return;
-}
