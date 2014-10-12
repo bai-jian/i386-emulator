@@ -1,8 +1,10 @@
 #include "ui/ui.h"
-#include "ui/breakpoint.h"
-#include "ui/expr.h"
 
 #include "nemu.h"
+#include "ui/breakpoint.h"
+#include "ui/watchpoint.h"
+#include "ui/expr.h"
+
 
 #include <stdio.h>
 #include <string.h>
@@ -27,13 +29,14 @@ static void cmd_x();
 
 static void cmd_b();
 static void cmd_d();
+static void cmd_w();
 
 static void cmd_p();
 
 void main_loop() 
 { 
  	while(1)
-	{
+ 	{
         rl_gets();
 		char* p = strtok_r(line_read, " ", &saveptr);
 
@@ -50,6 +53,7 @@ void main_loop()
 
 		if (strcmp(p, "b") == 0)	{ cmd_b();    continue; }
 		if (strcmp(p, "d") == 0)	{ cmd_d();    continue; }
+		if (strcmp(p, "w") == 0)	{ cmd_w();    continue; }
 
 		if (strcmp(p, "p") == 0)	{ cmd_p();    continue; }
 
@@ -196,9 +200,16 @@ static void cmd_d()
 
 	free_bp(n);
 
-	return ;
+	return;
 }
 
+static void cmd_w()
+{
+	char* e = strtok_r(NULL, " ", &saveptr);
+	new_wp(e);
+
+	return;
+}
 static void cmd_p()
 {
 	char* e = strtok_r(NULL, " ", &saveptr);
@@ -208,4 +219,3 @@ static void cmd_p()
 
 	return;
 }
-
