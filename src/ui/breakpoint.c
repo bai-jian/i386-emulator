@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+int bp_state;
+
 #define NR_BP 32
 static BP bp_pool[NR_BP];
 
@@ -12,6 +14,8 @@ static int num = 0;
 
 void init_bp_pool() 
 {
+	bp_state = OFF;
+
 	used_head = NULL;
 	
 	free_head = bp_pool;
