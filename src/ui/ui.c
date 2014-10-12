@@ -185,7 +185,7 @@ static void cmd_x()
 
 static void cmd_b()
 {
-	char* e = strtok_r(NULL, " ", &saveptr);
+	char* e = strtok_r(NULL, "", &saveptr);
 	size_t addr = expr(e);
 
 	new_bp(addr);
@@ -195,7 +195,7 @@ static void cmd_b()
 
 static void cmd_d()
 {
-	char* p = strtok_r(NULL, " ", &saveptr);
+	char* p = strtok_r(NULL, "", &saveptr);
 	int n = strtol(p, NULL, 0);
 
 	free_bp(n);
@@ -205,7 +205,7 @@ static void cmd_d()
 
 static void cmd_w()
 {
-	char* e = strtok_r(NULL, " ", &saveptr);
+	char* e = strtok_r(NULL, "", &saveptr);
 	new_wp(e);
 
 	return;
