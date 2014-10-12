@@ -2,12 +2,11 @@
 
 #include "ui/ui.h"
 #include "ui/breakpoint.h"
+#include "ui/watchpoint.h"
 
 #include <setjmp.h>
 
 #define LOADER_START 0x100000
-
-
 
 char assembly[40];
 jmp_buf jbuf;	/* Make it easy to perform exception handling */
@@ -21,16 +20,16 @@ void cpu_exec(volatile uint32_t n)
 
 	setjmp(jbuf);
 	for(; n > 0; n --) 
- 	{
+  	{
 		swaddr_t eip_temp = cpu.eip;
 		int instr_len = exec(cpu.eip);
 
 		cpu.eip += instr_len;
 
- 		if(n_temp != -1 || (enable_debug && !quiet)) {
+ 	 	if(n_temp != -1 || (enable_debug && !quiet)) {
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
-		}
+		} 
 
 		switch (bp_state) 
 		{
@@ -51,9 +50,10 @@ void cpu_exec(volatile uint32_t n)
 				swaddr_write(eip_temp, 1, INT3_CODE);
 				bp_state = OFF;
 				break;
-		}
+		} 
 			
-		if(nemu_state == END) { return; }
+		if (WP_STATE) { nemu_state = STOP; test_wp(); return; }
+		if (nemu_state == END)  { return;    }
 	}
 }
 
