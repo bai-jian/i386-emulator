@@ -103,7 +103,7 @@ struct token
 	int prec;
 	char str[32];
 } tokens[32];
-int nr_token = 0;
+int nr_token;
 
 
 /*Initialization*/
@@ -130,6 +130,8 @@ void mend_token(char*);
 size_t eval_expr(int, int);
 size_t expr(char *e) 
 {
+	nr_token = 0;
+
 	make_token(e);
 	mend_token(e);
 
@@ -143,9 +145,9 @@ void make_token(char* e)
 	int i;
 	regmatch_t pmatch;
 	while(e[position] != '\0') 
-   	 { 
+   	 {  
 		for(i = 0; i < NR_REGEX; i ++) 
- 	  	{
+ 	  	 {
 			if( regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) 
  	 		{
 				char* substr_start = e + position;
