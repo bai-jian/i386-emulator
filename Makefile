@@ -1,4 +1,4 @@
-# **** GNU make manual: http://www.gnu.org/software/make/manual/make.html ****
+#**** GNU make manual: http://www.gnu.org/software/make/manual/make.html ****
 # If you have questions about the follwing Makefile script, 
 # please search the Internet, or RTFM.
 
@@ -29,13 +29,10 @@ nemu: $(OBJS)
 $(TEST_FILE_LIST):
 	cd `dirname $@` && make
 
-loader: src/elf/loader.c
-
-src/elf/loader.c: $(TESTFILE)
-	objcopy -S -O binary -j .text $(TESTFILE) loader
-	xxd -i loader > $@
+loader: $(TESTFILE)
+	objcopy -S -O binary $(TESTFILE) loader
+	xxd -i loader > src/elf/loader.c
 	rm loader
-
 
 run: nemu
 	./nemu -d $(TESTFILE) 2>&1 | tee log.txt
