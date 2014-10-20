@@ -27,9 +27,10 @@ typedef union {
 	uint8_t val;
 } SIB;
 
-int read_ModR_M(swaddr_t, swaddr_t *);
-
 #define MODRM_ASM_BUF_SIZE 32
 extern char ModR_M_asm[];
+
+
+int read_ModR_M(swaddr_t, swaddr_t *);
 
 #endif
