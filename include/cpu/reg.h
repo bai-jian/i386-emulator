@@ -15,14 +15,12 @@ typedef union
 	struct
 	{
 		uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
-
 		uint32_t eip;
-
 		union
-		{
+		{ 
 			uint32_t eflags;
 			struct
-			{
+		 	{
 				uint32_t CF  :  1;
 				uint32_t     :  1;
 				uint32_t PF  :  1;
@@ -45,7 +43,6 @@ typedef union
 		};
 	};
 } CPU_state;
-
 extern CPU_state cpu;
 
 enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
