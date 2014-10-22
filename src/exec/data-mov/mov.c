@@ -13,8 +13,6 @@
 #undef DATA_BYTE
 
 
-/* for instruction encoding overloading */
-
 extern char suffix;
 
 make_helper(mov_i2r_v) {

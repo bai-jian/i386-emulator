@@ -4,7 +4,7 @@
 #include "cpu/reg.h"
 #include "memory.h"
 
-/* All function defined with 'make_helper' return the length of the instruction. */
+/* 'make_helper' returns the length of the instruction. */
 #define make_helper(name) int name(swaddr_t eip)
 
 uint32_t instr_fetch(swaddr_t addr, size_t len);

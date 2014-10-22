@@ -3,25 +3,25 @@
 
 #if DATA_BYTE == 1
 
-#define SUFFIX b
-#define DATA_TYPE uint8_t
-#define DATA_TYPE_S int8_t
+	#define SUFFIX b
+	#define DATA_TYPE uint8_t
+	#define DATA_TYPE_S int8_t
 
 #elif DATA_BYTE == 2
 
-#define SUFFIX w
-#define DATA_TYPE uint16_t
-#define DATA_TYPE_S int16_t
+	#define SUFFIX w
+	#define DATA_TYPE uint16_t
+	#define DATA_TYPE_S int16_t
 
 #elif DATA_BYTE == 4
 
-#define SUFFIX l
-#define DATA_TYPE uint32_t
-#define DATA_TYPE_S int32_t
+	#define SUFFIX l
+	#define DATA_TYPE uint32_t
+	#define DATA_TYPE_S int32_t
 
 #else
 
-#error unknown DATA_BYTE
+	#error unknown DATA_BYTE
 
 #endif
 

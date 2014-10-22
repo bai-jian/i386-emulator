@@ -2,12 +2,10 @@
 
 #include "all-instr.h"
 
+
 typedef int (*helper_fun)(swaddr_t);
-
-
-/* TODO: Add more instructions!!! */
-
-helper_fun opcode_table [256] = {
+helper_fun opcode_table [256] = 
+{
 /* 0x00 */	inv, inv, inv, inv, 
 /* 0x04 */	inv, inv, inv, inv, 
 /* 0x08 */	inv, inv, inv, inv, 
@@ -28,7 +26,7 @@ helper_fun opcode_table [256] = {
 /* 0x44 */	inv, inv, inv, inv,
 /* 0x48 */	inv, inv, inv, inv, 
 /* 0x4c */	inv, inv, inv, inv, 
-/* 0x50 */	inv, inv, inv, inv, 
+/* 0x50 */	push_r_v, inv, inv, inv, 
 /* 0x54 */	inv, inv, inv, inv,
 /* 0x58 */	inv, inv, inv, inv, 
 /* 0x5c */	inv, inv, inv, inv, 
@@ -74,6 +72,4 @@ helper_fun opcode_table [256] = {
 /* 0xfc */	inv, inv, inv, inv
 };
 
-make_helper(exec) {
-	return opcode_table[ instr_fetch(eip, 1) ](eip);
-}
+make_helper(exec) { return opcode_table[ instr_fetch(eip, 1) ](eip); }
