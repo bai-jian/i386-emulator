@@ -76,6 +76,9 @@ void restart()
 
 	cpu.eip = LOADER_START;
 
+	cpu.ebp = 0x00000000;
+	cpu.esp = 0x08000000;
+
 	init_dram();
 }
 
