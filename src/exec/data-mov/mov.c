@@ -15,9 +15,8 @@
 
 extern char suffix;
 
-make_helper(mov_i2r_v) {
-	return (suffix == 'l' ? mov_i2r_l(eip) : mov_i2r_w(eip));
-}
+make_helper(mov_i2r_v) 
+{	return ( suffix == 'l' ? mov_i2r_l(eip) : mov_i2r_w(eip) );	}
 
 make_helper(mov_i2rm_v) {
 	return (suffix == 'l' ? mov_i2rm_l(eip) : mov_i2rm_w(eip));
