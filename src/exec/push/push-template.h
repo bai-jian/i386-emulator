@@ -2,17 +2,16 @@
 #include "exec/template-start.h"
 #include "cpu/modrm.h"
 
-make_helper(concat(push_r_, SUFFIX))
+make_helper( concat(push_r_, SUFFIX) )
 {
-	ModR_M m;
-	m.val = instr_fetch(eip+1, 1);
+	uint8_t reg_code = instr_fetch(eip, 1) & 0x07;
 
 	cpu.esp -= DATA_BYTE;
-	MEM_W( cpu.esp, REG(m.reg) );
+	MEM_W( cpu.esp, REG(reg_code) );
 	
-	print_asm("push" str(SUFFIX) " %%%s", REG_NAME(m.reg));
+	print_asm("push" str(SUFFIX) " %%%s", REG_NAME(reg_code));
 
-	return 1 + 1;
+	return 1;
 }
 
 #include "exec/template-end.h"
