@@ -35,7 +35,7 @@ helper_fun opcode_table [256] =
 /* 0x68 */	inv, inv, inv, inv, 
 /* 0x6c */	inv, inv, inv, inv, 
 /* 0x70 */	inv, inv, inv, inv,
-/* 0x74 */	inv, inv, inv, inv,
+/* 0x74 */	je_b,          inv, inv, inv,
 /* 0x78 */	inv, inv, inv, inv, 
 /* 0x7c */	inv, inv, inv, inv, 
 /* 0x80 */	inv, inv, nemu_trap, inv, 
