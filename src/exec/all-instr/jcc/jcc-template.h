@@ -6,11 +6,9 @@ make_helper( concat(je_, SUFFIX) )
 {
 	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
 
-	eip += disp + 1 + DATA_BYTE;
-
 	print_asm("je" " %x", eip);
 
-	return 1 + DATA_BYTE;
+	return 1 + DATA_BYTE + disp;
 }
 	
 
