@@ -23,7 +23,7 @@ make_helper( concat(cmp_i82rm_, SUFFIX) )
 
 			print_asm("cmp" str(SUFFIX) " %.4x, %s", ropd, ModR_M_asm);
 
-			return 1 + len + DATA_BYTE;
+			return 1 + len + 1;
 		}
 		else
 		{
@@ -38,7 +38,7 @@ make_helper( concat(cmp_i82rm_, SUFFIX) )
 
 			print_asm("cmp" str(SUFFIX) " %.4x, %%%s", ropd, REG_NAME(m.R_M));
 
-			return 1 + 1 + DATA_BYTE;
+			return 1 + 1 + 1;
 		}
 	}
 	return 0;
