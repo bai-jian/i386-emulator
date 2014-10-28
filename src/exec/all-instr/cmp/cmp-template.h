@@ -1,13 +1,30 @@
 #include "exec/template-start.h"
 
+
 #include "cpu/modrm.h"
 #include "exec/set_eflags/set_eflags.h"
 
-make_helper( concat(cmp_i82rm_, SUFFIX) )
+make_helper( concat(cmp_i2r0_, SUFFIX) )
 {
+	DATA_TYPE imm = instr_fetch(eip+1, DATA_BYTE);
+	DATA_TYPE rva = REG(0);
+
+	concat(set_CF_, SUFFIX) (rva, imm, 1);
+	concat(set_SF_, SUFFIX) (rva, imm, 1);
+	concat(set_PF_, SUFFIX) (rva, imm, 1);
+	concat(set_ZF_, SUFFIX) (rva, imm, 1);
+	concat(set_OF_, SUFFIX) (rva, imm, 1);
+
+	print_asm("cmp" str(SUFFIX) " 0x%x,%%%s", imm, REG_NAME(0));
+
+	return 1 + DATA_BYTE;
+}
+
+make_helper( concat(cmp_i82rm_, SUFFIX) )
+{ 
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.reg == 0x7)
-	{
+ 	{
 		if (m.mod != 3)
 		{
 			swaddr_t addr;
@@ -43,5 +60,7 @@ make_helper( concat(cmp_i82rm_, SUFFIX) )
 	}
 	return 0;
 }
+
+
 
 #include "exec/template-end.h"
