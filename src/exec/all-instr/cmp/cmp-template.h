@@ -64,6 +64,79 @@ make_helper( concat(cmp_i2rm_, SUFFIX) )
 	return 0;
 }
 
+make_helper( concat(cmp_r2rm_, SUFFIX) )
+{
+	ModR_M m;  m.val = instr_fetch(eip+1, 1);
+	if (m.mod != 3)
+	{
+		swaddr_t  addr;
+		uint8_t   len = read_ModR_M(eip+1, &addr);
+		DATA_TYPE rmv = MEM_R(addr);
+		DATA_TYPE rva = REG(m.reg);
+
+		concat(set_CF_, SUFFIX) (rmv, rva, 1);
+		concat(set_SF_, SUFFIX) (rmv, rva, 1);
+		concat(set_PF_, SUFFIX) (rmv, rva, 1);
+		concat(set_ZF_, SUFFIX) (rmv, rva, 1);
+		concat(set_OF_, SUFFIX) (rmv, rva, 1);
+
+		print_asm("cmp" str(SUFFIX) " %%%s, %s", REG_NAME(m.reg), ModR_M_asm);
+
+		return 1 + len;
+	}
+	else
+	{ 
+		DATA_TYPE rmv = REG(m.R_M);
+		DATA_TYPE rva = REG(m.reg);
+
+		concat(set_CF_, SUFFIX) (rmv, rva, 1);
+		concat(set_SF_, SUFFIX) (rmv, rva, 1);
+		concat(set_PF_, SUFFIX) (rmv, rva, 1);
+		concat(set_ZF_, SUFFIX) (rmv, rva, 1);
+		concat(set_OF_, SUFFIX) (rmv, rva, 1);
+
+		print_asm("cmp" str(SUFFIX) " %%%s,%%%s", REG_NAME(m.reg), REG_NAME(m.R_M));
+
+		return 1 + 1;
+	}
+}
+
+make_helper( concat(cmp_rm2r_, SUFFIX) )
+{
+	ModR_M m;  m.val = instr_fetch(eip+1, 1);
+	if (m.mod != 3)
+	{ 
+		swaddr_t  addr;
+		uint8_t   len = read_ModR_M(eip+1, &addr);
+		DATA_TYPE rmv = MEM_R(addr);
+		DATA_TYPE rva = REG(m.reg);
+
+		concat(set_CF_, SUFFIX) (rva, rmv, 1);
+		concat(set_SF_, SUFFIX) (rva, rmv, 1);
+		concat(set_PF_, SUFFIX) (rva, rmv, 1);
+		concat(set_ZF_, SUFFIX) (rva, rmv, 1);
+		concat(set_OF_, SUFFIX) (rva, rmv, 1);
+
+		print_asm("cmp" str(SUFFIX) " %s,%%%s", ModR_M_asm, REG_NAME(m.reg));
+
+		return 1 + len;
+	}
+	else
+	{
+		DATA_TYPE rmv = REG(m.R_M);
+		DATA_TYPE rva = REG(m.reg);
+
+		concat(set_CF_, SUFFIX) (rva, rmv, 1);
+		concat(set_SF_, SUFFIX) (rva, rmv, 1);
+		concat(set_PF_, SUFFIX) (rva, rmv, 1);
+		concat(set_ZF_, SUFFIX) (rva, rmv, 1);
+		concat(set_OF_, SUFFIX) (rva, rmv, 1);
+
+		print_asm("cmp" str(SUFFIX) " %%%s,%%%s", REG_NAME(m.R_M), REG_NAME(m.reg));
+
+		return 1 + 1;
+	}   
+}
 
 
 #include "exec/template-end.h"
