@@ -5,5 +5,7 @@
 make_helper(inst_b);
 make_helper(inst_v);
 
+make_helper(IG_FF_v);
+
 
 #endif

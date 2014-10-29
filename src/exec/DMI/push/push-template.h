@@ -29,21 +29,16 @@ make_helper( concat(push_r_, SUFFIX) )
 
 make_helper( concat(push_m_, SUFFIX) )
 {
-	ModR_M m;  m.val = instr_fetch(eip+1, 1);
-	if (m.reg == 6)
-	{
-		swaddr_t addr;
-		uint32_t len = read_ModR_M(eip+1, &addr);
-		DATA_TYPE mem = MEM_R(addr);
+	swaddr_t addr;
+	uint32_t len = read_ModR_M(eip+1, &addr);
+	DATA_TYPE mem = MEM_R(addr);
 
-		cpu.esp -= DATA_BYTE;
-		MEM_W(cpu.esp, mem);
+	cpu.esp -= DATA_BYTE;
+	MEM_W(cpu.esp, mem);
 
-		print_asm("push" str(SUFFIX) " 0x%x", mem); 
+	print_asm("push" str(SUFFIX) " %s", ModR_M_asm); 
 
-		return 1 + len;
-	}
-	return 0;
+	return 1 + len;
 }
 
 #include "exec/template-end.h"

@@ -69,7 +69,7 @@ helper_fun opcode_table [256] =
 /* 0xf0 */	inv, inv, inv, inv,
 /* 0xf4 */	inv, inv, inv, inv,
 /* 0xf8 */	inv, inv, inv, inv,
-/* 0xfc */	inv, inv, inv,                               push_m_v
+/* 0xfc */	inv, inv, inv,                               IG_FF_v
 };
 
 make_helper(exec) { return opcode_table[ instr_fetch(eip, 1) ](eip); }
