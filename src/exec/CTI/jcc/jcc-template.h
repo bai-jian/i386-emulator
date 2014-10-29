@@ -29,6 +29,24 @@ make_helper( concat(ja_, SUFFIX) )
 	return (!cpu.CF && !cpu.ZF) ? (1 + DATA_BYTE + disp) : (1 + DATA_BYTE);
 }
 
+make_helper( concat(jb_, SUFFIX) )
+{
+	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
+
+	print_asm("jb" " %x", eip + 1 + DATA_BYTE + disp);
+
+	return cpu.CF ? (1 + DATA_BYTE + disp) : (1 + DATA_BYTE);
+}
+
+make_helper( concat(jae_, SUFFIX) )
+{
+	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
+
+	print_asm("jae" " %x", eip + 1 + DATA_BYTE + disp);
+
+	return !cpu.CF ? (1 + DATA_BYTE + disp) : (1 + DATA_BYTE);
+}
+
 make_helper( concat(jbe_, SUFFIX) )
 {
 	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);

@@ -14,6 +14,14 @@ make_helper(ja_b);
 //make_helper(ja_w);
 //make_helper(ja_l);
 
+make_helper(jb_b);
+//make_helper(jb_w);
+//make_helper(jb_l);
+
+make_helper(jae_b);
+//make_helper(jae_w);
+//make_helper(jae_l);
+
 make_helper(jbe_b);
 //make_helper(jbe_w);
 //make_helper(jbe_l);
