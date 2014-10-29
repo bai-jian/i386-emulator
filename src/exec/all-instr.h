@@ -1,13 +1,12 @@
 #include "prefix/prefix.h"
 
 
-#include "ALI/ALI.h"
-#include "CTI/CTI.h"
-#include "DMI/DMI.h"
+/* ALI: arithmetic & logical instructions */  #include "ALI/ALI.h"
+/* CTI: control transfer instructions     */  #include "CTI/CTI.h"
+/* DMI: data movement instructions        */  #include "DMI/DMI.h"
 
 #include "data-mov/mov.h"
 #include "all-instr/cmp/cmp.h"
-#include "all-instr/jcc/jcc.h"
 #include "all-instr/test/test.h"
 
 

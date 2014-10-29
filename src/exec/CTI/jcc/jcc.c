@@ -11,10 +11,3 @@
 #define  DATA_BYTE 4
 #include "jcc-template.h"
 #undef   DATA_BYTE
-
-
-extern char suffix;
-
-make_helper(je_v)
-{	return ( suffix == 'l' ? je_l(eip) : je_w(eip) ); }
-
