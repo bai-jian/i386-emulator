@@ -1,3 +1,3 @@
-make_helper(sub_i2r0_b);
-make_helper(sub_i2r0_w);
-make_helper(sub_i2r0_l);
+make_helper(sub_i2rm_b);
+make_helper(sub_i2rm_w);
+make_helper(sub_i2rm_l);
