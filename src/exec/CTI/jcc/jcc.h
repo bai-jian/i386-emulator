@@ -14,5 +14,8 @@ make_helper(ja_b);
 //make_helper(ja_w);
 //make_helper(ja_l);
 
+make_helper(jbe_b);
+//make_helper(jbe_w);
+//make_helper(jbe_l);
 
 #endif

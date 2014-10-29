@@ -29,4 +29,13 @@ make_helper( concat(ja_, SUFFIX) )
 	return (!cpu.CF && !cpu.ZF) ? (1 + DATA_BYTE + disp) : (1 + DATA_BYTE);
 }
 
+make_helper( concat(jbe_, SUFFIX) )
+{
+	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
+
+	print_asm("jbe" " %x", eip + 1 + DATA_BYTE + disp);
+
+	return (cpu.CF || cpu.ZF) ? (1 + DATA_BYTE + disp) : (1 + DATA_BYTE);
+}
+
 #include "exec/template-end.h"
