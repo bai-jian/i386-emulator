@@ -23,7 +23,7 @@ make_helper(jae_b);
 //make_helper(jae_l);
 
 make_helper(jbe_b);
-//make_helper(jbe_w);
-//make_helper(jbe_l);
+make_helper(jbe_w);
+make_helper(jbe_l);
 
 #endif
