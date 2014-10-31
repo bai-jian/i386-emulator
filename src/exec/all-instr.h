@@ -6,9 +6,6 @@
 /* DMI: data movement instructions        */  #include "DMI/DMI.h"
 
 #include "data-mov/mov.h"
-#include "all-instr/cmp/cmp.h"
-#include "all-instr/test/test.h"
-
 
 #include "misc/misc.h"
 

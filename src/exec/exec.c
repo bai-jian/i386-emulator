@@ -6,26 +6,26 @@
 typedef int (*helper_fun)(swaddr_t);
 helper_fun opcode_table [256] = 
 {
-/* 0x00 */	inv, inv, inv, inv, 
-/* 0x04 */	inv, inv, inv, inv, 
+/* 0x00 */	add_r2rm_b,    add_r2rm_v,   add_rm2r_b,     add_rm2r_v, 
+/* 0x04 */	add_i2r0_b,    add_i2r0_v,   inv, inv, 
 /* 0x08 */	inv, inv, inv, inv, 
 /* 0x0c */	inv, inv, inv, inv, 
-/* 0x10 */	inv, inv, inv, inv, 
-/* 0x14 */	inv, inv, inv, inv, 
+/* 0x10 */	adc_r2rm_b,    adc_r2rm_v,    adc_rm2r_b,    adc_rm2r_v, 
+/* 0x14 */	adc_i2r0_b,    adc_i2r0_v,    inv, inv, 
 /* 0x18 */	inv, inv, inv, inv, 
 /* 0x1c */	inv, inv, inv, inv, 
-/* 0x20 */	inv, inv, inv, inv, 
-/* 0x24 */	inv, inv, inv, inv,
-/* 0x28 */	sub_r2rm_b,    sub_r2rm_v,    sub_rm2r_b,    sub_rm2r_b, 
+/* 0x20 */	and_r2rm_b,    and_r2rm_v,    and_rm2r_b,    and_rm2r_v, 
+/* 0x24 */	and_i2r0_b,    and_i2r0_v,    inv,           inv,
+/* 0x28 */	sub_r2rm_b,    sub_r2rm_v,    sub_rm2r_b,    sub_rm2r_v, 
 /* 0x2c */	sub_i2r0_b,    sub_i2r0_v,    inv,           inv, 
 /* 0x30 */	inv, inv, inv, inv, 
 /* 0x34 */	inv, inv, inv, inv,
 /* 0x38 */	cmp_r2rm_b,    cmp_r2rm_v,    cmp_rm2r_b,    cmp_rm2r_v, 
 /* 0x3c */	cmp_i2r0_b,    cmp_i2r0_v,    inv, inv, 
-/* 0x40 */	inv, inv, inv, inv, 
-/* 0x44 */	inv, inv, inv, inv,
-/* 0x48 */	inv, inv, inv, inv, 
-/* 0x4c */	inv, inv, inv, inv, 
+/* 0x40 */	inc_r_v,       inc_r_v,       inc_r_v,       inc_r_v, 
+/* 0x44 */	inc_r_v,       inc_r_v,       inc_r_v,       inc_r_v,
+/* 0x48 */	dec_r_v,       dec_r_v,       dec_r_v,       dec_r_v, 
+/* 0x4c */	dec_r_v,       dec_r_v,       dec_r_v,       dec_r_v, 
 /* 0x50 */	push_r_v,      push_r_v,      push_r_v,      push_r_v, 
 /* 0x54 */	push_r_v,      push_r_v,      push_r_v,      push_r_v,
 /* 0x58 */	inv, inv, inv, inv, 
@@ -38,8 +38,8 @@ helper_fun opcode_table [256] =
 /* 0x74 */	je_b,          jne_b,         jbe_b,         ja_b,
 /* 0x78 */	inv, inv, inv, inv, 
 /* 0x7c */	inv, inv, inv, inv, 
-/* 0x80 */	inst_b,        inst_v,        nemu_trap,     inst_v, 
-/* 0x84 */	inv,           test_rm1r_v,   inv,           inv, 
+/* 0x80 */	ALI_3_b,       ALI_3_v,       nemu_trap,     ALI_3_v, 
+/* 0x84 */	test_r2rm_b,   test_r2rm_v,   inv,           inv, 
 /* 0x88 */	mov_r2rm_b, mov_r2rm_v, mov_rm2r_b, mov_rm2r_v,
 /* 0x8c */	inv, inv, inv, inv, 
 /* 0x90 */	inv, inv, inv, inv,
@@ -69,7 +69,7 @@ helper_fun opcode_table [256] =
 /* 0xf0 */	inv, inv, inv, inv,
 /* 0xf4 */	inv, inv, inv, inv,
 /* 0xf8 */	inv, inv, inv, inv,
-/* 0xfc */	inv, inv, inv,                               IG_FF_v
+/* 0xfc */	inv, inv,                     ALI_1_b,       ALI_1_v
 };
 
 make_helper(exec) { return opcode_table[ instr_fetch(eip, 1) ](eip); }

@@ -15,5 +15,5 @@
 
 extern char suffix;
 
-make_helper(test_rm1r_v)
-{	return ( suffix == 'l' ? test_rm1r_l(eip) : test_rm1r_w(eip) );	}
+make_helper(test_r2rm_v)
+{	return ( suffix == 'l' ? test_r2rm_l(eip) : test_r2rm_w(eip) );	}
