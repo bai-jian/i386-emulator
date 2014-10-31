@@ -20,3 +20,6 @@ make_helper(push_i_v)
 
 make_helper(push_r_v) 
 {	return ( suffix == 'l' ? push_r_l(eip) : push_r_w(eip) );	}
+
+make_helper(push_m_v)
+{	return ( suffix == 'l' ? push_m_l(eip) : push_m_w(eip) );	}
