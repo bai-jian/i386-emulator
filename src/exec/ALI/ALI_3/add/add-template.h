@@ -7,8 +7,8 @@
 make_helper( concat(add_i2r0_, SUFFIX) )
 {
 	DATA_TYPE imm = instr_fetch(eip+1, DATA_BYTE);
-
 	DATA_TYPE reg_v = REG(0);
+
 	DATA_TYPE value = reg_v + imm;
 
 	REG(0) = value;
@@ -31,14 +31,13 @@ make_helper( concat(add_i2rm_, SUFFIX) )
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{
-		swaddr_t  addr;
-		uint8_t   len = read_ModR_M(eip+1, &addr);
-		DATA_TYPE mem_v = MEM_R(addr);
+		swaddr_t  mem_i;	uint8_t len = read_ModR_M(eip+1, &mem_i);
+		DATA_TYPE mem_v = MEM_R(mem_i);
 		uint32_t  imm = instr_fetch(eip+1+len, imm_byte);
 
 		DATA_TYPE value = mem_v + imm;
 
-		MEM_W(addr, value);
+		MEM_W(mem_i, value);
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
@@ -56,8 +55,8 @@ make_helper( concat(add_i2rm_, SUFFIX) )
 		uint32_t  imm = instr_fetch(eip+1+1, imm_byte);
 
 		DATA_TYPE value = reg_v + imm;
-		REG(reg_i) = value;
 
+		REG(reg_i) = value;
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
@@ -75,7 +74,7 @@ make_helper( concat(add_r2rm_, SUFFIX) )
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{
-		swaddr_t  mem_i;		uint8_t len = read_ModR_M(eip+1, &mem_i);
+		swaddr_t  mem_i;	uint8_t len = read_ModR_M(eip+1, &mem_i);
 		DATA_TYPE mem_v = MEM_R(mem_i);
 		uint8_t   reg_i = m.reg;
 		DATA_TYPE reg_v = REG(reg_i);
@@ -120,21 +119,21 @@ make_helper( concat(add_rm2r_, SUFFIX) )
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{
-		swaddr_t  s_mem_i;		uint8_t len = read_ModR_M(eip+1, &s_mem_i);
-		DATA_TYPE s_mem_v = MEM_R(s_mem_i);
-		uint8_t   d_reg_i = m.reg;
-		DATA_TYPE d_reg_v = REG(d_reg_i);
+		swaddr_t  mem_i;	uint8_t len = read_ModR_M(eip+1, &mem_i);
+		DATA_TYPE mem_v = MEM_R(mem_i);
+		uint8_t   reg_i = m.reg;
+		DATA_TYPE reg_v = REG(reg_i);
 
-		DATA_TYPE value = s_mem_v + d_reg_v; 
+		DATA_TYPE value = mem_v + reg_v; 
 
-		REG(d_reg_i) = value;
+		REG(reg_i) = value;
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (d_reg_v, s_mem_v, 0);
-		concat(set_OF_, SUFFIX) (d_reg_v, s_mem_v, 0);
+		concat(set_CF_, SUFFIX) (reg_v, mem_v, 0);
+		concat(set_OF_, SUFFIX) (reg_v, mem_v, 0);
 
-		print_asm("add" str(SUFFIX) " %s,%%%s", ModR_M_asm, REG_NAME(d_reg_i));
+		print_asm("add" str(SUFFIX) " %s,%%%s", ModR_M_asm, REG_NAME(reg_i));
 
 		return 1 + len;
 	}
@@ -157,7 +156,7 @@ make_helper( concat(add_rm2r_, SUFFIX) )
 		print_asm("add" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
-	}
+	} 
 }
 
 
