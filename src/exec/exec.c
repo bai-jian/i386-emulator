@@ -6,10 +6,10 @@
 typedef int (*helper_fun)(swaddr_t);
 helper_fun opcode_table [256] = 
 {
-/* 0x00 */	add_r2rm_b,    add_r2rm_v,   add_rm2r_b,     add_rm2r_v, 
-/* 0x04 */	add_i2r0_b,    add_i2r0_v,   inv, inv, 
-/* 0x08 */	inv, inv, inv, inv, 
-/* 0x0c */	inv, inv, inv,                               tran_mean, 
+/* 0x00 */	add_r2rm_b,    add_r2rm_v,    add_rm2r_b,    add_rm2r_v, 
+/* 0x04 */	add_i2r0_b,    add_i2r0_v,    inv, inv, 
+/* 0x08 */	 or_r2rm_b,     or_r2rm_v,     or_rm2r_b,     or_rm2r_v, 
+/* 0x0c */	 or_i2r0_b,     or_i2r0_v,    inv,           tran_mean, 
 /* 0x10 */	adc_r2rm_b,    adc_r2rm_v,    adc_rm2r_b,    adc_rm2r_v, 
 /* 0x14 */	adc_i2r0_b,    adc_i2r0_v,    inv, inv, 
 /* 0x18 */	sbb_r2rm_b,    sbb_r2rm_v,    sbb_rm2r_b,    sbb_rm2r_v, 
@@ -18,8 +18,8 @@ helper_fun opcode_table [256] =
 /* 0x24 */	and_i2r0_b,    and_i2r0_v,    inv,           inv,
 /* 0x28 */	sub_r2rm_b,    sub_r2rm_v,    sub_rm2r_b,    sub_rm2r_v, 
 /* 0x2c */	sub_i2r0_b,    sub_i2r0_v,    inv,           inv, 
-/* 0x30 */	inv, inv, inv, inv, 
-/* 0x34 */	inv, inv, inv, inv,
+/* 0x30 */	xor_r2rm_b,    xor_r2rm_v,    xor_rm2r_b,    xor_rm2r_v, 
+/* 0x34 */	xor_i2r0_b,    xor_i2r0_v,    inv, inv,
 /* 0x38 */	cmp_r2rm_b,    cmp_r2rm_v,    cmp_rm2r_b,    cmp_rm2r_v, 
 /* 0x3c */	cmp_i2r0_b,    cmp_i2r0_v,    inv, inv, 
 /* 0x40 */	inc_r_v,       inc_r_v,       inc_r_v,       inc_r_v, 
