@@ -4,26 +4,26 @@
 #include "cpu/modrm.h"
 #include "exec/set_eflags/set_eflags.h"
 
-make_helper( concat(sub_i2r0_, SUFFIX) )
+make_helper( concat(sbb_i2r0_, SUFFIX) )
 {
 	DATA_TYPE imm = instr_fetch(eip+1, DATA_BYTE);
 	DATA_TYPE reg_v = REG(0);
 
-	DATA_TYPE value = reg_v - imm;
+	DATA_TYPE value = reg_v - (imm + cpu.CF);
 
 	REG(0) = value;
 	concat(set_SF_, SUFFIX) (value);
 	concat(set_PF_, SUFFIX) (value);
 	concat(set_ZF_, SUFFIX) (value);
-	concat(set_OF_, SUFFIX) (reg_v, imm, 1);
-	concat(set_CF_, SUFFIX) (reg_v, imm, 1);
+	concat(set_OF_, SUFFIX) (reg_v, imm+cpu.CF, 1);
+	concat(set_CF_, SUFFIX) (reg_v, imm+cpu.CF, 1);
 
-	print_asm("sub" str(SUFFIX) " 0x%x", imm);
+	print_asm("sbb" str(SUFFIX) " 0x%x", imm);
 
 	return 1 + DATA_BYTE;
 }
 
-make_helper( concat(sub_i2rm_, SUFFIX) )
+make_helper( concat(sbb_i2rm_, SUFFIX) )
 {
 	uint8_t imm_byte = DATA_BYTE;
 	if ( instr_fetch(eip, 1) == 0x83 ) imm_byte = 1;
@@ -35,16 +35,16 @@ make_helper( concat(sub_i2rm_, SUFFIX) )
 		DATA_TYPE mem_v = MEM_R(mem_i);
 		uint32_t  imm = instr_fetch(eip+1+len, imm_byte);
 
-		DATA_TYPE value = mem_v - imm;
+		DATA_TYPE value = mem_v - (imm + cpu.CF);
 
 		MEM_W(mem_i, value);
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (mem_v, imm, 1);
-		concat(set_OF_, SUFFIX) (mem_v, imm, 1);
+		concat(set_CF_, SUFFIX) (mem_v, imm+cpu.CF, 1);
+		concat(set_OF_, SUFFIX) (mem_v, imm+cpu.CF, 1);
 
-		print_asm("sub" str(SUFFIX) " 0x%x,%s", imm, ModR_M_asm);
+		print_asm("sbb" str(SUFFIX) " 0x%x,%s", imm, ModR_M_asm);
 
 		return 1 + len + imm_byte;
 	}
@@ -54,22 +54,22 @@ make_helper( concat(sub_i2rm_, SUFFIX) )
 		DATA_TYPE reg_v = REG(reg_i); 
 		uint32_t  imm = instr_fetch(eip+1+1, imm_byte);
 
-		DATA_TYPE value = reg_v - imm;
+		DATA_TYPE value = reg_v - (imm + cpu.CF);
 
 		REG(reg_i) = value;
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (reg_v, imm, 1);
-		concat(set_OF_, SUFFIX) (reg_v, imm, 1);
+		concat(set_CF_, SUFFIX) (reg_v, imm+cpu.CF, 1);
+		concat(set_OF_, SUFFIX) (reg_v, imm+cpu.CF, 1);
 
-		print_asm("sub" str(SUFFIX) " 0x%x,%%%s", imm, REG_NAME(reg_i));
+		print_asm("sbb" str(SUFFIX) " 0x%x,%%%s", imm, REG_NAME(reg_i));
 
 		return 1 + 1 + imm_byte;
 	}  
 } 
 
-make_helper( concat(sub_r2rm_, SUFFIX) )
+make_helper( concat(sbb_r2rm_, SUFFIX) )
 {
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
@@ -79,16 +79,16 @@ make_helper( concat(sub_r2rm_, SUFFIX) )
 		uint8_t   reg_i = m.reg;
 		DATA_TYPE reg_v = REG(reg_i);
 
-		DATA_TYPE value = mem_v - reg_v; 
+		DATA_TYPE value = mem_v - (reg_v+cpu.CF); 
 
 		MEM_W(mem_i, value);
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (mem_v, reg_v, 1);
-		concat(set_OF_, SUFFIX) (mem_v, reg_v, 1);
+		concat(set_CF_, SUFFIX) (mem_v, reg_v+cpu.CF, 1);
+		concat(set_OF_, SUFFIX) (mem_v, reg_v+cpu.CF, 1);
 
-		print_asm("sub" str(SUFFIX) " %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
+		print_asm("sbb" str(SUFFIX) " %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
 
 		return 1 + len;
 	}
@@ -99,22 +99,22 @@ make_helper( concat(sub_r2rm_, SUFFIX) )
 		uint8_t   d_reg_i = m.R_M;
 		DATA_TYPE d_reg_v = REG(d_reg_i);
 
-		DATA_TYPE value = d_reg_v - s_reg_v;
+		DATA_TYPE value = d_reg_v - (s_reg_v+cpu.CF);
 
 		REG(d_reg_i) = value;
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v, 1);
-		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v, 1);
+		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v+cpu.CF, 1);
+		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v+cpu.CF, 1);
 
-		print_asm("sub" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
+		print_asm("sbb" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
 	}
 }
 
-make_helper( concat(sub_rm2r_, SUFFIX) )
+make_helper( concat(sbb_rm2r_, SUFFIX) )
 {
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
@@ -124,16 +124,16 @@ make_helper( concat(sub_rm2r_, SUFFIX) )
 		uint8_t   reg_i = m.reg;
 		DATA_TYPE reg_v = REG(reg_i);
 
-		DATA_TYPE value = reg_v - mem_v; 
+		DATA_TYPE value = reg_v - (mem_v+cpu.CF); 
 
 		REG(reg_i) = value;
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (reg_v, mem_v, 1);
-		concat(set_OF_, SUFFIX) (reg_v, mem_v, 1);
+		concat(set_CF_, SUFFIX) (reg_v, mem_v+cpu.CF, 1);
+		concat(set_OF_, SUFFIX) (reg_v, mem_v+cpu.CF, 1);
 
-		print_asm("sub" str(SUFFIX) " %s,%%%s", ModR_M_asm, REG_NAME(reg_i));
+		print_asm("sbb" str(SUFFIX) " %s,%%%s", ModR_M_asm, REG_NAME(reg_i));
 
 		return 1 + len;
 	}
@@ -144,16 +144,16 @@ make_helper( concat(sub_rm2r_, SUFFIX) )
 		uint8_t   d_reg_i = m.reg;
 		DATA_TYPE d_reg_v = REG(d_reg_i);
 
-		DATA_TYPE value = d_reg_v - s_reg_v;
+		DATA_TYPE value = d_reg_v - (s_reg_v+cpu.CF);
 
 		REG(d_reg_i) = value;
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v, 1);
-		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v, 1);
+		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v+cpu.CF, 1);
+		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v+cpu.CF, 1);
 
-		print_asm("sub" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
+		print_asm("sbb" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
 	} 
