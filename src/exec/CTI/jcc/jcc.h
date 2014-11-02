@@ -26,4 +26,9 @@ make_helper(jbe_b);
 make_helper(jbe_w);
 make_helper(jbe_l);
 
+make_helper(jle_b);
+make_helper(jle_w);
+make_helper(jle_l);
+
+
 #endif
