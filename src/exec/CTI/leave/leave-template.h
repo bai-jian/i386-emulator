@@ -7,7 +7,7 @@ make_helper( concat(leave_, SUFFIX) )
 {
 	cpu.esp = cpu.ebp;
 	cpu.ebp = MEM_R(cpu.esp);
-	cpu.esp -= 4;
+	cpu.esp += 4;
 
 	return 1;
 }
