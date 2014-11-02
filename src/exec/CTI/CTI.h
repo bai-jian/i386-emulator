@@ -3,7 +3,8 @@
 
 
 /* Control Transfer Instructions      */
-/* CTI_1:  JMP  JCC  CALL             */  #include "jcc/jcc.h"
+/* CTI_1:  JMP  JCC                   */  #include "jcc/jcc.h"
+/*         CALL LEAVE                 */
 /*         (-) JMP  -> ATI/ATI_1      */
 /*         (-) CALL -> ATI/ATI_1      */
 
