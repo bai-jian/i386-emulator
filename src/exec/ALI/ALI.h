@@ -5,8 +5,10 @@
 /*Arithmetic and Logical Instructions:*/
 
 /*  ALI_1: INC   DEC                  */  #include "ALI_1/ALI_1.h"
-/*         + CTI JMP                  */
-/*         + DMI PUSH                 */
+/*         (+) JMP  <- CTI/CTI_1      */
+/*         (+) CALL <- CTI/CTI_1      */
+/*         (+) PUSH <- DMI            */
+
 /* 	ALI_2: NEG   NOT   MUL   IMUL     */
 /*  	   DIV   IDIV  TEST           */
 
