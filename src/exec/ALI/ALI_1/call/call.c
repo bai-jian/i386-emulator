@@ -6,8 +6,8 @@
 
 make_helper(call_i)
 {
-	int32_t imm = instr_fetch(eip, 4);
-	assert(imm == 65);
+	int32_t imm = instr_fetch(eip+1, 4);
+
 	cpu.esp -= 4;	swaddr_write(cpu.esp, 4, cpu.eip+5);
 	cpu.eip += (5 + imm);
 
