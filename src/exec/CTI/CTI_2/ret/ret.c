@@ -5,12 +5,12 @@
 
 make_helper(ret)
 {
-	uint32_t disp = swaddr_read(cpu.esp, 4);	cpu.esp += 4;
-	cpu.eip = disp;
+	uint8_t instr_len = 1;
 
-	assert(cpu.eip == 0x10000b);
+	uint32_t disp = swaddr_read(cpu.esp, 4);	cpu.esp += 4;
+	cpu.eip = disp - instr_len;
 
 	print_asm(" ");
 
-	return 0;
+	return instr_len;
 }

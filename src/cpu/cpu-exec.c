@@ -8,12 +8,14 @@
 
 #define LOADER_START 0x100000
 
-char assembly[40];
 jmp_buf jbuf;	/* Make it easy to perform exception handling */
 extern int quiet;
 
 int exec(swaddr_t);
+
+char assembly[40];
 static void print_bin_instr(swaddr_t, int);
+
 void cpu_exec(volatile uint32_t n) 
 {
 	volatile uint32_t n_temp = n;
@@ -26,7 +28,8 @@ void cpu_exec(volatile uint32_t n)
 
 		cpu.eip += instr_len;
 
- 	 	if(n_temp != -1 || (enable_debug && !quiet)) {
+ 	 	if(n_temp != -1 || (enable_debug && !quiet)) 
+		{
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
 		} 
@@ -82,12 +85,13 @@ void restart()
 	init_dram();
 }
 
-static void print_bin_instr(swaddr_t eip, int len) {
-	int i;
+static void print_bin_instr(swaddr_t eip, int len) 
+{
 	printf("%8x:   ", eip);
-	for(i = 0; i < len; i ++) {
+
+	int i;
+	for(i = 0; i < len; i ++) 
 		printf("%02x ", swaddr_read(eip + i, 1));
-	}
+
 	printf("%*.s", 50 - (12 + 3 * len), "");
 }
-
