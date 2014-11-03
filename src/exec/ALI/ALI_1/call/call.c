@@ -8,8 +8,8 @@ make_helper(call_i)
 {
 	int32_t imm = instr_fetch(eip, 4);
 
-	cpu.esp -= 4;	swaddr_write(cpu.esp, 4, cpu.eip);
-	cpu.eip += imm;
+	cpu.esp -= 4;	swaddr_write(cpu.esp, 4, cpu.eip+5);
+	cpu.eip += (5 + imm);
 
 	return 0;
 }
