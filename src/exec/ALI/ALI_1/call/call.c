@@ -11,9 +11,9 @@ make_helper(call_i)
 	int32_t imm = instr_fetch(eip+1, 4);
 
 	cpu.esp -= 4;	swaddr_write(cpu.esp, 4, cpu.eip+instr_len);
-	cpu.eip += (instr_len + imm);
+	cpu.eip += imm;
 
-	print_asm("call" "0x%x", cpu.eip);
+	print_asm("call" " %x", cpu.eip + instr_len);
 
 	return instr_len;
 }
@@ -35,9 +35,9 @@ make_helper(call_rm)
 		disp = reg_l(m.R_M), instr_len = 2;
 
 	cpu.esp -= 4;	swaddr_write(cpu.esp, 4, cpu.eip+instr_len);
-	cpu.eip += (instr_len + disp);
+	cpu.eip += disp;
 
-	print_asm("call" "0x%x", cpu.eip);
+	print_asm("call" " %x", cpu.eip + instr_len);
 
 	return instr_len;
 }
