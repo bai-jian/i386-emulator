@@ -3,11 +3,13 @@
 
 
 /* Control Transfer Instructions      */
-/* CTI_1:  JMP  JCC                   */  #include "jcc/jcc.h"
-/*         CALL LEAVE                 */  #include "leave/leave.h"
-/*         RET                        */  #include "ret/ret.h"
+/*                                    */
+/* CTI_1:  JMP   JCC                  */  #include "jcc/jcc.h"
 /*         (-) JMP  -> ATI/ATI_1      */
+/*                                    */
+/* CTI_2:  CALL  LEAVE  RET           */  #include "CTI_2/CTI_2.h"
 /*         (-) CALL -> ATI/ATI_1      */
+
 
 
 #endif

@@ -2,7 +2,7 @@
 #define __CTI_LEAVE__
 
 
-make_helper(leave_v);
+make_helper(leave);
 
 
 #endif

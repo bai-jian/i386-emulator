@@ -1,22 +1,34 @@
 #include "exec/helper.h"
 
-#define  DATA_BYTE 1
-#include "call-template.h"
-#undef   DATA_BYTE
+#include "cpu/reg.h"
+#include "cpu/modrm.h"
+#include "memory.h"
 
-#define  DATA_BYTE 2
-#include "call-template.h"
-#undef   DATA_BYTE
+make_helper(call_i)
+{
+	int32_t imm = instr_fetch(eip, 4);
 
-#define  DATA_BYTE 4
-#include "call-template.h"
-#undef   DATA_BYTE
+	cpu.esp -= 4;	swaddr_write(cpu.esp, 4, cpu.eip);
+	cpu.eip += imm;
 
+	return 0;
+}
 
-extern char suffix;
+make_helper(call_rm)
+{
+	ModR_M m;	m.val = instr_fetch(eip+1, 1);
 
-make_helper(call_i_v)
-{	return  suffix == 'l'  ?  call_i_l(eip)  :  call_i_w(eip);	}
+	int32_t disp;
+	if (m.mod != 3)
+	{
+		swaddr_t mem_i;	read_ModR_M(eip+1, &mem_i);
+		disp = swaddr_read(mem_i, 4);
+	}
+	else
+		disp = reg_l(m.R_M);
 
-make_helper(call_rm_v)
-{	return  suffix == 'l'  ?  call_rm_l(eip) :  call_rm_w(eip);	}
+	cpu.esp -= 4;	swaddr_write(cpu.esp, 4, cpu.eip);
+	cpu.eip += disp;
+
+	return 0;
+}
