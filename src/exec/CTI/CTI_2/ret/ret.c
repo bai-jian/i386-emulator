@@ -10,7 +10,7 @@ make_helper(ret)
 	uint32_t disp = swaddr_read(cpu.esp, 4);	cpu.esp += 4;
 	cpu.eip = disp - instr_len;
 
-	assert(cpu.eip == 0x10000a);
+	printf("0x%x/n", cpu.eip);
 
 	print_asm("ret");
 
