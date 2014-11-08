@@ -32,7 +32,7 @@ make_helper( concat(cmp_i2rm_, SUFFIX) )
 	{ 
 		swaddr_t  mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
 		DATA_TYPE mem_v = MEM_R(mem_i);
-		uint32_t  imm = instr_fetch(eip+1+len, imm_byte);
+		int32_t   imm = instr_fetch(eip+1+len, imm_byte);
 
 		DATA_TYPE value = mem_v - imm;
 
@@ -50,7 +50,7 @@ make_helper( concat(cmp_i2rm_, SUFFIX) )
 	{
 		uint8_t   reg_i = m.R_M;
 		DATA_TYPE reg_v = REG(reg_i); 
-		uint32_t  imm = instr_fetch(eip+1+1, imm_byte);
+		int32_t  imm = instr_fetch(eip+1+1, imm_byte);
 
 		DATA_TYPE value = reg_v - imm;
 
