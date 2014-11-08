@@ -118,4 +118,3 @@ void set_OF_l(uint32_t lopd, uint32_t ropd, uint32_t op)
 
 	cpu.OF = add1_s!=valu_s && add2_s!=valu_s;
 }
-

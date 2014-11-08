@@ -5,7 +5,6 @@
 make_helper(sub_i2r0_b);
 make_helper(sub_i2r0_v);
 
-
 make_helper(sub_i2rm_b);
 make_helper(sub_i2rm_v);
 
