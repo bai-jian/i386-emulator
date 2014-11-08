@@ -44,12 +44,12 @@ make_helper( concat(add_i2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (mem_v, imm, 0);
 		concat(set_OF_, SUFFIX) (mem_v, imm, 0);
 
-		print_asm("add" str(SUFFIX) " 0x%x,%s", imm, ModR_M_asm);
+		print_asm("add   " "$0x%x,%s", imm, ModR_M_asm);
 
 		return 1 + len + imm_byte;
 	}
 	else
-	{
+	{ 
 		uint8_t   reg_i = m.R_M;
 		DATA_TYPE reg_v = REG(reg_i); 
 		uint32_t  imm = instr_fetch(eip+1+1, imm_byte);
@@ -63,7 +63,7 @@ make_helper( concat(add_i2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (reg_v, imm, 0);
 		concat(set_OF_, SUFFIX) (reg_v, imm, 0);
 
-		print_asm("add" str(SUFFIX) " 0x%x,%%%s", imm, REG_NAME(reg_i));
+		print_asm("add   " "$0x%x,%%%s", imm, REG_NAME(reg_i));
 
 		return 1 + 1 + imm_byte;
 	} 

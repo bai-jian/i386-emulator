@@ -30,9 +30,8 @@ make_helper( concat(cmp_i2rm_, SUFFIX) )
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{ 
-		swaddr_t  addr;
-		uint8_t   len = read_ModR_M(eip+1, &addr);
-		DATA_TYPE mem_v = MEM_R(addr);
+		swaddr_t  mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
+		DATA_TYPE mem_v = MEM_R(mem_i);
 		uint32_t  imm = instr_fetch(eip+1+len, imm_byte);
 
 		DATA_TYPE value = mem_v - imm;
@@ -43,7 +42,7 @@ make_helper( concat(cmp_i2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (mem_v, imm, 1);
 		concat(set_OF_, SUFFIX) (mem_v, imm, 1);
 
-		print_asm("cmp" str(SUFFIX) " 0x%x,%s", imm, ModR_M_asm);
+		print_asm("cmp   " "$0x%x,%s", imm, ModR_M_asm);
 
 		return 1 + len + imm_byte;
 	}
@@ -61,7 +60,7 @@ make_helper( concat(cmp_i2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (reg_v, imm, 1);
 		concat(set_OF_, SUFFIX) (reg_v, imm, 1);
 
-		print_asm("cmp" str(SUFFIX) " 0x%x,%%%s", imm, REG_NAME(reg_i));
+		print_asm("cmp   " "$0x%x,%%%s", imm, REG_NAME(reg_i));
 
 		return 1 + 1 + imm_byte;
 	}  
