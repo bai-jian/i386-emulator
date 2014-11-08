@@ -70,7 +70,7 @@ make_helper( concat(jle_, SUFFIX) )
 	uint8_t instr_len = 1 + DATA_BYTE;
 	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
 	cpu.eip += ((cpu.ZF || cpu.SF != cpu.OF) ? disp : 0);
-	print_asm("jle" " %x", eip + instr_len + disp);
+	print_asm("jle   " "%x", eip + instr_len + disp);
 	return instr_len;
 }
 
