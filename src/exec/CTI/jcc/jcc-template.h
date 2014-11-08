@@ -4,11 +4,11 @@
 
 make_helper( concat(je_, SUFFIX) )
 {
+	uint8_t instr_len = 1 + DATA_BYTE;
 	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
-
-	print_asm("je" " %x", eip + 1 + DATA_BYTE + disp);
-
-	return cpu.ZF ? (1 + DATA_BYTE + disp) : (1 + DATA_BYTE);
+	cpu.eip += ( cpu.ZF ? disp : 0 );
+	print_asm("je" " %x", eip + instr_len + disp);
+	return instr_len;
 }
 	
 make_helper( concat(jne_, SUFFIX) )
@@ -67,11 +67,11 @@ make_helper( concat(jg_, SUFFIX) )
 
 make_helper( concat(jle_, SUFFIX) )
 {
+	uint8_t instr_len = 1 + DATA_BYTE;
 	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
-
-	print_asm("jle" " %x", eip + 1 + DATA_BYTE + disp);
-
-	return (cpu.ZF || cpu.SF != cpu.OF) ? (1 + DATA_BYTE + disp) : (1 + DATA_BYTE);
+	cpu.eip += ((cpu.ZF || cpu.SF != cpu.OF) ? disp : 0);
+	print_asm("jle" " %x", eip + instr_len + disp);
+	return instr_len;
 }
 
 #include "exec/template-end.h"
