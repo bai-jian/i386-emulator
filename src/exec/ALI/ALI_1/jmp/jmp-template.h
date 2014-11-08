@@ -4,34 +4,43 @@
 
 make_helper( concat(jmp_i_, SUFFIX) )
 {
+	uint8_t instr_len = 1 + DATA_BYTE;
+
 	uint32_t imm = instr_fetch(eip+1, DATA_BYTE);
 
-	print_asm("jmp" " 0x%x", eip + 1 + DATA_BYTE + imm);
+	cpu.eip += imm; 
 
-	return 1 + DATA_BYTE + imm;
+	print_asm("jmp" " 0x%x", eip + instr_len + imm);
+
+	return instr_len;
 }
 
 make_helper( concat(jmp_rm_, SUFFIX) )
 {
-	ModR_M m;  m.val = instr_fetch(eip+1, 1);
+	uint8_t instr_len;
 
+	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{
-		swaddr_t addr;
-		uint8_t len = read_ModR_M(eip+1, &addr);
-		uint32_t mva = MEM_R(addr);
+		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
+		uint32_t mem_v = MEM_R(mem_i);
+
+		cpu.eip += mem_v;  instr_len = 1 + len;
 
 		print_asm("jmp" " %s", ModR_M_asm);
 
-		return 1 + len + mva;
+		return instr_len;
 	}
 	else
 	{
-		uint32_t rva = REG(m.R_M);
+		uint8_t  reg_i = m.R_M;
+		uint32_t reg_v = REG(reg_i);
 
-		print_asm("jmp" " %%%s", REG_NAME(m.R_M));
+		cpu.eip += reg_v;  instr_len = 1 + 1;
 
-		return 1 + 1 + rva;
+		print_asm("jmp" " %%%s", REG_NAME(reg_i));
+
+		return instr_len;
 	}
 }
 
