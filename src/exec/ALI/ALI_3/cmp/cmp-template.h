@@ -114,20 +114,20 @@ make_helper( concat(cmp_rm2r_, SUFFIX) )
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{
-		swaddr_t  s_mem_i;		uint8_t len = read_ModR_M(eip+1, &s_mem_i);
-		DATA_TYPE s_mem_v = MEM_R(s_mem_i);
-		uint8_t   d_reg_i = m.reg;
-		DATA_TYPE d_reg_v = REG(d_reg_i);
+		swaddr_t  mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
+		DATA_TYPE mem_v = MEM_R(mem_i);
+		uint8_t   reg_i = m.reg;
+		DATA_TYPE reg_v = REG(reg_i);
 
-		DATA_TYPE value = s_mem_v - d_reg_v; 
+		DATA_TYPE value = reg_v - mem_v; 
 
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (d_reg_v, s_mem_v, 1);
-		concat(set_OF_, SUFFIX) (d_reg_v, s_mem_v, 1);
+		concat(set_CF_, SUFFIX) (reg_v, mem_v, 1);
+		concat(set_OF_, SUFFIX) (reg_v, mem_v, 1);
 
-		print_asm("cmp" str(SUFFIX) " %s,%%%s", ModR_M_asm, REG_NAME(d_reg_i));
+		print_asm("cmp" str(SUFFIX) "  %s,%%%s", ModR_M_asm, REG_NAME(reg_i));
 
 		return 1 + len;
 	}
