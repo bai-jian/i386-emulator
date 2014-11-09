@@ -17,13 +17,13 @@ make_helper(imul_w);
 make_helper(imul_l);
 
 make_helper(imul_v)
-{	return (suffix == 'l'  ?  imul_l(eip)  :  imul_w(eip));	}
+{	return  suffix == 'l'  ?  imul_l(eip)  :  imul_w(eip);	}
 
 make_helper(imul_rm2r_v)
-{	return (suffix == 'l'  ?  imul_rm2r_l(eip)    :  imul_rm2r_w(eip));		}
+{	return  suffix == 'l'  ?  imul_rm2r_l(eip) :  imul_rm2r_w(eip);		}
 
 make_helper(imul_i2r_v)
-{	return (suffix == 'l'  ?  imul_i2r_l(eip)     :  imul_i2r_w(eip));		}
+{	return  suffix == 'l'  ?  imul_i2r_l(eip)  :  imul_i2r_w(eip);		}
 
 
 #include "cpu/modrm.h"
@@ -37,7 +37,7 @@ make_helper(imul_b)
 		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
 
 		int8_t mem_v = swaddr_read(mem_i, 1);
-		reg_w(R_AX) = reg_b(R_AL) * mem_v;
+		reg_w(R_AX) = ((int16_t)reg_b(R_AL)) * mem_v;
 		cpu.CF = cpu.OF =  reg_b(R_AL) == reg_w(R_AX);
 		
 		print_asm("imulb " "%s", ModR_M_asm);
@@ -49,7 +49,7 @@ make_helper(imul_b)
 		uint8_t reg_i = m.R_M;
 
 		int8_t reg_v = reg_b(reg_i);
-		reg_w(R_AX) = reg_b(R_AL) * reg_v;
+		reg_w(R_AX) = ((int16_t)reg_b(R_AL)) * reg_v;
 		cpu.CF = cpu.OF =  reg_b(R_AL) == reg_w(R_AX);
 
 		print_asm("imulb " "%%%s", regsb[reg_i]);
