@@ -15,11 +15,12 @@ make_helper(data_size)
 
 
 #include "CTI/jcc/jcc.h"
+#include "ALI/ALI_2/imul/imul.h"
 make_helper(tran_mean)
 {
 	uint8_t inst = instr_fetch(eip+1, 1);
-	if ( inst == 0x86)  return  1 + jbe_l(eip + 1); 
-	
+	if ( inst == 0x86 )  return  1 + jbe_l(eip + 1); 
+	if ( inst == 0xaf )  return  1 + imul_rm2r_v(eip+1);
 	assert(0); 	return 0;
 }
 

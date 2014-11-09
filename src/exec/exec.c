@@ -32,7 +32,7 @@ helper_fun opcode_table [256] =
 /* 0x5c */	pop_r_v,       pop_r_v,       pop_r_v,       pop_r_v, 
 /* 0x60 */	inv, inv, inv, inv,
 /* 0x64 */	inv, inv,                     data_size,     inv,
-/* 0x68 */	push_i_v,      inv,           push_i_b,      inv, 
+/* 0x68 */	push_i_v,      inv/*imul_rmi2r_v*/,  push_i_b, inv /*imul_rmib2r*/, 
 /* 0x6c */	inv, inv, inv, inv, 
 /* 0x70 */	inv, inv,                     jb_b,          jae_b,
 /* 0x74 */	je_b,          jne_b,         jbe_b,         ja_b,
@@ -67,7 +67,7 @@ helper_fun opcode_table [256] =
 /* 0xe8 */	call_i,        jmp_i_v, inv,                 jmp_i_b,
 /* 0xec */	inv, inv, inv, inv,
 /* 0xf0 */	inv, inv, inv, inv,
-/* 0xf4 */	inv, inv, inv, inv,
+/* 0xf4 */	inv, inv, inv, inv,                  //  ALI_2_b,       ALI_2_v,
 /* 0xf8 */	inv, inv, inv, inv,
 /* 0xfc */	inv, inv,                     ALI_1_b,       ALI_1_v
 };
