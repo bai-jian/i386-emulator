@@ -18,7 +18,7 @@ make_helper( concat(add_i2r0_, SUFFIX) )
 	concat(set_OF_, SUFFIX) (reg_v, imm, 0);
 	concat(set_CF_, SUFFIX) (reg_v, imm, 0);
 
-	print_asm("add" str(SUFFIX) " 0x%x", imm);
+	print_asm("add" str(SUFFIX) "  $0x%x", imm);
 
 	return 1 + DATA_BYTE;
 }
