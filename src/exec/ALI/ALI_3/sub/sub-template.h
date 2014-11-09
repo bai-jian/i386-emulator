@@ -153,7 +153,7 @@ make_helper( concat(sub_rm2r_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v, 1);
 		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v, 1);
 
-		print_asm("sub" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
+		print_asm("sub" str(SUFFIX) "  %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
 	} 

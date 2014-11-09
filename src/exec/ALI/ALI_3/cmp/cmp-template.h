@@ -103,7 +103,7 @@ make_helper( concat(cmp_r2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v, 1);
 		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v, 1);
 
-		print_asm("cmp" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
+		print_asm("cmp" str(SUFFIX) "  %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
 	}
