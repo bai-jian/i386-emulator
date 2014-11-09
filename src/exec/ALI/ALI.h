@@ -15,7 +15,7 @@
 /* 	ALI_3: ADD   SUB   ADC   SBB      */  #include "ALI_3/ALI_3.h"              
 /*  	   CMP   AND   OR    XOR      */
 
-/* 	ALI_4: SAL   SHL   SAR   SHR      */
+/* 	ALI_4: SAL   SHL   SAR   SHR      */  #include "ALI_4/ALI_4.h"
 
 /* 	ALI_5: SETcc                      */
 
