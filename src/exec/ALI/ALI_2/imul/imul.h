@@ -7,9 +7,7 @@ make_helper(imul_v);
 
 make_helper(imul_rm2r_v);
 
-//make_helper(imul_rmib2r_v);
-
-//make_helper(imul_rmi2r_v);
+make_helper(imul_i2r_v);
 
 
 #endif
