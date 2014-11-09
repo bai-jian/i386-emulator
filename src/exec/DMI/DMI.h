@@ -5,6 +5,7 @@
 /*Data Movement Instructions:          */
 /*                                     */
 /*  DMI_1: MOV   MOVSX  MOVZX   XCHG   */  #include "DMI_1/DMI_1.h"
+/*         (+) NOP  <- misc            */
 /*                                     */
 /*  DMI_2: LEA                         */  #include "lea/lea.h"
 /*                                     */
