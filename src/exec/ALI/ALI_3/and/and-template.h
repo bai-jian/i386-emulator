@@ -30,7 +30,7 @@ make_helper( concat(and_i2rm_, SUFFIX) )
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{ 
-		swaddr_t  mem_i;	uint8_t len = read_ModR_M(eip+1, &mem_i);
+		swaddr_t  mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
 		DATA_TYPE mem_v = MEM_R(mem_i);
 		uint32_t  imm = instr_fetch(eip+1+len, imm_byte);
 
@@ -42,7 +42,7 @@ make_helper( concat(and_i2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("and" str(SUFFIX) " 0x%x,%s", imm, ModR_M_asm);
+		print_asm("and" str(SUFFIX) "  $0x%x,%s", imm, ModR_M_asm);
 
 		return 1 + len + imm_byte;
 	}
@@ -60,7 +60,7 @@ make_helper( concat(and_i2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("and" str(SUFFIX) " 0x%x,%%%s", imm, REG_NAME(reg_i));
+		print_asm("and" str(SUFFIX) "  $0x%x,%%%s", imm, REG_NAME(reg_i));
 
 		return 1 + 1 + imm_byte;
 	} 

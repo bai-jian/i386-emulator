@@ -18,7 +18,7 @@ make_helper( concat(sub_i2r0_, SUFFIX) )
 	concat(set_OF_, SUFFIX) (reg_v, imm, 1);
 	concat(set_CF_, SUFFIX) (reg_v, imm, 1);
 
-	print_asm("sub" str(SUFFIX) " 0x%x", imm);
+	print_asm("sub" str(SUFFIX) "  $0x%x", imm);
 
 	return 1 + DATA_BYTE;
 }
@@ -88,7 +88,7 @@ make_helper( concat(sub_r2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (mem_v, reg_v, 1);
 		concat(set_OF_, SUFFIX) (mem_v, reg_v, 1);
 
-		print_asm("sub" str(SUFFIX) " %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
+		print_asm("sub" str(SUFFIX) "  %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
 
 		return 1 + len;
 	}
@@ -108,7 +108,7 @@ make_helper( concat(sub_r2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v, 1);
 		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v, 1);
 
-		print_asm("sub" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
+		print_asm("sub" str(SUFFIX) "  %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
 	}

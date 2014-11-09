@@ -17,7 +17,7 @@ make_helper( concat(cmp_i2r0_, SUFFIX) )
 	concat(set_OF_, SUFFIX) (reg_v, imm, 1);
 	concat(set_CF_, SUFFIX) (reg_v, imm, 1);
 
-	print_asm("cmp" str(SUFFIX) " 0x%x", imm);
+	print_asm("cmp" str(SUFFIX) "  $0x%x", imm);
 
 	return 1 + DATA_BYTE;
 }
@@ -76,7 +76,7 @@ make_helper( concat(cmp_r2rm_, SUFFIX) )
 		uint8_t   reg_i = m.reg;
 		DATA_TYPE reg_v = REG(reg_i);
 
-		DATA_TYPE value = reg_v - mem_v; 
+		DATA_TYPE value = mem_v - reg_v; 
 
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
@@ -84,7 +84,7 @@ make_helper( concat(cmp_r2rm_, SUFFIX) )
 		concat(set_CF_, SUFFIX) (mem_v, reg_v, 1);
 		concat(set_OF_, SUFFIX) (mem_v, reg_v, 1);
 
-		print_asm("cmp" str(SUFFIX) " %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
+		print_asm("cmp" str(SUFFIX) "  %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
 
 		return 1 + len;
 	}
@@ -100,8 +100,8 @@ make_helper( concat(cmp_r2rm_, SUFFIX) )
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (s_reg_v, d_reg_v, 1);
-		concat(set_OF_, SUFFIX) (s_reg_v, d_reg_v, 1);
+		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v, 1);
+		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v, 1);
 
 		print_asm("cmp" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
