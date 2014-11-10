@@ -91,7 +91,7 @@ void set_OF_b(uint8_t lopd,  uint8_t ropd,  uint8_t op)
 	uint8_t valu_s = valu >> 7;
 
 	cpu.OF = add1_s!=valu_s && add2_s!=valu_s;
-	if (add1 == 0 && add2 == 0x80) cpu.OF = 1;
+	if (add2 == 0x80)  cpu.OF = !cpu.OF;
 }
 void set_OF_w(uint16_t lopd, uint16_t ropd, uint16_t op)
 {
@@ -105,7 +105,7 @@ void set_OF_w(uint16_t lopd, uint16_t ropd, uint16_t op)
 	uint16_t valu_s = valu >> 15;
 
 	cpu.OF = add1_s!=valu_s && add2_s!=valu_s;
-	if (add1 == 0 && add2 == 0x8000) cpu.OF = 1;
+	if (add2 == 0x8000)  cpu.OF = !cpu.OF;
 }
 void set_OF_l(uint32_t lopd, uint32_t ropd, uint32_t op)
 {
@@ -119,5 +119,5 @@ void set_OF_l(uint32_t lopd, uint32_t ropd, uint32_t op)
 	uint32_t valu_s = valu >> 31;
 
 	cpu.OF = add1_s!=valu_s && add2_s!=valu_s;
-	if (add1 == 0 && add2 == 0x80000000) cpu.OF = 1;
+	if (add2 == 0x80000000)  cpu.OF = !cpu.OF;
 }
