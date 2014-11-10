@@ -155,15 +155,15 @@ static void cmd_info()
 
   	if (strcmp(p, "r") == 0) 
 	{
-		printf("eax = 0x%8X    %d\n", cpu.eax, cpu.eax);
-		printf("ecx = 0x%8X    %d\n", cpu.ecx, cpu.ecx);
-		printf("edx = 0x%8X    %d\n", cpu.edx, cpu.edx);
-		printf("ebx = 0x%8X    %d\n", cpu.ebx, cpu.ebx);
-		printf("ebp = 0x%8X\n", cpu.ebp);
-		printf("esp = 0x%8X\n", cpu.esp);
-		printf("esi = 0x%8X    %d\n", cpu.esi, cpu.esi);
- 		printf("edi = 0x%8X    %d\n", cpu.edi, cpu.edi);
-		printf("CF=%d  ZF=%d  SF=%d  PF=%d  OF=%d",\
+		printf("eax = 0x%.8X    %d\n", cpu.eax, cpu.eax);
+		printf("ecx = 0x%.8X    %d\n", cpu.ecx, cpu.ecx);
+		printf("edx = 0x%.8X    %d\n", cpu.edx, cpu.edx);
+		printf("ebx = 0x%.8X    %d\n", cpu.ebx, cpu.ebx);
+		printf("ebp = 0x%.8X\n",       cpu.ebp);
+		printf("esp = 0x%.8X\n",       cpu.esp);
+		printf("esi = 0x%.8X    %d\n", cpu.esi, cpu.esi);
+ 		printf("edi = 0x%.8X    %d\n", cpu.edi, cpu.edi);
+		printf("CF=%d  ZF=%d  SF=%d  PF=%d  OF=%d\n",\
 			   (int)cpu.CF, (int)cpu.ZF, (int)cpu.SF, (int)cpu.PF, (int)cpu.OF);
 	}
 	else  if (strcmp(p, "b") == 0) { print_bp(); }

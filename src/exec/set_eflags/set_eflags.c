@@ -52,7 +52,7 @@ void set_CF_b(uint8_t lopd,  uint8_t ropd,  uint8_t op)
 	uint8_t add2_s = add2 >> 7;
 	uint8_t valu_s = valu >> 7;
 
-	cpu.CF = (add1_s && add2_s) || (add1_s && !valu_s) || (add2_s && !valu_s);
+	cpu.CF = op ^ ((add1_s && add2_s) || (add1_s && !valu_s) || (add2_s && !valu_s));
 } 
 void set_CF_w(uint16_t lopd, uint16_t ropd, uint16_t op)
 {
@@ -64,7 +64,7 @@ void set_CF_w(uint16_t lopd, uint16_t ropd, uint16_t op)
 	uint16_t add2_s = add2 >> 15;
 	uint16_t valu_s = valu >> 15;
 
-	cpu.CF = (add1_s && add2_s) || (add1_s && !valu_s) || (add2_s && !valu_s);
+	cpu.CF = op ^ ((add1_s && add2_s) || (add1_s && !valu_s) || (add2_s && !valu_s));
 }
 void set_CF_l(uint32_t lopd, uint32_t ropd, uint32_t op)
 {
@@ -76,7 +76,7 @@ void set_CF_l(uint32_t lopd, uint32_t ropd, uint32_t op)
 	uint32_t add2_s = add2 >> 31;
 	uint32_t valu_s = valu >> 31;
 
-	cpu.CF = (add1_s && add2_s) || (add1_s && !valu_s) || (add2_s && !valu_s);
+	cpu.CF = op ^ ((add1_s && add2_s) || (add1_s && !valu_s) || (add2_s && !valu_s));
 } 
 
 void set_OF_b(uint8_t lopd,  uint8_t ropd,  uint8_t op)
