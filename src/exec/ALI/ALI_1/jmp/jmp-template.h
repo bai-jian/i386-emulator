@@ -8,9 +8,9 @@ make_helper( concat(jmp_i_, SUFFIX) )
 
 	DATA_TYPE_S imm = instr_fetch(eip+1, DATA_BYTE);
 
-	cpu.eip += imm; 
+	cpu.eip = ((int32_t)(eip)) + imm; 
 
-	print_asm("jmp   " "0x%x", eip + instr_len + imm);
+	print_asm("jmp   " "0x%x", cpu.eip + instr_len);
 
 	return instr_len;
 }
@@ -25,7 +25,7 @@ make_helper( concat(jmp_rm_, SUFFIX) )
 		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
 
 		DATA_TYPE_S mem_v = MEM_R(mem_i);
-		cpu.eip += mem_v;  
+		cpu.eip = ((int32_t)(eip)) + mem_v;  
 		instr_len = 1 + len;
 
 		print_asm("jmp   " "%s", ModR_M_asm);
@@ -37,7 +37,7 @@ make_helper( concat(jmp_rm_, SUFFIX) )
 		uint8_t  reg_i = m.R_M;
 
 		DATA_TYPE_S reg_v = REG(reg_i);
-		cpu.eip += reg_v;  
+		cpu.eip = ((int32_t)(eip)) + reg_v;  
 		instr_len = 1 + 1;
 
 		print_asm("jmp   " "%%%s", REG_NAME(reg_i));
