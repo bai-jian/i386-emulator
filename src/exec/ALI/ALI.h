@@ -17,7 +17,7 @@
 
 /* 	ALI_4: SAL   SHL   SAR   SHR      */  #include "ALI_4/ALI_4.h"
 
-/* 	ALI_5: SETcc                      */
+/* 	ALI_5: SETcc                      */  #include "ALI_5/setcc.h"
 
 
 #endif

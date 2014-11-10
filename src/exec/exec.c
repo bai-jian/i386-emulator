@@ -102,6 +102,7 @@ make_helper(tran_mean)
 	if ( inst == 0x8d )  return  1 + jge_v(eip + 1);
 	if ( inst == 0x8e )  return  1 + jle_v(eip + 1);
 	if ( inst == 0x8f )  return  1 + jg_v(eip + 1);
+	if ( inst == 0x95 )  return  1 + setne(eip + 1);
 	if ( inst == 0xaf )  return  1 + imul_rm2r_v(eip + 1);
 	assert(0);	return 0;
 }
