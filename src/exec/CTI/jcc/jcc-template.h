@@ -69,7 +69,7 @@ make_helper( concat(jl_, SUFFIX) )
 {
 	uint8_t instr_len = 1 + DATA_BYTE;
 	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
-	cpu.eip += (cpu.SF != cpu.OF ? disp : 0);
+	cpu.eip += ((cpu.SF != cpu.OF) ? disp : 0);
 	print_asm("jl    " "%x", eip + instr_len + disp);
 	return instr_len;
 }
@@ -78,7 +78,7 @@ make_helper( concat(jge_, SUFFIX) )
 {
 	uint8_t instr_len = 1 + DATA_BYTE;
 	DATA_TYPE_S disp = instr_fetch(eip+1, DATA_BYTE);
-	cpu.eip += (cpu.SF == cpu.OF ? disp : 0);
+	cpu.eip += ((cpu.SF == cpu.OF) ? disp : 0);
 	print_asm("jge   " "%x", eip + instr_len + disp);
 	return instr_len;	
 }
