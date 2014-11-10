@@ -3,6 +3,12 @@
 #include "all-instr.h"
 
 
+char suffix = 'l';  
+make_helper(data_size);
+
+make_helper(tran_mean);
+
+
 typedef int (*helper_fun)(swaddr_t);
 helper_fun opcode_table [256] = 
 {
@@ -72,4 +78,30 @@ helper_fun opcode_table [256] =
 /* 0xfc */	inv, inv,                     ALI_1_b,       ALI_1_v
 };
 
-make_helper(exec) { return opcode_table[ instr_fetch(eip, 1) ](eip); }
+
+make_helper(exec) 
+{ 	return  opcode_table[ instr_fetch(eip, 1) ](eip); }
+
+make_helper(data_size)
+{
+	suffix = 'w';
+	int instr_len = exec(eip + 1);
+	suffix = 'l';
+	return instr_len + 1;
+}
+
+make_helper(tran_mean)
+{
+	uint8_t inst = instr_fetch(eip+1, 1);
+	if ( inst == 0x82 )  return  1 + jb_v(eip + 1);
+	if ( inst == 0x83 )  return  1 + jae_v(eip + 1);
+	if ( inst == 0x84 )  return  1 + je_v(eip + 1);
+	if ( inst == 0x86 )  return  1 + jbe_v(eip + 1);
+	if ( inst == 0x87 )  return  1 + ja_v(eip + 1);
+	if ( inst == 0x8c )  return  1 + jl_v(eip + 1);
+	if ( inst == 0x8d )  return  1 + jge_v(eip + 1);
+	if ( inst == 0x8e )  return  1 + jle_v(eip + 1);
+	if ( inst == 0x8f )  return  1 + jg_v(eip + 1);
+	if ( inst == 0xaf )  return  1 + imul_rm2r_v(eip + 1);
+	assert(0);	return 0;
+}
