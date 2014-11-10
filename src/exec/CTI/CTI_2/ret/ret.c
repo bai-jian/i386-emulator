@@ -16,12 +16,11 @@ make_helper(ret)
 make_helper(ret_iw)
 {
 	uint8_t instr_len = 3;
-
-	uint16_t imm = instr_fetch(eip+1, 2);
+	uint32_t imm = instr_fetch(eip+1, 2);
 
 	uint32_t disp = swaddr_read(cpu.esp, 4);
-	cpu.esp += (imm + 4);
 	cpu.eip = disp - instr_len;
+	cpu.esp += (imm + 4);
 
 	print_asm("ret   " "$0x%x", imm);
 
