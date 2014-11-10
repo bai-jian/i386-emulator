@@ -6,7 +6,7 @@ make_helper( concat(jmp_i_, SUFFIX) )
 {
 	uint8_t instr_len = 1 + DATA_BYTE;
 
-	int32_t imm = instr_fetch(eip+1, DATA_BYTE);
+	int32_t imm = (DATA_TYPE_S)instr_fetch(eip+1, DATA_BYTE);
 
 	cpu.eip += imm; 
 
@@ -24,7 +24,7 @@ make_helper( concat(jmp_rm_, SUFFIX) )
 	{
 		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
 
-		int32_t mem_v = MEM_R(mem_i);
+		int32_t mem_v = (DATA_TYPE_S)MEM_R(mem_i);
 		cpu.eip += mem_v;  
 		instr_len = 1 + len;
 
@@ -36,7 +36,7 @@ make_helper( concat(jmp_rm_, SUFFIX) )
 	{
 		uint8_t  reg_i = m.R_M;
 
-		int32_t reg_v = REG(reg_i);
+		int32_t reg_v = (DATA_TYPE_S)REG(reg_i);
 		cpu.eip += reg_v;  
 		instr_len = 1 + 1;
 
