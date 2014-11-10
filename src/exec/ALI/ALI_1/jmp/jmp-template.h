@@ -36,7 +36,7 @@ make_helper( concat(jmp_rm_, SUFFIX) )
 	{
 		uint8_t  reg_i = m.R_M;
 
-		int32_t reg_v = (DATA_TYPE_S) reg_l(reg_i);
+		int32_t reg_v = (DATA_TYPE_S) swaddr_read(reg_l(reg_i), 4);
 		cpu.eip += reg_v;  
 		instr_len = 1 + 1;
 
