@@ -138,6 +138,7 @@ restart_:
 
 static void cmd_si()
 {
+	restart();
 	char* p = strtok_r(NULL, " ", &saveptr);
 	int num = p ? strtol(p, NULL, 0) : 1;
 
