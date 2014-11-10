@@ -17,7 +17,7 @@ make_helper( concat(xor_i2r0_, SUFFIX) )
 	concat(set_PF_, SUFFIX) (value);
 	concat(set_ZF_, SUFFIX) (value);
 
-	print_asm("xor" str(SUFFIX) " 0x%x", imm);
+	print_asm("xor" str(SUFFIX) "  $0x%x", imm);
 
 	return 1 + DATA_BYTE;
 }
@@ -42,7 +42,7 @@ make_helper( concat(xor_i2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("xor" str(SUFFIX) " 0x%x,%s", imm, ModR_M_asm);
+		print_asm("xor" str(SUFFIX) "  $0x%x,%s", imm, ModR_M_asm);
 
 		return 1 + len + imm_byte;
 	}
@@ -60,7 +60,7 @@ make_helper( concat(xor_i2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("xor" str(SUFFIX) " 0x%x,%%%s", imm, REG_NAME(reg_i));
+		print_asm("xor" str(SUFFIX) "  $0x%x,%%%s", imm, REG_NAME(reg_i));
 
 		return 1 + 1 + imm_byte;
 	} 
@@ -84,7 +84,7 @@ make_helper( concat(xor_r2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("xor" str(SUFFIX) " %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
+		print_asm("xor" str(SUFFIX) "  %%%s,%s", REG_NAME(reg_i), ModR_M_asm);
 
 		return 1 + len;
 	}
@@ -103,7 +103,7 @@ make_helper( concat(xor_r2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("xor" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
+		print_asm("xor" str(SUFFIX) "  %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
 	}
@@ -127,7 +127,7 @@ make_helper( concat(xor_rm2r_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("xor" str(SUFFIX) " %s,%%%s", ModR_M_asm, REG_NAME(reg_i));
+		print_asm("xor" str(SUFFIX) "  %s,%%%s", ModR_M_asm, REG_NAME(reg_i));
 
 		return 1 + len;
 	}
@@ -146,7 +146,7 @@ make_helper( concat(xor_rm2r_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("xor" str(SUFFIX) " %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
+		print_asm("xor" str(SUFFIX) "  %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
 		return 1 + 1;
 	} 
