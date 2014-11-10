@@ -5,8 +5,8 @@
 make_helper( concat(je_, SUFFIX) )
 {
 	uint8_t instr_len = 1 + DATA_BYTE;
-	int32_t disp = instr_fetch(eip+1, DATA_BYTE);
-	cpu.eip = ( cpu.ZF ? disp : 0 );
+	int32_t disp = (DATA_TYPE_S)instr_fetch(eip+1, DATA_BYTE);
+	cpu.eip += ( cpu.ZF ? disp : 0 );
 	print_asm("je    " "%x", eip + instr_len + disp);
 	return instr_len;
 }
