@@ -53,7 +53,7 @@ helper_fun opcode_table [256] =
 /* 0x98 */	inv, inv, inv, inv, 
 /* 0x9c */	inv, inv, inv, inv, 
 /* 0xa0 */	mov_moffs2a_b, mov_moffs2a_v, mov_a2moffs_b, mov_a2moffs_v,
-/* 0xa4 */	inv, inv, inv, inv,
+/* 0xa4 */	movs_b,        movs_v,        inv, inv,
 /* 0xa8 */	inv, inv, inv, inv,
 /* 0xac */	inv, inv, inv, inv,
 /* 0xb0 */	mov_i2r_b,     mov_i2r_b,     mov_i2r_b,     mov_i2r_b,
@@ -72,7 +72,7 @@ helper_fun opcode_table [256] =
 /* 0xe4 */	inv, inv, inv, inv,
 /* 0xe8 */	call_i,        jmp_i_v, inv,                 jmp_i_b,
 /* 0xec */	inv, inv, inv, inv,
-/* 0xf0 */	inv, inv, inv, inv,
+/* 0xf0 */	inv, inv, inv,                               rep,
 /* 0xf4 */	inv, inv,                     ALI_2_b,       ALI_2_v,
 /* 0xf8 */	inv, inv, inv, inv,
 /* 0xfc */	inv, inv,                     ALI_1_b,       ALI_1_v
