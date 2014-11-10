@@ -93,20 +93,21 @@ make_helper( concat(sbb_r2rm_, SUFFIX) )
 		return 1 + len;
 	}
 	else
-	{  
+	{   
 		uint8_t   s_reg_i = m.reg;
 		DATA_TYPE s_reg_v = REG(s_reg_i);
 		uint8_t   d_reg_i = m.R_M;
 		DATA_TYPE d_reg_v = REG(d_reg_i);
 
-		DATA_TYPE value = d_reg_v - (s_reg_v+cpu.CF);
+		DATA_TYPE temp = s_reg_v + (DATA_TYPE)( cpu.CF ? 1 : 0 );
+		DATA_TYPE value = d_reg_v - temp;
 
 		REG(d_reg_i) = value;
 		concat(set_ZF_, SUFFIX) (value);
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
-		concat(set_CF_, SUFFIX) (d_reg_v, s_reg_v+cpu.CF, 1);
-		concat(set_OF_, SUFFIX) (d_reg_v, s_reg_v+cpu.CF, 1);
+		concat(set_CF_, SUFFIX) (d_reg_v, temp, 1);
+		concat(set_OF_, SUFFIX) (d_reg_v, temp, 1);
 
 		print_asm("sbb" str(SUFFIX) "  %%%s,%%%s", REG_NAME(s_reg_i), REG_NAME(d_reg_i));
 
