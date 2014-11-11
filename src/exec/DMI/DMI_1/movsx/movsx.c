@@ -13,14 +13,14 @@ make_helper(movsbv)
 		if (m.mod != 3)
 		{
 			swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
-			swaddr_write(mem_i, 2, (int16_t)((int8_t)reg_b(m.reg)));
-			print_asm("movsbw  " "%%%s,%s", regsb[m.reg], ModR_M_asm);
+			reg_w(m.reg) = (int8_t)swaddr_read(mem_i, 1);
+			print_asm("movsbw  " "%s,%%%s", ModR_M_asm, regsw[m.reg]);
 			return 1 + len;
 		}
 		else
 		{
-			reg_w(m.R_M) = (int16_t)((int8_t)reg_b(m.reg));
-			print_asm("movsbw  " "%%%s,%%%s", regsb[m.reg], regsw[m.R_M]);
+			reg_w(m.reg) = (int8_t)reg_b(m.R_M);
+			print_asm("movsbw  " "%%%s,%%%s", regsb[m.R_M], regsw[m.reg]);
 			return 1 + 1;
 		}
 	}
@@ -30,14 +30,14 @@ make_helper(movsbv)
 		if (m.mod != 3)
 		{
 			swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
-			swaddr_write(mem_i, 4, (int32_t)((int8_t)reg_b(m.reg)));
-			print_asm("movsbl  " "%%%s,%s", regsb[m.reg], ModR_M_asm);
+			reg_l(m.reg) = (int8_t)swaddr_read(mem_i, 1);
+			print_asm("movsbl  " "%s,%%%s", ModR_M_asm, regsl[m.reg]);
 			return 1 + len;
 		}
 		else
 		{
-			reg_l(m.R_M) = (int32_t)((int8_t)reg_b(m.reg));
-			print_asm("movsbl  " "%%%s,%%%s", regsb[m.reg], regsl[m.R_M]);
+			reg_l(m.reg) = (int8_t)reg_b(m.R_M);
+			print_asm("movsbl  " "%%%s,%%%s", regsb[m.R_M], regsl[m.reg]);
 			return 1 + 1;
 		}
 	}
@@ -49,14 +49,14 @@ make_helper(movswl)
 	if (m.mod != 3)
 	{
 		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
-		swaddr_write(mem_i, 4, (int32_t)((int16_t)reg_w(m.reg)));
-		print_asm("movswl  " "%%%s,%s", regsw[m.reg], ModR_M_asm);
+		reg_l(m.reg) = (int16_t)swaddr_read(mem_i, 2);
+		print_asm("movswl  " "%s,%%%s", ModR_M_asm, regsl[m.reg]);
 		return 1 + len;
 	}
 	else
 	{
-		reg_l(m.R_M) = (int32_t)((int16_t)reg_w(m.reg));
-		print_asm("movswl  " "%%%s,%%%s", regsw[m.reg], regsl[m.R_M]);
+		reg_l(m.reg) = (int16_t)reg_w(m.R_M);
+		print_asm("movswl  " "%%%s,%%%s", regsw[m.R_M], regsl[m.reg]);
 		return 1 + 1;
 	}
 }
