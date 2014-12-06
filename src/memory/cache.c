@@ -71,7 +71,7 @@ uint32_t cache_read(swaddr_t addr, size_t len)
 		uint32_t tag2 = temp2.tag;
 		uint32_t index2 = temp2.index;
 		
-		if ( tag2 == tag)
+		if ( index2 == index)
 			return *(uint32_t*)(block[index][j].bib+byte) & (~0u>>((4-len)<<3));
 		else
 		{
@@ -116,17 +116,58 @@ uint32_t cache_read(swaddr_t addr, size_t len)
 	}
 }
 
+/* Write Through and Not Write Allocate */
+void cache_write(swaddr_t addr, size_t len, uint32_t data)
+{
+	assert(len == 1 || len == 2 || len == 4);
 
+	cache_addr temp;
+	temp.addr = addr;
+	uint32_t tag = temp.tag;
+	uint32_t index = temp.index;
+	uint32_t byte = temp.byte;
 
+	/* Judge whether the first byte is in the cache */
+	int j;
+	for (j = 0; j < NR_WAY; ++j)
+		if ( block[index][j].valid && (block[index][j].tag == tag) )
+			break;
 
+	if (j < NR_WAY) //hit first
+	{
+		/* data cross the boundary */
+		cache_addr temp2;
+		temp2.addr = addr + len - 1;
+		uint32_t tag2 = temp2.tag;
+		uint32_t index2 = temp2.index;
 
+		if ( index2 == index)
+		{
+			switch(len)
+			{
+				case 1: *(uint8_t*)(block[index][j].bib+byte) = (uint8_t)data;
+				case 2: *(uint16_t*)(block[index][j].bib+byte) = (uint16_t)data;
+				case 4: *(uint32_t*)(block[index][j].bib+byte) = (uint32_t)data;
+			}
+			dram_write(addr, len, data);
+		}
+		else
+		{
+			block[index][j].valid = false;
 
+			for (j = 0; j < NR_WAY; ++j)
+				if ( block[index2][j].valid && (block[index2][j].tag == tag2) )
+					break;
 
-
-
-
-
-
-
-
-
+			if (j < NR_WAY)  //hit again
+			{
+				block[index2][j].valid = false;
+				dram_write(addr, len, data);
+			}
+			else			//miss again
+				dram_write(addr, len, data);
+		}
+	}
+	else			//miss
+		dram_write(addr, len, data);
+}
