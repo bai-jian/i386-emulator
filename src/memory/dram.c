@@ -16,12 +16,15 @@
 #define NR_RANK (1 << RANK_WIDTH)
 #define HW_MEM_SIZE (1 << (COL_WIDTH + ROW_WIDTH + BANK_WIDTH + RANK_WIDTH))
 
-//Define the main memory
+//Define  Main Memory
 uint8_t dram[NR_RANK][NR_BANK][NR_ROW][NR_COL];
+uint8_t* hw_mem = (void*)dram;
 
-//Define the main memory address
-typedef union {
-	struct {
+//Define  Main Memory Address
+typedef union
+{
+	struct
+	{
 		uint32_t col	: COL_WIDTH;
 		uint32_t row	: ROW_WIDTH;
 		uint32_t bank	: BANK_WIDTH;
@@ -30,14 +33,7 @@ typedef union {
 	uint32_t addr;
 } dram_addr;
 
-
-
-
-#define BURST_LEN 8
-#define BURST_MASK (BURST_LEN - 1)
-
-uint8_t *hw_mem = (void *)dram;
-
+//Define  Row Buffer
 typedef struct
 {
 	uint8_t buf[NR_COL];
@@ -45,6 +41,13 @@ typedef struct
 	bool valid;
 } ROWBUF;
 ROWBUF rowbufs[NR_RANK][NR_BANK];
+
+
+
+#define BURST_LEN 8
+#define BURST_MASK (BURST_LEN - 1)
+
+
 
 void init_dram( )
 {
@@ -54,7 +57,8 @@ void init_dram( )
 			rowbufs[i][j].valid = false;
 }
 
-static void ddr3_read(hwaddr_t addr, void *data) {
+static void ddr3_read(hwaddr_t addr, void* data)
+{
 	test(addr < HW_MEM_SIZE, "addr = %x\n", addr);
 
 	dram_addr temp;
@@ -131,4 +135,3 @@ void dram_write(hwaddr_t addr, size_t len, uint32_t data) {
 		ddr3_write(addr + BURST_LEN, temp + BURST_LEN, mask + BURST_LEN);
 	}
 }
-
