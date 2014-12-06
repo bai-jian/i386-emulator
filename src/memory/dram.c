@@ -10,6 +10,12 @@
 #define BANK_WIDTH 3
 #define RANK_WIDTH (27 - COL_WIDTH - ROW_WIDTH - BANK_WIDTH)
 
+#define NR_COL (1 << COL_WIDTH)
+#define NR_ROW (1 << ROW_WIDTH)
+#define NR_BANK (1 << BANK_WIDTH)
+#define NR_RANK (1 << RANK_WIDTH)
+
+/*Define the main memory address*/
 typedef union {
 	struct {
 		uint32_t col	: COL_WIDTH;
@@ -21,10 +27,6 @@ typedef union {
 } dram_addr;
 
 
-#define NR_COL (1 << COL_WIDTH)
-#define NR_ROW (1 << ROW_WIDTH)
-#define NR_BANK (1 << BANK_WIDTH)
-#define NR_RANK (1 << RANK_WIDTH)
 
 #define HW_MEM_SIZE (1 << (COL_WIDTH + ROW_WIDTH + BANK_WIDTH + RANK_WIDTH))
 
