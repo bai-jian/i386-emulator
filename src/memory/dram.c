@@ -1,9 +1,15 @@
 #include "common.h"
 #include "lib/misc.h"
 
-/* Simulate the (main) behavor of DRAM. Although this will lower the performace of NEMU,
- * it makes you clear about how DRAM is read/written.
- */
+
+//Define Main Memory, Main Memory Address
+//Define Row Buffer
+//Function:
+//	init: initialization
+//	ddr3_read
+//	ddr3_write
+//	dram_read
+//	dram_write
 
 #define COL_WIDTH 10
 #define ROW_WIDTH 10
@@ -16,11 +22,15 @@
 #define NR_RANK (1 << RANK_WIDTH)
 #define HW_MEM_SIZE (1 << (COL_WIDTH + ROW_WIDTH + BANK_WIDTH + RANK_WIDTH))
 
-//Define "Main Memory"
+/* Define the alignment */
+#define BURST_LEN 8
+#define BURST_MASK (BURST_LEN - 1)
+
+/* Define [ Main Memory ] */
 uint8_t dram[NR_RANK][NR_BANK][NR_ROW][NR_COL];
 uint8_t* hw_mem = (void*)dram;
 
-//Define "Main Memory Address"
+/* Define [ Main Memory Address ] */
 typedef union
 {
 	struct
@@ -33,7 +43,7 @@ typedef union
 	uint32_t addr;
 } dram_addr;
 
-//Define "Row Buffer"
+/* Define [ Row Buffer ] */
 typedef struct
 {
 	uint8_t buf[NR_COL];
@@ -41,13 +51,6 @@ typedef struct
 	bool valid;
 } ROWBUF;
 ROWBUF rowbufs[NR_RANK][NR_BANK];
-
-
-
-#define BURST_LEN 8
-#define BURST_MASK (BURST_LEN - 1)
-
-
 
 void init_dram( )
 {
