@@ -2,8 +2,9 @@
 #include "lib/misc.h"
 
 
-//Define Main Memory, Main Memory Address
-//Define Row Buffer
+//Data:
+//	Main Memory & Main Memory Address
+//	Row Buffer
 //Function:
 //	init: initialization
 //	ddr3_read
