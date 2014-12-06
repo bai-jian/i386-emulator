@@ -38,7 +38,7 @@ void init_cache( )
 	int i, j;
 	for (i = 0; i < NR_SET; ++i)
 		for (j = 0; j < NR_WAY; ++j)
-			block[i][j].valid = false;
+			block[i][j].valid = true;
 }
 
 uint32_t cache_read(hwaddr_t addr, size_t len)
