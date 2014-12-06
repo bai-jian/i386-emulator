@@ -16,11 +16,11 @@
 #define NR_RANK (1 << RANK_WIDTH)
 #define HW_MEM_SIZE (1 << (COL_WIDTH + ROW_WIDTH + BANK_WIDTH + RANK_WIDTH))
 
-//Define  Main Memory
+//Define "Main Memory"
 uint8_t dram[NR_RANK][NR_BANK][NR_ROW][NR_COL];
 uint8_t* hw_mem = (void*)dram;
 
-//Define  Main Memory Address
+//Define "Main Memory Address"
 typedef union
 {
 	struct
@@ -33,7 +33,7 @@ typedef union
 	uint32_t addr;
 } dram_addr;
 
-//Define  Row Buffer
+//Define "Row Buffer"
 typedef struct
 {
 	uint8_t buf[NR_COL];
@@ -68,12 +68,13 @@ static void ddr3_read(hwaddr_t addr, void* data)
 	uint32_t row = temp.row;
 	uint32_t col = temp.col;
 
-	if(!(rowbufs[rank][bank].valid && rowbufs[rank][bank].row_idx == row) ) {
-		/* read a row into row buffer */
+	/* read a row into row buffer */
+	if( !(rowbufs[rank][bank].valid && rowbufs[rank][bank].row_idx == row) )
+	{
 		memcpy(rowbufs[rank][bank].buf, dram[rank][bank][row], NR_COL);
 		rowbufs[rank][bank].row_idx = row;
 		rowbufs[rank][bank].valid = true;
-	}
+	} 
 
 	/* burst read */
 	memcpy(data, rowbufs[rank][bank].buf + col, BURST_LEN);
