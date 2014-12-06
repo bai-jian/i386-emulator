@@ -33,6 +33,9 @@ typedef union
 	};
 } cache_addr;
 
+
+uint32_t hit = 0, miss = 0;
+
 void init_cache( )
 {
 	int i, j;
@@ -41,7 +44,6 @@ void init_cache( )
 			block[i][j].valid = false;
 }
 
-static int count[2] = {0, 0};
 uint32_t cache_read(hwaddr_t addr, size_t len)
 {
 	assert(len == 1 || len == 2 || len == 4);
@@ -60,10 +62,9 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 		if ( block[index][j].valid && (block[index][j].tag == tag) )
 			break;
 
-	printf("hit = %d, miss = %d\n", count[0], count[1]);
 	if (j < NR_WAY) //hit first
 	{
-		++(count[0]);
+		++hit;
 		int k;
 		for (k = 0; k < NR_BIB; ++k)
 			data[k] = block[index][j].bib[k];
@@ -106,7 +107,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 	} 
 	else			//miss
 	{
-		++count[1];
+		++miss;
 		//Replacement Algorithm: randomized algorithm, replace BLOCK 0
 		block[index][0].valid = true;
 		block[index][0].tag = tag;
@@ -117,7 +118,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 			block[index][0].bib[i] = dram_read(temp.addr+i, 1);
 
 		return dram_read(addr, len);
-	}
+	} 
 }
 
 /* Write Through and Not Write Allocate */
@@ -138,7 +139,8 @@ void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 			break;
 
 	if (j < NR_WAY) //hit first
-	{
+	{ 
+		++hit;
 		/* data cross the boundary */
 		cache_addr temp2;
 		temp2.addr = addr + len - 1;
@@ -173,5 +175,8 @@ void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 		}
 	}
 	else			//miss
+	{
+		++miss;
 		dram_write(addr, len, data);
+	}
 }
