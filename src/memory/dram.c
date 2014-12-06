@@ -80,7 +80,8 @@ static void ddr3_read(hwaddr_t addr, void* data)
 	memcpy(data, rowbufs[rank][bank].buf + col, BURST_LEN);
 }
 
-static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask) {
+static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask)
+{
 	test(addr < HW_MEM_SIZE, "addr = %x\n", addr);
 
 	dram_addr temp;
@@ -90,8 +91,10 @@ static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask) {
 	uint32_t row = temp.row;
 	uint32_t col = temp.col;
 
-	if(!(rowbufs[rank][bank].valid && rowbufs[rank][bank].row_idx == row) ) {
-		/* read a row into row buffer */
+
+	/* read a row into row buffer */
+	if( !(rowbufs[rank][bank].valid && rowbufs[rank][bank].row_idx == row) )
+	{
 		memcpy(rowbufs[rank][bank].buf, dram[rank][bank][row], NR_COL);
 		rowbufs[rank][bank].row_idx = row;
 		rowbufs[rank][bank].valid = true;
