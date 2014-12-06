@@ -70,7 +70,7 @@ static void ddr3_read(hwaddr_t addr, void* data)
 
 	/* read a row into row buffer */
 	if( !(rowbufs[rank][bank].valid && rowbufs[rank][bank].row_idx == row) )
-	{
+ 	{
 		memcpy(rowbufs[rank][bank].buf, dram[rank][bank][row], NR_COL);
 		rowbufs[rank][bank].row_idx = row;
 		rowbufs[rank][bank].valid = true;
@@ -107,35 +107,37 @@ static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask)
 	memcpy(dram[rank][bank][row], rowbufs[rank][bank].buf, NR_COL);
 }
 
-uint32_t dram_read(hwaddr_t addr, size_t len) {
+uint32_t dram_read(hwaddr_t addr, size_t len)
+{
 	assert(len == 1 || len == 2 || len == 4);
+
 	uint32_t offset = addr & BURST_MASK;
 	uint8_t temp[2 * BURST_LEN];
 	
 	ddr3_read(addr, temp);
 
-	if( (addr ^ (addr + len - 1)) & ~(BURST_MASK)  ) {
-		/* data cross the burst boundary */
+	/* data cross the burst boundary */
+	if(  (addr ^ (addr+len-1))  &  ~(BURST_MASK)  )
 		ddr3_read(addr + BURST_LEN, temp + BURST_LEN);
-	}
 
 	return *(uint32_t *)(temp + offset) & (~0u >> ((4 - len) << 3));
 }
 
-void dram_write(hwaddr_t addr, size_t len, uint32_t data) {
+void dram_write(hwaddr_t addr, size_t len, uint32_t data)
+{
 	assert(len == 1 || len == 2 || len == 4);
-	uint32_t offset = addr & BURST_MASK;
-	uint8_t temp[2 * BURST_LEN];
-	uint8_t mask[2 * BURST_LEN];
-	memset(mask, 0, 2 * BURST_LEN);
 
+	uint32_t offset = addr & BURST_MASK;
+	uint8_t temp[2*BURST_LEN];
+	uint8_t mask[2*BURST_LEN];
+
+	memset(mask, 0, 2 * BURST_LEN);
 	*(uint32_t *)(temp + offset) = data;
 	memset(mask + offset, 1, len);
 
 	ddr3_write(addr, temp, mask);
 
-	if( (addr ^ (addr + len - 1)) & ~(BURST_MASK)  ) {
-		/* data cross the burst boundary */
-		ddr3_write(addr + BURST_LEN, temp + BURST_LEN, mask + BURST_LEN);
-	}
+	/* data cross the burst boundary */
+	if(  (addr ^ (addr+len-1))  &  ~(BURST_MASK)  )
+		ddr3_write(addr+BURST_LEN, temp+BURST_LEN, mask+BURST_LEN);
 }
