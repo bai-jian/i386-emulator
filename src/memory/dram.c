@@ -14,6 +14,7 @@
 #define NR_ROW (1 << ROW_WIDTH)
 #define NR_BANK (1 << BANK_WIDTH)
 #define NR_RANK (1 << RANK_WIDTH)
+#define HW_MEM_SIZE (1 << (COL_WIDTH + ROW_WIDTH + BANK_WIDTH + RANK_WIDTH))
 
 //Define the main memory
 uint8_t dram[NR_RANK][NR_BANK][NR_ROW][NR_COL];
@@ -31,20 +32,20 @@ typedef union {
 
 
 
-#define HW_MEM_SIZE (1 << (COL_WIDTH + ROW_WIDTH + BANK_WIDTH + RANK_WIDTH))
 
 #define BURST_LEN 8
 #define BURST_MASK (BURST_LEN - 1)
 
 uint8_t *hw_mem = (void *)dram;
 
-typedef struct {
+typedef struct
+{
 	uint8_t buf[NR_COL];
 	int32_t row_idx;
 	bool valid;
-} RB;
+} ROWBUF;
 
-RB rowbufs[NR_RANK][NR_BANK];
+ROWBUF rowbufs[NR_RANK][NR_BANK];
 
 void init_dram() {
 	int i, j;
