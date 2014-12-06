@@ -1,8 +1,5 @@
 #include "common.h"
-/*
-uint32_t dram_read(hwaddr_t addr, size_t len);
-void dram_write(hwaddr_t addr, size_t len, uint32_t data);
-*/
+
 
 uint32_t cache_read(hwaddr_t addr, size_t len);
 void cache_write(hwaddr_t addr, size_t len, uint32_t data);
