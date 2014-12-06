@@ -41,7 +41,7 @@ void init_cache( )
 			block[i][j].valid = false;
 }
 
-uint32_t cache_read(swaddr_t addr, size_t len)
+uint32_t cache_read(hwaddr_t addr, size_t len)
 {
 	assert(len == 1 || len == 2 || len == 4);
 
@@ -117,7 +117,7 @@ uint32_t cache_read(swaddr_t addr, size_t len)
 }
 
 /* Write Through and Not Write Allocate */
-void cache_write(swaddr_t addr, size_t len, uint32_t data)
+void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 {
 	assert(len == 1 || len == 2 || len == 4);
 
