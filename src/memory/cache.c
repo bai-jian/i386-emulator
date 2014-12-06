@@ -60,7 +60,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 		if ( block[index][j].valid && (block[index][j].tag == tag) )
 			break;
 
-	printf("miss = %d, hit = %d", count[0], count[1]);
+	printf("hit = %d, miss = %d\n", count[0], count[1]);
 	if (j < NR_WAY) //hit first
 	{
 		++(count[0]);
