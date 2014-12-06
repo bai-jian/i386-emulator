@@ -44,16 +44,14 @@ typedef struct
 	int32_t row_idx;
 	bool valid;
 } ROWBUF;
-
 ROWBUF rowbufs[NR_RANK][NR_BANK];
 
-void init_dram() {
+void init_dram( )
+{
 	int i, j;
-	for(i = 0; i < NR_RANK; i ++) {
-		for(j = 0; j < NR_BANK; j ++) {
+	for(i = 0; i < NR_RANK; ++i)
+		for(j = 0; j < NR_BANK; ++j)
 			rowbufs[i][j].valid = false;
-		}
-	}
 }
 
 static void ddr3_read(hwaddr_t addr, void *data) {
