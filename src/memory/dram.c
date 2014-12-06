@@ -1,5 +1,4 @@
 #include "common.h"
-#include "lib/misc.h"
 
 
 //Data:
@@ -84,6 +83,7 @@ static void ddr3_read(hwaddr_t addr, void* data)
 	memcpy(data, rowbufs[rank][bank].buf + col, BURST_LEN);
 }
 
+void memcpy_with_mask(void*, const void*, size_t, uint8_t*);
 static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask)
 {
 	test(addr < HW_MEM_SIZE, "addr = %x\n", addr);
@@ -144,4 +144,12 @@ void dram_write(hwaddr_t addr, size_t len, uint32_t data)
 	/* data cross the burst boundary */
 	if(  (addr ^ (addr+len-1))  &  ~(BURST_MASK)  )
 		ddr3_write(addr+BURST_LEN, temp+BURST_LEN, mask+BURST_LEN);
+}
+
+void memcpy_with_mask(void* dest, const void* src, size_t len, uint8_t* mask)
+{
+	int i;
+	for (i = 0; i < len; ++i)
+		if (mask[i])
+			((uint8_t*)dest)[i] = ((uint8_t*)src)[i];
 }
