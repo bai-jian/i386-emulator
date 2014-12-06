@@ -42,6 +42,7 @@ void init_cache( )
 	for (i = 0; i < NR_SET; ++i)
 		for (j = 0; j < NR_WAY; ++j)
 			block[i][j].valid = false;
+	hit = 0;  miss = 0;
 }
 
 uint32_t cache_read(hwaddr_t addr, size_t len)
@@ -86,20 +87,28 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 			if (j < NR_WAY)  //hit again
 			{
 				for (k = 0; k < NR_BIB; ++k)
-					data[NR_BIB+k] = block[index][j].bib[k];
+					data[NR_BIB+k] = block[index2][j].bib[k];
 
 				return *(uint32_t*)(data+byte) & (~0u >> ((4-len)<<3));
 			}
 			else			//miss again
 			{
 				//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-				block[index][0].valid = true;
-				block[index][0].tag = tag2;
 
-				temp2.byte = 0;
+				uint32_t way_num;
+
 				int i;
+				for (i = 0; i < NR_WAY; ++i)
+					if ( !block[index2][i].valid )
+						break;
+				way_num = (i < NR_WAY) ? i : 0;
+
+				block[index2][way_num].valid = true;
+				block[index2][way_num].tag = tag2;
+
+				uint32_t addr_temp = temp2.addr >> BIB_WIDTH << BIB_WIDTH;
 				for (i = 0; i < NR_BIB; ++i)
-					block[index][0].bib[i] = dram_read(temp2.addr+i, 1);
+					block[index2][way_num].bib[i] = dram_read(addr_temp+i, 1);
 
 				return dram_read(addr, len);
 			}
@@ -109,13 +118,21 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 	{
 		++miss;
 		//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-		block[index][0].valid = true;
-		block[index][0].tag = tag;
 
-		temp.byte = 0;
+		uint32_t way_num;
+
 		int i;
+		for (i = 0; i < NR_WAY; ++i)
+			if ( !block[index][i].valid )
+				break;
+		way_num = (i < NR_WAY) ? i : 0;
+
+		block[index][way_num].valid = true;
+		block[index][way_num].tag = tag;
+
+		uint32_t addr_temp = temp.addr >> BIB_WIDTH << BIB_WIDTH;
 		for (i = 0; i < NR_BIB; ++i)
-			block[index][0].bib[i] = dram_read(temp.addr+i, 1);
+			block[index][way_num].bib[i] = dram_read(addr_temp+i, 1);
 
 		return dram_read(addr, len);
 	} 
