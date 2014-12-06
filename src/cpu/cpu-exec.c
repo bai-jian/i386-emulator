@@ -70,7 +70,7 @@ extern uint32_t loader_len;
 
 void load_prog();
 void init_dram();
-
+void init_cache();
 void restart() 
 {
 	/* Perform some initialization to restart a program */
@@ -83,6 +83,7 @@ void restart()
 	cpu.eflags = 0x00000002;
 
 	init_dram();
+	init_cache();
 }
 
 static void print_bin_instr(swaddr_t eip, int len) 
