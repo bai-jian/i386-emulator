@@ -15,7 +15,10 @@
 #define NR_BANK (1 << BANK_WIDTH)
 #define NR_RANK (1 << RANK_WIDTH)
 
-/*Define the main memory address*/
+//Define the main memory
+uint8_t dram[NR_RANK][NR_BANK][NR_ROW][NR_COL];
+
+//Define the main memory address
 typedef union {
 	struct {
 		uint32_t col	: COL_WIDTH;
@@ -33,7 +36,6 @@ typedef union {
 #define BURST_LEN 8
 #define BURST_MASK (BURST_LEN - 1)
 
-uint8_t dram[NR_RANK][NR_BANK][NR_ROW][NR_COL];
 uint8_t *hw_mem = (void *)dram;
 
 typedef struct {
