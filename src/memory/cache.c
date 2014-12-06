@@ -38,9 +38,10 @@ void init_cache( )
 	int i, j;
 	for (i = 0; i < NR_SET; ++i)
 		for (j = 0; j < NR_WAY; ++j)
-			block[i][j].valid = true;
+			block[i][j].valid = false;
 }
 
+static int count[2];
 uint32_t cache_read(hwaddr_t addr, size_t len)
 {
 	assert(len == 1 || len == 2 || len == 4);
@@ -60,7 +61,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 			break;
 
 	if (j < NR_WAY) //hit first
-	{	
+	{++(count[0]);printf("hit = %d\n",count[0]);	
 		int k;
 		for (k = 0; k < NR_BIB; ++k)
 			data[k] = block[index][j].bib[k];
@@ -100,9 +101,9 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 				return dram_read(addr, len);
 			}
 		}
-	}
+	} 
 	else			//miss
-	{
+	{++count[1];printf("miss = %d", count[1]);
 		//Replacement Algorithm: randomized algorithm, replace BLOCK 0
 		block[index][0].valid = true;
 		block[index][0].tag = tag;
