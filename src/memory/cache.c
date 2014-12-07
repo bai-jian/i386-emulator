@@ -4,7 +4,7 @@ uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
 
 
-/* Cache Memory Size: 64KB = (128 Set) * (8 Way/Set) * (64 B/BLOCK) */
+/* Cache Memory Size: 64KB = (128 Set) * (8 Way/Set) * (64 B/Block) */
 #define BIB_WIDTH 6  //BPB: Bytes In a Block
 #define WAY_WIDTH 3
 #define SET_WIDTH 7

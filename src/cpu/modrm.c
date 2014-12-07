@@ -82,4 +82,3 @@ int read_ModR_M(swaddr_t eip, swaddr_t *addr) {
 
 	return instr_len;
 }
-
