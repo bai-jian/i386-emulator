@@ -1,20 +1,20 @@
-
 #include "common.h"
-/*
+
+
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
-*/
+
+
 /* Cache L2 Memory Size: 4MB = (4096 Set) * (16 Way/Set) * (64 B/Block) */
 #define BIB_WIDTH 6  //BIB: Bytes In a Block
 #define WAY_WIDTH 4
 #define SET_WIDTH 12
 
+
+/* Define [Cache L2] & [Block in Cache L2] */
 #define NR_BIB (1 << BIB_WIDTH)
 #define NR_WAY (1 << WAY_WIDTH)
 #define NR_SET (1 << SET_WIDTH)
-
-
-/* Define [Cache L2] & [Block in Cache L2] */
 struct BLOCK_L2
 {
 	struct
@@ -26,142 +26,203 @@ struct BLOCK_L2
 	uint8_t bib[NR_BIB];
 } block_L2[NR_SET][NR_WAY];
 
-/* the Mapping between [VA] and [CA] */
-/*     VA:  Virtual Address          */
+
+/* the Mapping between [PA] and [CA] */
+/*     PA:  Physical Address         */
 /*     CA:  Cache L2 Address         */
-//#define 
+
+#define AIB_WIDTH BIB_WIDTH  //AIB: Address In a Block
+#define IDX_WIDTH SET_WIDTH
+#define TAG_WIDTH (32 - AIB_WIDTH - IDX_WIDTH)
+
+#define PA2CA_AIB(addr)  ((uint32_t)(addr)) << (IDX_WIDTH + TAG_WIDTH) >> (IDX_WIDTH + TAG_WIDTH)
+#define PA2CA_IDX(addr)  ((uint32_t)(addr)) << TAG_WIDTH >> (TAG_WIDTH + AIB_WIDTH)
+#define PA2CA_TAG(addr)  ((uint32_t)(addr)) >> (AIB_WIDTH + IDX_WIDTH)
 typedef union
 {
 	uint32_t addr;
 	struct
 	{ 
-		uint32_t byte	: BIB_WIDTH;
-		uint32_t index	: SET_WIDTH;
-		uint32_t tag	: (32 - SET_WIDTH - BIB_WIDTH);
+		uint32_t aib	: AIB_WIDTH;
+		uint32_t idx	: IDX_WIDTH;
+		uint32_t tag	: TAG_WIDTH;
 	};
 } cache_L2_addr;
 
-/*
+#define CA2PA_BLK(tag, idx)  ((tag) << (AIB_WIDTH+IDX_WIDTH)) + ((idx) << AIB_WIDTH)
+
+#define BLK_ADDR(addr) ((addr) >> AIB_WIDTH << AIB_WIDTH)
+
+
+/* the time counter of Cache_L2 hit and miss*/
 uint32_t cache_L2_hit = 0, cache_L2_miss = 0;
 
+
+/* Functions:
+ *     init:  void init_cache_L2( );
+ *     read:  uint32_t cache_L2_read(hwaddr_t addr, size_t len);
+ *     write: void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data);
+ */
 void init_cache_L2( )
 {
 	int i, j;
 	for (i = 0; i < NR_SET; ++i)
 		for (j = 0; j < NR_WAY; ++j)
-			block[i][j].valid = 0;
+			block_L2[i][j].valid = 0;
 
 	cache_L2_hit = 0;  cache_L2_miss = 0;
 }
 
+
 uint32_t cache_L2_read(hwaddr_t addr, size_t len)
 {
-	assert(len == 1 || len == 2 || len == 4);
+	cache_L2_addr fstb;  fstb.addr = addr;            //fstb: the first byte
+	cache_L2_addr lstb;  lstb.addr = addr + len - 1;  //lstb: the last byte
 
-	cache_L2_addr temp;
-	temp.addr = addr;
-*/
-	/* Judge whether the first byte is in the cache */
-/*	int j;
-	for (j = 0; j < NR_WAY; ++j)
-		if ( !block[temp.index][j].dirty  &&  block[temp.index][j].valid  &&  \
-			 (block[temp.index][j].tag == temp.tag) )
-			break;
-
-	if (j < NR_WAY) //hit first
-	{
-		++cache_L2_hit;
-*/
-		/* data cross the boundary */
-/*		cache_addr temp2;
-		temp2.addr = addr + len -1;
-		
-		if (temp2.index == temp.index)
-			return *(uint32_t*)(block[temp.index][j].bib + temp.byte)  &  (~0u >> ((4-len)<<3));
-		else
-		{
-			int j2;
-			for (j2 = 0; j2 < NR_WAY; ++j2)
-				if ( !block[temp2.index][j2].dirty  &&  block[temp2.index][j2].valid  &&  (block[temp2.index][j2].tag == temp2.tag) )
-					break;
-
-			if (j2 < NR_WAY) //hit again
-			{
-				uint8_t data[2 * NR_BIB];
-
-				int k;
-				for (k = 0; k < NR_BIB; ++k)
-				{
-					data[k] = block[temp.index][j].bib[k];
-					data[NR_BIB+k] = block[temp2.index][j2].bib[k];
-				}
-
-				return *(uint32_t*)(data + temp.byte)  &  (~0u >> ((4-len)<<3));
-			}
-			else
-			{
-				//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-				
-				uint32_t way_num;
-
-				int i;
-				for (i = 0; i < NR_WAY; ++i)
-					if ( block[temp2.index][i].dirty  ||  !block[temp2.index][i].valid )
-						break;
-				way_num = (i < NR_WAY) ? i : 0;
-
-				block[temp2.index][way_num].valid = 1;
-				block[temp2.index][way_num].dirty = 0;
-				block[temp2.index][way_num].tag = temp2.tag;
-
-				uint32_t addr_temp = temp2.addr >> BIB_WIDTH << BIB_WIDTH;
-				for (i = 0; i < NR_BIB; ++i)
-					block[temp2.index][way_num].bib[i] = dram_read(addr_temp+i, 1);
-
-				return dram_read(addr, len);
-			}
-		}
+	// Judge whether data crosses the boundary
+	if (fstb.idx != lstb.idx)  // data crossing
+ 	{
+		size_t len2 = lstb.addr - BLK_ADDR(lstb.addr) + 1;
+		size_t len1 = len - len2;
+		uint32_t data2 = cache_L2_read(lstb.addr, len2);
+		uint32_t data1 = cache_L2_read(fstb.addr, len1);
+		return (data2 << (8*len1)) + data1;  // little endian
 	}
-	else			//miss
-	{
-		++cache_L2_miss;
-
-		//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-
-		uint32_t way_num;
-
+	else                       // data not crossing
+ 	{
+		// Judge hit or miss
 		int i;
 		for (i = 0; i < NR_WAY; ++i)
-			if ( block[temp.index][i].dirty || !block[temp.index][i].valid )
+			if ( block_L2[fstb.idx][i].valid && (block_L2[fstb.idx][i].tag == fstb.tag) )
 				break;
-		way_num = (i < NR_WAY) ? i : 0;
 
-		block[temp.index][way_num].valid = 1;
-		block[temp.index][way_num].dirty = 0;
-		block[temp.index][way_num].tag = temp.tag;
+		// hit or miss calculates
+		(i < NR_WAY)  ?  ++cache_L2_hit  :  ++cache_L2_miss;
 
-		uint32_t addr_temp = addr >> BIB_WIDTH << BIB_WIDTH;
-		for (i = 0; i < NR_BIB; ++i)
-			block[temp.index][way_num].bib[i] = dram_read(addr_temp+i, 1);
+		// miss  and  (load or replacement)
+		// Replacement Algorithm: randomized algorithm, replace BLOCK 0
+		if (i == NR_WAY)
+		{
+			uint32_t way_num;
 
-		return dram_read(addr, len);
+			int j;
+			for (j = 0; j < NR_WAY; ++j)
+				if ( !block_L2[fstb.idx][j].valid )
+					break;
+			way_num = (j < NR_WAY) ? j : 0;
+
+			block_L2[fstb.idx][way_num].valid = 1;
+			block_L2[fstb.idx][way_num].dirty = 0;
+			block_L2[fstb.idx][way_num].tag = fstb.tag;
+
+			hwaddr_t blk_addr = BLK_ADDR(fstb.addr);
+			for (j = 0; j < NR_BIB; ++j)
+				block_L2[fstb.idx][way_num].bib[j] = dram_read(blk_addr+j, 1);
+		}
+		
+		return  *(uint32_t*)(block_L2[fstb.idx][i].bib + fstb.aib)  &  (0xFFFFFFFFu >> ((4-len)<<3));
 	}
 }
-*/
-
-#define GetByte(data, i)  ( (data) & ( 0xFF << (8*(i)) ) )   >>   (8*(i))
-
-#define BlockAddr_to_hwaddr(tag, index)  \
-	((tag) << (BIB_WIDTH + SET_WIDTH)) + ((index) << BIB_WIDTH)
-#define hwaddr_to_BlockAddr(addr)  \
-	(addr) >> BIB_WIDTH << BIB_WIDTH
 
 
-/* Write Back and Write Allocate *//*
+// Write Back and Write Allocate
 void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data)
 {
-	assert(len == 1 || len == 2 || len == 4);
+	cache_L2_addr fstb;  fstb.addr = addr;            //fstb: the first byte
+	cache_L2_addr lstb;  lstb.addr = addr + len - 1;  //lstb: the last byte
 
+	// Judge whether data crosses the boundary
+	if (fstb.idx != lstb.idx)  // data crossing
+ 	{
+		size_t len2 = lstb.addr - BLK_ADDR(lstb.addr) + 1;
+		size_t len1 = len - len2;
+		uint32_t data1 = data << (8*len2) >> (8*len2);
+		uint32_t data2 = data >> (8*len1);
+		cache_L2_write(fstb.addr, len1, data1);
+		cache_L2_write(lstb.addr, len2, data2);
+		return;
+	}
+	else                       // data not crossing
+ 	{
+		// Judge hit or miss
+		int i;
+		for (i = 0; i < NR_WAY; ++i)
+			if ( block_L2[fstb.idx][i].valid && (block_L2[fstb.idx][i].tag == fstb.tag) )
+				break;
+
+		// hit or miss calculates
+		(i < NR_WAY)  ?  ++cache_L2_hit  :  ++cache_L2_miss;
+
+		if (i < NR_WAY)  // hit, write back
+		{
+			block_L2[fstb.idx][i].dirty = 1;  // write back
+			int j;
+			for (j = 0; j < len; ++j)
+				block_L2[fstb.idx][i].bib[fstb.aib + j] = (uint8_t) ( (data >> (8*j)) & 0x000000FF );
+		}
+		else            // miss, write allocate(load or replacement)
+		{
+			dram_write(addr, len, data);
+
+			// load or replacement
+			// Replacement Algorithm: randomized algorithm, replace BLOCK 0
+			uint32_t way_num;
+			int j;
+			for (j = 0; j < NR_WAY; ++j)
+				if ( !block_L2[fstb.idx][j].valid )
+					break;
+			way_num = (j < NR_WAY) ? j : 0;
+
+			// Write Back
+			if ( block_L2[fstb.idx][way_num].dirty )
+			{
+				hwaddr_t blk_addr = CA2PA_BLK(block_L2[fstb.idx][way_num].tag, fstb.idx);
+				for (j = 0; j < NR_WAY; ++j)
+				{
+					uint8_t data_temp = block_L2[fstb.idx][way_num].bib[j];
+					dram_write(blk_addr + j, 1, data_temp);
+				}
+			}
+
+			// Write Allocate
+			block_L2[fstb.idx][way_num].valid = 1;
+			block_L2[fstb.idx][way_num].dirty = 0;
+			block_L2[fstb.idx][way_num].tag = fstb.tag;
+
+			hwaddr_t blk_addr = BLK_ADDR(fstb.addr);
+			for (j = 0; j < NR_BIB; ++j)
+				block_L2[fstb.idx][way_num].bib[i] = dram_read(blk_addr + j, 1);
+		}
+	}
+}
+
+
+/*
+
+		}
+		// miss  and  (load or replacement)
+		// Replacement Algorithm: randomized algorithm, replace BLOCK 0
+		if (i == NR_WAY)
+		{
+			uint32_t way_num;
+
+			int j;
+			for (j = 0; j < NR_WAY; ++j)
+				if ( !block_L2[fstb.idx][j].valid )
+					break;
+			way_num = (j < NR_WAY) ? j : 0;
+
+			block_L2[fstb.idx][way_num].valid = 1;
+			block_L2[fstb.idx][way_num].dirty = 0;
+			block_L2[fstb.idx][way_num].tag = fstb.tag;
+
+			uint32_t blk_addr = BLK_ADDR(addr);
+			for (j = 0; j < NR_BIB; ++j)
+				block_L[fstb.idx][way_num].bib[j] = dram_read(blk_addr+j, 1);
+		}
+	}
+}
+{
 	cache_L2_addr temp;
 	temp.addr = addr;
 */
@@ -249,6 +310,7 @@ void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data)
 	}
 	else			//miss
 	{
+	}
 		dram_write(addr, len, data);
 
 		//Replacement Algorithm: randomized algorithm, replace BLOCK 0
@@ -277,19 +339,4 @@ void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data)
 		uint32_t addr_temp = hwaddr_to_BlockAddr(temp.addr);
 		for (i = 0; i < NR_BIB; ++i)
 			block[temp.index][way_num].bib[i] = dram_read(addr_temp+i, 1);
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-*/
-
+}*/
