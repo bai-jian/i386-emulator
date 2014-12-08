@@ -82,10 +82,11 @@ uint32_t cache_L2_read(hwaddr_t addr, size_t len)
 	// Judge whether data crosses the boundary
 	if (fstb.idx != lstb.idx)  // data crossing
  	{
-		size_t len2 = lstb.addr - BLK_ADDR(lstb.addr) + 1;
-		size_t len1 = len - len2;
-		uint32_t data2 = cache_L2_read(lstb.addr, len2);
-		uint32_t data1 = cache_L2_read(fstb.addr, len1);
+		hwaddr_t addr2 = BLK_ADDR(lstb.addr);
+		size_t len1 = addr2 - addr;
+		size_t len2 = len - len1;
+		uint32_t data1 = cache_L2_read(addr, len1);
+		uint32_t data2 = cache_L2_read(addr2, len2);
 		return (data2 << (8*len1)) + data1;  // little endian
 	}
 	else                       // data not crossing
@@ -120,7 +121,7 @@ uint32_t cache_L2_read(hwaddr_t addr, size_t len)
 				block_L2[fstb.idx][way_num].bib[j] = dram_read(blk_addr+j, 1);
 		}
 		
-		return  *(uint32_t*)(block_L2[fstb.idx][i].bib + fstb.aib)  &  (~0u >> ((4-len)<<3));
+		return  *(uint32_t*)(block_L2[fstb.idx][i].bib + fstb.aib)  &  (0xFFFFFFFFu >> ((4-len)<<3));
 	}
 }
 
@@ -134,12 +135,13 @@ void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data)
 	// Judge whether data crosses the boundary
 	if (fstb.idx != lstb.idx)  // data crossing
  	{
-		size_t len2 = lstb.addr - BLK_ADDR(lstb.addr) + 1;
-		size_t len1 = len - len2;
+		hwaddr_t addr2 = BLK_ADDR(lstb.addr);
+		size_t len1 = addr2 - addr;
+		size_t len2 = len - len1;
 		uint32_t data1 = data << (8*len2) >> (8*len2);
 		uint32_t data2 = data >> (8*len1);
-		cache_L2_write(fstb.addr, len1, data1);
-		cache_L2_write(lstb.addr, len2, data2);
+		cache_L2_write(addr, len1, data1);
+		cache_L2_write(addr2, len2, data2);
 		return;
 	}
 	else                       // data not crossing
