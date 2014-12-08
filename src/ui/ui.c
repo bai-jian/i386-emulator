@@ -114,8 +114,8 @@ static void cmd_c()
 	cpu_exec(-1);
 
 	printf("Some information on the program:\n");
-	printf("    cache L1:    hit = %u\4tmiss = %u\n", hit, miss);
-	printf("    cache L2:    hit = %u\4tmiss = %u\n", hit, miss);
+	printf("    cache L1:    hit = %u \t miss = %u\n", hit, miss);
+	printf("    cache L2:    hit = %u \t miss = %u\n", hit, miss);
 
 	if(nemu_state != END) { nemu_state = STOP; }
 }
