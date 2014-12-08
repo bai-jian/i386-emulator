@@ -1,10 +1,7 @@
 #include "common.h"
 
-
 uint32_t cache_L2_read(hwaddr_t, size_t);
-uint32_t dram_read(hwaddr_t, size_t);
 void cache_L2_write(hwaddr_t, size_t, uint32_t);
-void dram_write(hwaddr_t, size_t, uint32_t);
 
 
 /* Cache Memory Size: 64KB = (128 Set) * (8 Way/Set) * (64 B/Block) */
