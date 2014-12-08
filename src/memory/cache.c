@@ -1,6 +1,9 @@
 #include "common.h"
 
+
+uint32_t cache_L2_read(hwaddr_t, size_t);
 uint32_t dram_read(hwaddr_t, size_t);
+void cache_L2_write(hwaddr_t, size_t, uint32_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
 
 
@@ -149,9 +152,9 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 
 		uint32_t addr_temp = temp.addr >> BIB_WIDTH << BIB_WIDTH;
 		for (i = 0; i < NR_BIB; ++i)
-			block[index][way_num].bib[i] = dram_read(addr_temp+i, 1);
+			block[index][way_num].bib[i] = cache_L2_read(addr_temp+i, 1);
 
-		return dram_read(addr, len);
+		return cache_L2_read(addr, len);
 	} 
 }
 
