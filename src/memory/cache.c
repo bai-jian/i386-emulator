@@ -214,6 +214,6 @@ void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 	else			//miss
 	{
 		++miss;
-		dram_write(addr, len, data);
+		cache_L2_write(addr, len, data);
 	}
 }
