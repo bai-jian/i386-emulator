@@ -5,15 +5,15 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 
 
 /* Cache Memory Size: 64KB = (128 Set) * (8 Way/Set) * (64 B/Block) */
-#define BIB_WIDTH 6  //BPB: Bytes In a Block
+#define BIB_WIDTH 6  //BIB: Bytes In a Block
 #define WAY_WIDTH 3
 #define SET_WIDTH 7
 
+
+/* Define [Cache] & [BLOCK] */
 #define NR_BIB (1 << BIB_WIDTH)
 #define NR_WAY (1 << WAY_WIDTH)
 #define NR_SET (1 << SET_WIDTH)
-
-/* Define [Cache] & [BLOCK] */
 struct BLOCK
 {
 	bool valid;
@@ -21,36 +21,53 @@ struct BLOCK
 	uint8_t bib[NR_BIB];
 } block[NR_SET][NR_WAY];
 
-/* Define [Cache Address] */
+
+/* the Mapping between [PA] and [CA] */
+/*     PA:  Physical Address         */
+/*     CA:  Cache Address            */
+
+#define AIB_WIDTH  BIB_WIDTH  //AIB: Address In a Block
+#define IDX_WIDTH  SET_WIDTH
+#define TAG_WIDTH  (32 - AIB_WIDTH - IDX_WIDTH)
 typedef union
 {
 	uint32_t addr;
 	struct
 	{
-		uint32_t byte	: BIB_WIDTH;
-		uint32_t index	: SET_WIDTH;
-		uint32_t tag	: (32 - SET_WIDTH - BIB_WIDTH);
+		uint32_t byte	: AIB_WIDTH;
+		uint32_t index	: IDX_WIDTH;
+		uint32_t tag	: TAG_WIDTH;
 	};
 } cache_addr;
 
 
+/* the time counter of Cache hit and miss */
 uint32_t hit = 0, miss = 0;
 
+
+/* Functions:
+ *     init:  void init_cache( );
+ *     read:  uint32_t cache_read(hwaddr_t addr, size_t len);
+ *     write: void cache_write(hwaddr_t addr, size_t len, uint32_t data);
+ */
 void init_cache( )
 {
 	int i, j;
 	for (i = 0; i < NR_SET; ++i)
 		for (j = 0; j < NR_WAY; ++j)
-			block[i][j].valid = false;
+			block[i][j].valid = 0;
+
 	hit = 0;  miss = 0;
 }
 
+
 uint32_t cache_read(hwaddr_t addr, size_t len)
 {
-	assert(len == 1 || len == 2 || len == 4);
+/*	cache_addr fstb;  fstb.addr = addr;            //fstb: the first byte
+	cache_addr lstb;  lstb.addr = addr + len - 1;  //lstb: the last byte
+	*/
 
 	uint8_t data[2 * NR_BIB];
-
 	cache_addr temp;
 	temp.addr = addr;
 	uint32_t tag = temp.tag;
