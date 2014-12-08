@@ -120,7 +120,7 @@ uint32_t cache_L2_read(hwaddr_t addr, size_t len)
 				block_L2[fstb.idx][way_num].bib[j] = dram_read(blk_addr+j, 1);
 		}
 		
-		return  *(uint32_t*)(block_L2[fstb.idx][i].bib + fstb.aib)  &  (0xFFFFFFFFu >> ((4-len)<<3));
+		return  *(uint32_t*)(block_L2[fstb.idx][i].bib + fstb.aib)  &  (~0u >> ((4-len)<<3));
 	}
 }
 
