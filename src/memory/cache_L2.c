@@ -145,20 +145,20 @@ void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data)
 	else                       // data not crossing
  	{
 		// Judge hit or miss
-		int i;
-		for (i = 0; i < NR_WAY; ++i)
-			if ( block_L2[fstb.idx][i].valid && (block_L2[fstb.idx][i].tag == fstb.tag) )
+		int way;
+		for (way = 0; way < NR_WAY; ++way)
+			if ( block_L2[fstb.idx][way].valid && (block_L2[fstb.idx][way].tag == fstb.tag) )
 				break;
 
 		// hit or miss calculates
-		(i < NR_WAY)  ?  ++cache_L2_hit  :  ++cache_L2_miss;
+		(way < NR_WAY)  ?  ++cache_L2_hit  :  ++cache_L2_miss;
 
-		if (i < NR_WAY)  // hit, write back
+		if (way < NR_WAY)  // hit, write back
 		{
-			block_L2[fstb.idx][i].dirty = 1;  // write back
-			int j;
-			for (j = 0; j < len; ++j)
-				block_L2[fstb.idx][i].bib[fstb.aib + j] = (uint8_t) ( (data >> (8*j)) & 0x000000FF );
+			block_L2[fstb.idx][way].dirty = 1;  // write back
+			int i;
+			for (i = 0; i < len; ++i)
+				block_L2[fstb.idx][way].bib[fstb.aib + i] = (uint8_t) ( (data >> (8*i)) & 0x000000FF );
 		}
 		else            // miss, write allocate(load or replacement)
 		{
@@ -166,177 +166,31 @@ void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data)
 
 			// load or replacement
 			// Replacement Algorithm: randomized algorithm, replace BLOCK 0
-			uint32_t way_num;
-			int j;
-			for (j = 0; j < NR_WAY; ++j)
-				if ( !block_L2[fstb.idx][j].valid )
+			int i;
+			for (i = 0; i < NR_WAY; ++i)
+				if ( !block_L2[fstb.idx][i].valid )
 					break;
-			way_num = (j < NR_WAY) ? j : 0;
+			way = (i < NR_WAY) ? i : 0;
 
 			// Write Back
-			if ( block_L2[fstb.idx][way_num].dirty )
+			if ( block_L2[fstb.idx][way].dirty )
 			{
-				hwaddr_t blk_addr = CA2PA_BLK(block_L2[fstb.idx][way_num].tag, fstb.idx);
-				for (j = 0; j < NR_WAY; ++j)
+				hwaddr_t blk_addr = CA2PA_BLK(block_L2[fstb.idx][way].tag, fstb.idx);
+				for (i = 0; i < NR_WAY; ++i)
 				{
-					uint8_t data_temp = block_L2[fstb.idx][way_num].bib[j];
-					dram_write(blk_addr + j, 1, data_temp);
+					uint8_t data_temp = block_L2[fstb.idx][way].bib[i];
+					dram_write(blk_addr + i, 1, data_temp);
 				}
 			}
 
 			// Write Allocate
-			block_L2[fstb.idx][way_num].valid = 1;
-			block_L2[fstb.idx][way_num].dirty = 0;
-			block_L2[fstb.idx][way_num].tag = fstb.tag;
+			block_L2[fstb.idx][way].valid = 1;
+			block_L2[fstb.idx][way].dirty = 0;
+			block_L2[fstb.idx][way].tag = fstb.tag;
 
 			hwaddr_t blk_addr = BLK_ADDR(fstb.addr);
-			for (j = 0; j < NR_BIB; ++j)
-				block_L2[fstb.idx][way_num].bib[i] = dram_read(blk_addr + j, 1);
+			for (i = 0; i < NR_BIB; ++i)
+				block_L2[fstb.idx][way].bib[i] = dram_read(blk_addr + i, 1);
 		}
 	}
 }
-
-
-/*
-
-		}
-		// miss  and  (load or replacement)
-		// Replacement Algorithm: randomized algorithm, replace BLOCK 0
-		if (i == NR_WAY)
-		{
-			uint32_t way_num;
-
-			int j;
-			for (j = 0; j < NR_WAY; ++j)
-				if ( !block_L2[fstb.idx][j].valid )
-					break;
-			way_num = (j < NR_WAY) ? j : 0;
-
-			block_L2[fstb.idx][way_num].valid = 1;
-			block_L2[fstb.idx][way_num].dirty = 0;
-			block_L2[fstb.idx][way_num].tag = fstb.tag;
-
-			uint32_t blk_addr = BLK_ADDR(addr);
-			for (j = 0; j < NR_BIB; ++j)
-				block_L[fstb.idx][way_num].bib[j] = dram_read(blk_addr+j, 1);
-		}
-	}
-}
-{
-	cache_L2_addr temp;
-	temp.addr = addr;
-*/
-	/* Judge whether the first byte is in the cache */
-/*	int j;
-	for (j = 0; j < NR_WAY; ++j)
-		if ( block[index][j].valid && (block[index][j].tag == tag) )
-			break;
-
-	if (j < NR_WAY) //hit first
-	{
-		++cache_L2_hit;
-*/
-		/* data cross the boundray */
-/*		cache_L2_addr temp2;
-		temp2.addr = addr + len - 1;
-
-		if (temp2.index == temp.index)
-		{
-			block[temp.index][j].dirty = 1;
-			switch(len)
-			{
-				case 1: *(uint8_t*)(block[temp.index][j].bib + temp.byte) = (uint8_t)data;
-				case 2: *(uint16_t*)(block[temp.index][j].bib + temp.byte) = (uint16_t)data;
-				case 4: *(uint32_t*)(block[temp.index][j].bib + temp.byte) = (uint32_t)data;
-			}
-		}
-		else
-		{
-			int j2;
-			for (j2 = 0; j2 < NR_WAY; ++j2)
-				if ( block[temp2.index][j2].valid  &&  (block[temp2.index][j2].tag == temp2.tag) )
-					break;
-
-			if (j2 < NR_WAY) //hit again
-			{
-				block[temp.index][j].dirty = 1;
-				block[temp2.index][j2].dirty = 1;
-
-				size_t len2 = temp2.addr - (temp2.addr>>BIB_WIDTH<<BIB_WIDTH) + 1;
-				size_t len1 = len - len2;
-				int i;
-				for (i = 0; i < len1; ++i)
-					block[temp.index][j].bib[temp.byte + i] = GetByte(data, i);
-				for (i = 0; i < len2; ++i)
-					block[temp2.index][j2].bib[i] = GetByte(data, len1+i);
-			}
-			else			//miss
-			{
-				block[temp.index][j].dirty = 1;
-
-				size_t len2 = temp2.addr - (temp2.addr>>BIB_WIDTH<<BIB_WIDTH) + 1;
-				size_t len1 = len - len2;
-				int i;
-				for (i = 0; i < len1; ++i)
-					block[temp.index][j].bib[temp.byte + i] = GetByte(data, i);
-
-				//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-
-				uint32_t way_num;
-
-				for (i = 0; i < NR_WAY; ++i)
-					if ( !block[temp2.index][j2].valid )
-						break;
-				way_num = (i < NR_WAY) ? i : 0;
-				
-				if ( block[index2][way_num].dirty )
-				{
-					swaddr_t addr_temp = BlockAddr_to_hwaddr(block[index2][way_num].tag, index2);
-					for (i = 0; i < NR_WAY; ++i)
-						swaddr_write(addr_temp+i, 1, block[index2][way_num].bib[i]);
-				}
-
-				block[index2][way_num].valid = 1;
-				block[index2][way_num].dirty = 0;
-				block[index2][way_num].tag = temp2.tag;
-
-				uint32_t addr_temp = hwaddr_to_BlockAddr(temp2.addr);
-				for (i = 0; i < NR_BIB; ++i)
-					Block[index2][way_num].bib[i] = dram_read(addr_temp+i, 1);
-
-				return dram_read(addr, len);
-			}
-		}
-	}
-	else			//miss
-	{
-	}
-		dram_write(addr, len, data);
-
-		//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-		
-		uint32_t way_num;
-
-		int i
-		for (i = 0; i < NR_WAY; ++i)
-			if ( !block[temp.index][j].valid )
-				break;
-		way_num = (i < NR_WAY) ? i : 0;
-
-		//Write Back
-		if ( block[temp.index][j].dirty )
-		{
-			hwaddr_t addr_temp = BlockAddr_to_hwaddr(block[temp.index][way_num].tag, index);
-			for (i = 0; i < NR_WAY; ++i)
-				swaddr_write(addr_temp+i, 1, block[temp.index][way_num].bib[i]);
-		}
-
-		//Write Allocate
-		block[temp.index][way_num].valid = 1;
-		block[temp.index][way_num].dirty = 0;
-		block[temp.index][way_num].tag = temp.tag;
-
-		uint32_t addr_temp = hwaddr_to_BlockAddr(temp.addr);
-		for (i = 0; i < NR_BIB; ++i)
-			block[temp.index][way_num].bib[i] = dram_read(addr_temp+i, 1);
-}*/
