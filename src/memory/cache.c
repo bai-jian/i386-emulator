@@ -114,151 +114,48 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 		return *(uint32_t*)(block[fstb.idx][way].bib + fstb.aib) & (0xFFFFFFFFu >> ((4-len)<<3));
 	}
 }
-/*
-		}
-	cache_addr temp;
-	temp.addr = addr;
-	uint32_t tag = temp.tag;
-	uint32_t index = temp.index;
-	uint32_t byte = temp.byte;
 
-*/	/* Judge whether the first byte is in the cache */
-/*	int j;
-	for (j = 0; j < NR_WAY; ++j)
-		if ( block[index][j].valid && (block[index][j].tag == tag) )
-			break;
 
-	if (j < NR_WAY) //hit first
-	{
-		++hit;
-		int k;
-		for (k = 0; k < NR_BIB; ++k)
-			data[k] = block[index][j].bib[k];
-
-*/		/* data cross the boundary */
-/*		cache_addr temp2;
-		temp2.addr = addr + len - 1;
-		uint32_t tag2 = temp2.tag;
-		uint32_t index2 = temp2.index;
-		
-		if ( index2 == index)
-			return *(uint32_t*)(block[index][j].bib+byte) & (~0u>>((4-len)<<3));
-		else
-		{
-			for (j = 0; j < NR_WAY; ++j)
-				if ( block[index2][j].valid && (block[index2][j].tag == tag2) )
-					break;
-
-			if (j < NR_WAY)  //hit again
-			{
-				for (k = 0; k < NR_BIB; ++k)
-					data[NR_BIB+k] = block[index2][j].bib[k];
-
-				return *(uint32_t*)(data+byte) & (~0u >> ((4-len)<<3));
-			}
-			else			//miss again
-			{
-				//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-
-				uint32_t way_num;
-
-				int i;
-				for (i = 0; i < NR_WAY; ++i)
-					if ( !block[index2][i].valid )
-						break;
-				way_num = (i < NR_WAY) ? i : 0;
-
-				block[index2][way_num].valid = true;
-				block[index2][way_num].tag = tag2;
-
-				uint32_t addr_temp = temp2.addr >> BIB_WIDTH << BIB_WIDTH;
-				for (i = 0; i < NR_BIB; ++i)
-					block[index2][way_num].bib[i] = dram_read(addr_temp+i, 1);
-
-				return dram_read(addr, len);
-			}
-		}
-	} 
-	else			//miss
-	{
-		++miss;
-		//Replacement Algorithm: randomized algorithm, replace BLOCK 0
-
-		uint32_t way_num;
-
-		int i;
-		for (i = 0; i < NR_WAY; ++i)
-			if ( !block[index][i].valid )
-				break;
-		way_num = (i < NR_WAY) ? i : 0;
-
-		block[index][way_num].valid = true;
-		block[index][way_num].tag = tag;
-
-		uint32_t addr_temp = temp.addr >> BIB_WIDTH << BIB_WIDTH;
-		for (i = 0; i < NR_BIB; ++i)
-			block[index][way_num].bib[i] = cache_L2_read(addr_temp+i, 1);
-
-		return cache_L2_read(addr, len);
-	} 
-}
-*/
-/* Write Through and Not Write Allocate */
 void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 {
-	assert(len == 1 || len == 2 || len == 4);
+	cache_addr fstb;  fstb.addr = addr;            //fstb: the first byte
+	cache_addr lstb;  lstb.addr = addr + len - 1;  //lstb: the last byte
 
-	cache_addr temp;
-	temp.addr = addr;
-	uint32_t tag = temp.tag;
-	uint32_t index = temp.idx;
-	uint32_t byte = temp.aib;
-
-	/* Judge whether the first byte is in the cache */
-	int j;
-	for (j = 0; j < NR_WAY; ++j)
-		if ( block[index][j].valid && (block[index][j].tag == tag) )
-			break;
-
-	if (j < NR_WAY) //hit first
-	{ 
-		++hit;
-		/* data cross the boundary */
-		cache_addr temp2;
-		temp2.addr = addr + len - 1;
-		uint32_t tag2 = temp2.tag;
-		uint32_t index2 = temp2.idx;
-
-		if ( index2 == index)
-		{
-			switch(len)
-			{
-				case 1: *(uint8_t*)(block[index][j].bib+byte) = (uint8_t)data;
-				case 2: *(uint16_t*)(block[index][j].bib+byte) = (uint16_t)data;
-				case 4: *(uint32_t*)(block[index][j].bib+byte) = (uint32_t)data;
-			}
-			dram_write(addr, len, data);
-		}
-		else
-		{
-			block[index][j].valid = false;
-
-			for (j = 0; j < NR_WAY; ++j)
-				if ( block[index2][j].valid && (block[index2][j].tag == tag2) )
-					break;
-
-			if (j < NR_WAY)  //hit again
-			{
-				block[index2][j].valid = false;
-				dram_write(addr, len, data);
-			}
-			else			//miss again
-				dram_write(addr, len, data);
-		}
-	}
-	else			//miss
+	// Judge whether data crosses the boundary
+	if (fstb.idx != lstb.idx)  // data crossing
 	{
-		++miss;
-		cache_L2_write(addr, len, data);
+		hwaddr_t addr2 = BLK_ADDR(lstb.addr);
+		size_t len1 = addr2 - addr;
+		size_t len2 = len - len1;
+		uint32_t data1 = data << (8*len2) >> (8*len2);
+		uint32_t data2 = data >> (8*len1);
+		cache_write(addr, len1, data1);
+		cache_write(addr, len2, data2);
+		return;
+	}
+	else  // data not crossing
+	{
+		// Judge hit or miss
+		int way;
+		for (way = 0; way < NR_WAY; ++way)
+			if ( block[fstb.idx][way].valid && (block[fstb.idx][way].tag == fstb.tag) )
+				break;
+
+		// hit or miss calculates
+		(way < NR_WAY)  ?  ++hit  :  ++miss;
+
+		if (way < NR_WAY)  // hit, write through
+		{
+			// write cache itself
+			int i;
+			for (i = 0; i < len; ++i)
+				block[fstb.idx][way].bib[fstb.aib + i] = (uint8_t) ( (data >> (8*i)) & 0x000000FF );
+			// write cache L2
+			cache_L2_write(addr, len, data);
+		}
+		else  // miss, write not allocate
+		{	cache_L2_write(addr, len, data);  }
+
+		return;
 	}
 }
