@@ -103,6 +103,7 @@ void init_signal()
 }
 
 extern uint32_t hit, miss;
+extern uint32_t cache_L2_hit, cache_L2, miss;
 static void cmd_c() 
 {
 	if(nemu_state == END) {
@@ -112,7 +113,9 @@ static void cmd_c()
 	nemu_state = RUNNING;
 	cpu_exec(-1);
 
-	printf("cache:  hit = %u, miss = %u\n", hit, miss);
+	printf("Some information on the program:\n");
+	printf("    cache L1:    hit = %u\4tmiss = %u\n", hit, miss);
+	printf("    cache L2:    hit = %u\4tmiss = %u\n", hit, miss);
 
 	if(nemu_state != END) { nemu_state = STOP; }
 }

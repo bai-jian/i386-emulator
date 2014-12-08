@@ -71,6 +71,7 @@ extern uint32_t loader_len;
 void load_prog();
 void init_dram();
 void init_cache();
+void init_cache_L2();
 void restart() 
 {
 	/* Perform some initialization to restart a program */
@@ -84,6 +85,7 @@ void restart()
 
 	init_dram();
 	init_cache();
+	init_cache_L2();
 }
 
 static void print_bin_instr(swaddr_t eip, int len) 
