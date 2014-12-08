@@ -100,7 +100,7 @@ uint32_t cache_L2_read(hwaddr_t addr, size_t len)
 		// hit or miss calculates
 		(i < NR_WAY)  ?  ++cache_L2_hit  :  ++cache_L2_miss;
 
-		// miss  and  (load or replacement)
+		// miss  and  load/replace
 		// Replacement Algorithm: randomized algorithm, replace BLOCK 0
 		if (i == NR_WAY)
 		{
