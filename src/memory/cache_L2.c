@@ -92,36 +92,34 @@ uint32_t cache_L2_read(hwaddr_t addr, size_t len)
 	else                       // data not crossing
  	{
 		// Judge hit or miss
-		int i;
-		for (i = 0; i < NR_WAY; ++i)
-			if ( block_L2[fstb.idx][i].valid && (block_L2[fstb.idx][i].tag == fstb.tag) )
+		int way;
+		for (way = 0; way < NR_WAY; ++way)
+			if ( block_L2[fstb.idx][way].valid && (block_L2[fstb.idx][way].tag == fstb.tag) )
 				break;
 
 		// hit or miss calculates
-		(i < NR_WAY)  ?  ++cache_L2_hit  :  ++cache_L2_miss;
+		(way < NR_WAY)  ?  ++cache_L2_hit  :  ++cache_L2_miss;
 
-		// miss  and  load/replace
-		// Replacement Algorithm: randomized algorithm, replace BLOCK 0
-		if (i == NR_WAY)
+		if (way == NR_WAY)  // miss
 		{
-			uint32_t way_num;
-
-			int j;
-			for (j = 0; j < NR_WAY; ++j)
-				if ( !block_L2[fstb.idx][j].valid )
+			// Judge load or replace
+			// Replacement Algorithm: randomized algorithm, replace BLOCK 0
+			int i;
+			for (i = 0; i < NR_WAY; ++i)
+				if ( !block_L2[fstb.idx][i].valid )
 					break;
-			way_num = (j < NR_WAY) ? j : 0;
+			way = (i < NR_WAY) ? i : 0;
 
-			block_L2[fstb.idx][way_num].valid = 1;
-			block_L2[fstb.idx][way_num].dirty = 0;
-			block_L2[fstb.idx][way_num].tag = fstb.tag;
+			block_L2[fstb.idx][way].valid = 1;
+			block_L2[fstb.idx][way].dirty = 0;
+			block_L2[fstb.idx][way].tag = fstb.tag;
 
 			hwaddr_t blk_addr = BLK_ADDR(fstb.addr);
-			for (j = 0; j < NR_BIB; ++j)
-				block_L2[fstb.idx][way_num].bib[j] = dram_read(blk_addr+j, 1);
+			for (i = 0; i < NR_BIB; ++i)
+				block_L2[fstb.idx][way].bib[i] = dram_read(blk_addr+i, 1);
 		}
 		
-		return  *(uint32_t*)(block_L2[fstb.idx][i].bib + fstb.aib)  &  (0xFFFFFFFFu >> ((4-len)<<3));
+		return  *(uint32_t*)(block_L2[fstb.idx][way].bib + fstb.aib)  &  (0xFFFFFFFFu >> ((4-len)<<3));
 	}
 }
 
