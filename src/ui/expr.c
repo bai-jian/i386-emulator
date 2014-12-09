@@ -70,7 +70,7 @@ static struct rule
 {
 	/*white space*/			{" +", NOTYPE, NON_P},
 	/*number     */			{"[0-9]+|0x[0-9A-Fa-f]+",  NUM, NON_P},
-	/*symbol     */         {"[_A-Fa-f][_0-9A-Fa-f]+", SYM, SYM_P},
+	/*symbol     */         {"(_|[A-Fa-f])(_|[0-9A-Fa-f])*", SYM, SYM_P},
 	/*left par   */			{"\\(", LPA, NON_P},
 	/*right par  */			{"\\)", RPA, NON_P},
 
