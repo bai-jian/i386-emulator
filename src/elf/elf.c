@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <elf.h>
 #include <sys/stat.h>
+#include <string.h>
 
 static int main_argc;
 static char **main_argv;
@@ -11,6 +12,18 @@ static char *exec_file;
 static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
+
+swaddr_t symbol(char* name)
+{
+	int i;
+	for (i = 0; i < nr_symtab_entry; ++i)
+	{
+		if ( (symtab[i].st_info == STT_OBJECT || symtab[i].st_info == STT_FUNC)  && \
+			 (strcmp(strtab + symtab[i].st_name, name) == 0 ) )
+			return symtab[i].st_value;
+	}
+	return 0;
+}
 
 void set_main_args(int argc, char *argv[])
 {

@@ -218,15 +218,19 @@ void mend_token(char* e)
 	return ;
 }
 
+swaddr_t symbol(char*);
 bool check_parentheses(int, int);
 int dom_op(int, int);
 size_t eval_expr(int p, int q)
 {
-	if (p == q) 
+	if (p == q)
+	{
 		switch (tokens[p].type)
 		{
 			case NUM:
 				return strtol(tokens[p].str, NULL, 0);
+			case SYM:
+				return symbol(tokens[p].str);
 			case REG:
 				if ( strcmp( tokens[p].str, "eax" ) ) return cpu.eax;
 				if ( strcmp( tokens[p].str, "ecx" ) ) return cpu.ecx;
@@ -237,6 +241,7 @@ size_t eval_expr(int p, int q)
 				if ( strcmp( tokens[p].str, "esi" ) ) return cpu.esi;
 				if ( strcmp( tokens[p].str, "edi" ) ) return cpu.edi;
  		}
+	}
 	else
 	{
 		if (check_parentheses(p, q))
