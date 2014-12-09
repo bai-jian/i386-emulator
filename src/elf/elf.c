@@ -22,7 +22,8 @@ swaddr_t symbol(char* name)
 			 (strcmp(name, strtab + symtab[i].st_name) == 0 ) )
 			return symtab[i].st_value;
 	//	if (i == 2) assert(strcmp(strtab + symtab[i].st_name, name) == 0 );
-		printf("%s\n", name);
+	Log("%s\n", name);
+	//	printf("%s\n", name);
 	//	printf("%s\n", strtab+symtab[i].st_name);
 	}
 	assert(i == 2);
