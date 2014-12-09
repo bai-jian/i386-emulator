@@ -159,7 +159,7 @@ void make_token(char* e)
    	 {  
 		for(i = 0; i < NR_REGEX; i ++) 
  	  	 {
-			if( regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) 
+			if( regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0 ) 
  	 		{
 				char* substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
@@ -169,8 +169,15 @@ void make_token(char* e)
 				{
 					case NOTYPE: break;
 
-					case NUM: 
+					case NUM:
 						tokens[nr_token].type = NUM;
+						strncpy(tokens[nr_token].str, e+position, substr_len);
+						++nr_token;
+
+						break;
+
+					case SYM:
+						tokens[nr_token].type = SYM;
 						strncpy(tokens[nr_token].str, e+position, substr_len);
 						++nr_token;
 
