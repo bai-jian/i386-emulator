@@ -45,14 +45,14 @@ typedef union
 } CPU_state;
 extern CPU_state cpu;
 
-enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
-enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
-enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
-
+// GPR: usual usage
 #define reg_l(index) (cpu.gpr[index]._32)
 #define reg_w(index) (cpu.gpr[index]._16)
 #define reg_b(index) (cpu.gpr[index & 0x3]._8[index >> 2])
-
+enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
+enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
+enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
+// GPR: name strings
 extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
