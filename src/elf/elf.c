@@ -28,7 +28,7 @@ swaddr_t symbol(char* name)
 	//	printf("%s\n", name);
 	//	printf("%s\n", strtab+symtab[i].st_name);
 	}
-	assert(i == 2);
+	Log("%d\n", i);
 	return 0;
 }
 
