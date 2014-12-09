@@ -12,7 +12,8 @@ static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
-void set_main_args(int argc, char *argv[]) {
+void set_main_args(int argc, char *argv[])
+{
 	main_argc = argc;
 	main_argv = argv;
 	exec_file = main_argv[0];

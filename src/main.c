@@ -14,10 +14,13 @@ void reg_test();
 int enable_debug = false;
 int quiet = false;
 
-static void process_args(int argc, char *argv[]) {
+static void process_args(int argc, char *argv[])
+{
 	int opt;
-	while( (opt = getopt(argc, argv, "dq")) != -1) {
-		switch(opt) {
+	while( (opt = getopt(argc, argv, "dq")) != -1)
+	{
+		switch(opt)
+		{
 			case 'd':
 				enable_debug = true;
 				break;
@@ -35,7 +38,8 @@ static void process_args(int argc, char *argv[]) {
 	set_main_args(argc - optind, argv + optind);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[])
+{
 	process_args(argc, argv);
 
 	/* Perform some global initialization */
