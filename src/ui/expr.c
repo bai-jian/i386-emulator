@@ -25,6 +25,8 @@ enum
 /*regester         */		REG, 
 /*derefence        */		DER, 
 
+/*symbol           */       SYM,
+
 /*arithmatic ops   */		DEC, ADD, SUB, MUL, DIV, MOD, 
 /*shift ops        */		SHL, SHR,
 /*relation ops     */       BEL, BEQ, ABV, AEQ, EQA, NEQ,
@@ -36,6 +38,7 @@ enum
 #define NON_P  0
 #define REG_P  1
 #define DER_P  1
+#define SYM_P  1
 #define BNT_P  1
 #define LNT_P  1
 #define DEC_P  1
@@ -66,7 +69,8 @@ static struct rule
 } rules[] = 
 {
 	/*white space*/			{" +", NOTYPE, NON_P},
-	/*number     */			{"[0-9]+|0x[0-9A-Fa-f]+",NUM, NON_P},
+	/*number     */			{"[0-9]+|0x[0-9A-Fa-f]+",  NUM, NON_P},
+	/*symbol     */         {"[_A-Fa-f][_0-9A-Fa-f]+", SYM, SYM_P},
 	/*left par   */			{"\\(", LPA, NON_P},
 	/*right par  */			{"\\)", RPA, NON_P},
 
