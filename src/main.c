@@ -8,14 +8,13 @@ int quiet = false;         // not allowing to print the execution process
 
 
 static void process_args(int argc, char* argv[]);
-void load_table();
-void main_loop();
-void set_main_args(int, char * []);
 void init_bp_pool();
 void init_wp_pool();
 void init_regex();
 void init_signal();
+void load_table();
 void reg_test();
+void main_loop();
 int main(int argc, char* argv[])
 {
 	process_args(argc, argv);
@@ -36,6 +35,7 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
+void set_main_args(int, char * []);
 static void process_args(int argc, char *argv[])
 {
 	int opt;
