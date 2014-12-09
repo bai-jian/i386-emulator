@@ -46,35 +46,38 @@ void load_table( )
 	assert(elf->e_version == EV_CURRENT);				// current version
 
 
-	/* Load section header table */
+	// Load section header table
 	uint32_t sh_size = elf->e_shentsize * elf->e_shnum;
-	Elf32_Shdr *sh = malloc(sh_size);
+	Elf32_Shdr* sh = malloc(sh_size);
 	fseek(fp, elf->e_shoff, SEEK_SET);
 	fread(sh, sh_size, 1, fp);
 
-	/* Load section header string table */
-	char *shstrtab = malloc(sh[elf->e_shstrndx].sh_size);
+
+	// Load section header string table
+	char* shstrtab = malloc(sh[elf->e_shstrndx].sh_size);
 	fseek(fp, sh[elf->e_shstrndx].sh_offset, SEEK_SET);
 	fread(shstrtab, sh[elf->e_shstrndx].sh_size, 1, fp);
 
 	int i;
-	for(i = 0; i < elf->e_shnum; i ++) {
-		if(sh[i].sh_type == SHT_SYMTAB && 
-				strcmp(shstrtab + sh[i].sh_name, ".symtab") == 0) {
-			/* Load symbol table from exec_file */
+	for(i = 0; i < elf->e_shnum; i ++)
+	{
+		if(sh[i].sh_type == SHT_SYMTAB && strcmp(shstrtab + sh[i].sh_name, ".symtab") == 0)
+		{
+			// Load symbol table from exec_file
 			symtab = malloc(sh[i].sh_size);
 			fseek(fp, sh[i].sh_offset, SEEK_SET);
 			fread(symtab, sh[i].sh_size, 1, fp);
 			nr_symtab_entry = sh[i].sh_size / sizeof(symtab[0]);
 		}
-		else if(sh[i].sh_type == SHT_STRTAB && 
-				strcmp(shstrtab + sh[i].sh_name, ".strtab") == 0) {
-			/* Load string table from exec_file */
+		else if(sh[i].sh_type == SHT_STRTAB && strcmp(shstrtab + sh[i].sh_name, ".strtab") == 0)
+		{
+			// Load string table from exec_file
 			strtab = malloc(sh[i].sh_size);
 			fseek(fp, sh[i].sh_offset, SEEK_SET);
 			fread(strtab, sh[i].sh_size, 1, fp);
 		}
 	}
+
 
 	free(sh);
 	free(shstrtab);
@@ -84,12 +87,13 @@ void load_table( )
 	fclose(fp);
 }
 
-void load_prog() {
+void load_prog( )
+{
 	struct stat st;
 	stat(exec_file, &st);
 	assert(st.st_size < 0xa0000);
 
-	FILE *fp = fopen(exec_file, "rb");
+	FILE* fp = fopen(exec_file, "rb");
 	assert(fp);
 
 	/* We do not have a virtual hard disk now. Before we have a virutal hard disk,
@@ -100,4 +104,3 @@ void load_prog() {
 	fread(hwa_to_va(0), st.st_size, 1, fp);
 	fclose(fp);
 }
-
