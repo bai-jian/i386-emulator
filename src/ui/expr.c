@@ -1,10 +1,18 @@
-
 #include "common.h"
 #include "nemu.h"
 
 #include <stdlib.h>
+
 #include <sys/types.h>
 #include <regex.h>
+/* Compile a regular expression into a form suitable for regexec() searches
+ *     int regcomp(regex_t* preg, const char* regex, int cflags);
+ * Turn the error codes that can be returned by regcomp() and regexec() into the error message strings
+ *     size_t regerror(int errcode, const regex_t* preg, char* errbuf, size_t buf_size);
+ * Match Regex
+ *     int regexec(const regex_t* preg, const char* string, size_t nmatch, regmatch_t pmatch[], int eflags
+ */
+
 
 
 /*Token Types and Operators*/
@@ -18,7 +26,7 @@ enum
 /*derefence        */		DER, 
 
 /*arithmatic ops   */		DEC, ADD, SUB, MUL, DIV, MOD, 
-/*shift ops*/				SHL, SHR,
+/*shift ops        */		SHL, SHR,
 /*relation ops     */       BEL, BEQ, ABV, AEQ, EQA, NEQ,
 /*bit-wisw ops     */		BNT, BAD, BXO, BOR,
 /*logical ops      */		LNT, LAD, LOR
@@ -52,7 +60,7 @@ enum
 
 static struct rule 
 {
-	char *regex;
+	char* regex;
 	int token_type;
 	int precedence;
 } rules[] = 
@@ -97,16 +105,7 @@ static struct rule
 
 static regex_t re[NR_REGEX];
 
-struct token
-{
-	int type;
-	int prec;
-	char str[32];
-} tokens[32];
-int nr_token;
-
-
-/*Initialization*/
+// Initialize regex rules and Judge the regex valid
 void init_regex()
 {
 	int ret;
@@ -117,13 +116,21 @@ void init_regex()
 	{
 		ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
 		if(ret != 0) 
-		{
+ 		{
 			regerror(ret, &re[i], error_msg, 128);
 //			test(0, "regex compilation failed: %s\n%s\n", error_msg, rules[i].regex); 
  		}
- 	}
+ 	} 
 }
 
+
+struct token
+{
+	int type;
+	int prec;
+	char str[32];
+} tokens[32];
+int nr_token;
 
 void make_token(char*);
 void mend_token(char*);
