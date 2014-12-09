@@ -18,7 +18,7 @@ swaddr_t symbol(char* name)
 	int i;
 	for (i = 0; i < nr_symtab_entry; ++i)
 	{
-		if ( (symtab[i].st_info == STT_OBJECT || symtab[i].st_info == STT_FUNC)  && \
+		if ( /*(symtab[i].st_info == STT_OBJECT || symtab[i].st_info == STT_FUNC)  && */\
 			 (strcmp(name, strtab + symtab[i].st_name) == 0 ) )
 			return symtab[i].st_value;
 	//	if (i == 2) assert(strcmp(strtab + symtab[i].st_name, name) == 0 );
