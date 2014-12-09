@@ -18,22 +18,22 @@ void set_main_args(int argc, char *argv[]) {
 	exec_file = main_argv[0];
 }
 
-/* Load symbol table and string table from ELF file for future use.
- * For detail information, please refer to "man elf". */
-void load_table() {
-	FILE *fp = fopen(exec_file, "rb");
+/* Load symbol table and string table from ELF file */
+void load_table( )
+{
+	FILE* fp = fopen(exec_file, "rb");
 	test(fp, "file not exist!");
 
+	// Load the first 4M bytes from the exec_file in buf[], containing the ELF header and the Program Headers
 	uint8_t buf[4096];
-	/* Read the first 4096 bytes from the exec_file.
-	 * They should contain the ELF header and program headers. */
 	fread(buf, 4096, 1, fp);
+	Elf32_Ehdr* elf = (void *)buf;
 
-	/* The first several bytes contain the ELF header. */
-	Elf32_Ehdr *elf = (void *)buf;
+
+	// The first several bytes contain the ELF header
+	// Check ELF header
 	char magic[] = {ELFMAG0, ELFMAG1, ELFMAG2, ELFMAG3};
 
-	/* Check ELF header */
 	assert(memcmp(elf->e_ident, magic, 4) == 0);		// magic number
 	assert(elf->e_ident[EI_CLASS] == ELFCLASS32);		// 32-bit architecture
 	assert(elf->e_ident[EI_DATA] == ELFDATA2LSB);		// littel-endian
@@ -79,8 +79,7 @@ void load_table() {
 	free(sh);
 	free(shstrtab);
 
-	/* Double check */
-	assert(strtab != NULL && symtab != NULL);
+	assert(strtab != NULL && symtab != NULL);  // Double check
 
 	fclose(fp);
 }
