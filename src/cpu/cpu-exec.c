@@ -60,7 +60,15 @@ void cpu_exec(volatile uint32_t n)
 			bool changed = test_wp();
 			if (changed) { nemu_state = STOP; return; }
 		}
-		if (nemu_state == END)  { return;    }
+
+		switch(nemu_state)
+		{
+			case END:
+				return;
+
+			case RUNNING:
+				if (n == 0)  nemu_state = STOP;
+		}
 	}
 }
 
