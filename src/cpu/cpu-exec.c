@@ -67,7 +67,7 @@ void cpu_exec(volatile uint32_t n)
 				return;
 
 			case RUNNING:
-				if (n == 0)  nemu_state = STOP;
+				if (n == 0)  { nemu_state = STOP;  return;  }
 		}
 	}
 }
