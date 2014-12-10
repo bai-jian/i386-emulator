@@ -146,8 +146,8 @@ static void cmd_x()
 	int num = strtol(p1, NULL, 0);
 	swaddr_t addr = expr(p2);
 
-	printf("  The beginning memory address: %.8X\n", addr);
-	int i = 0;
+	printf("  The beginning memory address: 0x%.8X\n", addr);
+	int i;
 	for (i = 0; i < num; ++i)
 	{	
 		printf("      %.2X    %.2X    %.2X    %.2X\n",  \
