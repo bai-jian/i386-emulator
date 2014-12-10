@@ -118,7 +118,7 @@ char* rl_gets()
 
 static void cmd_info()
 {
-	if (saveptr == NULL)
+	if (*saveptr == '\0')
 	{
 		printf("  Unknown command 'info'. Enter 'info r' or 'info b'.\n");
 		return;
