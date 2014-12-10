@@ -2,6 +2,6 @@
 
 start:
 	movl  $0, %ebp
-	movl  $(1<<27), %esp
+	movl  $(128<<20), %esp
 
 	jmp init
