@@ -114,22 +114,7 @@ char* rl_gets()
 
 	return line_read;
 }
-/*
-static void cmd_r()
-{
-	cpu_exec(-1);
-}
-static void cmd_si()
-{
-	char* p = strtok_r(NULL, " ", &saveptr);
-	int num = p ? strtol(p, NULL, 0) : 1;
-	cpu_exec(num); 
-}
-static void cmd_c() 
-{
-	cpu_exec(-1);
-}
-*/
+
 static void cmd_info()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
@@ -147,11 +132,9 @@ static void cmd_info()
 		printf("  CF=%d  ZF=%d  SF=%d  PF=%d  OF=%d\n", (int)cpu.CF, (int)cpu.ZF, (int)cpu.SF, (int)cpu.PF, (int)cpu.OF );
 		return;
 	}
-	if (strcmp(p, "b") == 0)
-	{
-		print_bp();
-		return;
-	}
+
+	if (strcmp(p, "b") == 0)  print_bp();
+
 	printf("Unknown command 'info %s'\n", line_read);
 }
 
@@ -168,8 +151,6 @@ static void cmd_x()
 		printf("%2X\t %2X\t %2X\t %2X\n", \
 				swaddr_read(addr+4*i+0, 1), swaddr_read(addr+4*i+1, 1),\
 				swaddr_read(addr+4*i+2, 1), swaddr_read(addr+4*i+3, 1));
-
-	return;
 }
 
 static void cmd_b()
@@ -178,8 +159,6 @@ static void cmd_b()
 	size_t addr = expr(e);
 
 	new_bp(addr);
-
-	return;
 }
 
 static void cmd_d()
@@ -188,16 +167,12 @@ static void cmd_d()
 	int n = strtol(p, NULL, 0);
 
 	free_bp(n);
-
-	return;
 }
 
 static void cmd_w()
 {
 	char* e = strtok_r(NULL, "", &saveptr);
 	new_wp(e);
-
-	return;
 }
 static void cmd_p()
 {
@@ -205,6 +180,4 @@ static void cmd_p()
 	size_t val = expr(e);
 
 	printf("%s = %u\n", e, val);
-
-	return;
 }
