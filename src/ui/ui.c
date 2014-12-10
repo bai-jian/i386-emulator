@@ -58,12 +58,14 @@ void main_loop()
 
 		if (p == NULL) { continue; }
 
+		// nemu_state machine
+		// Init: nemu_state = END;
 		if (strcmp(p, "r") == 0)	{ cmd_r();	  continue; }
+		if (strcmp(p, "si") == 0)   { cmd_si();   continue; }
 		if (strcmp(p, "c") == 0)	{ cmd_c();	  continue; }
 
 		if (strcmp(p, "q") == 0) 	{ return;               }
 
-		if (strcmp(p, "si") == 0)   { cmd_si();   continue; }
 
 		if (strcmp(p, "info") == 0) { cmd_info(); continue; }
 		if (strcmp(p, "x") == 0)	{ cmd_x();	  continue; }
@@ -82,7 +84,6 @@ void main_loop()
 
 
 void cpu_exec(uint32_t);
-void restart();
 char* rl_gets() 
 {
 	if (line_read) 
@@ -118,29 +119,37 @@ static void cmd_c()
 	if(nemu_state != END) { nemu_state = STOP; }
 }
 
-static void cmd_r() 
+void restart();
+static void cmd_r( )
 {
-	if(nemu_state != END) 
+	switch( nemu_state )
 	{
-		char c;
-		while(1) 
-		{
-			printf("The program is running. Restart the program? (y or n)");
-			fflush(stdout);
-			scanf(" %c", &c);
-			switch(c)
-			{
-				case 'y': goto restart_;
-				case 'n': return;
-				default: puts("Please answer y or n.");
-			}
-		}
-	} 
+		case END:
+			goto nemu_state_CASE_END;
+			break;
 
-restart_:
+		default:
+			while(1) 
+			{
+				char c;
+				printf("The program is running. Restart the program? (y or n)");
+				fflush(stdout);
+				scanf(" %c", &c);
+				switch(c)
+				{
+					case 'y':  goto nemu_state_CASE_END;
+					case 'n':  return;
+					default:   puts("Please answer y or n.");
+				}
+			}
+
+	}
+
+nemu_state_CASE_END:
+	nemu_state = RUNNING;
 	restart();
-	nemu_state = STOP;
-	cmd_c();
+	cpu_exec(-1);
+	return;
 }
 
 static void cmd_si()
