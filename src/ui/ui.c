@@ -41,11 +41,15 @@ void init_signal()
 static char* line_read = NULL;
 static char* saveptr = NULL;
 
+// Execute instructions of some length
+#define SUB_NUM strtok_r(NULL, " ", &saveptr)
+#define INSTR_LEN  SUB_NUM  ?  strtol(SUB_NUM, NULL, 0) : 1
+#define INSTR_END  -1
+void cpu_exec(uint32_t);
+static void cmd_exec(uint32_t num)  { return cpu_exec(num);  }
+
 char* rl_gets();
 void restart();
-static void cmd_r();
-static void cmd_c();
-static void cmd_si();
 static void cmd_info();
 static void cmd_x();
 static void cmd_b();
@@ -66,16 +70,16 @@ void main_loop()
 		switch( nemu_state )  // NEMU: a State Machine(nemu_state = END when initialization)
 		{
 			case END:
-				if (strcmp(p, "r")  == 0)	{ nemu_state = RUNNING;  restart();  cmd_r();   continue;  }
-				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  restart();  cmd_si();  continue;  }
+				if (strcmp(p, "r")  == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_END);   continue;  }
+				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_LEN);  continue;  }
 
 				puts("The Program does not start. Use 'r' or 'si' command to start the program.\n");
 
 				break;
 
 			case STOP:
-				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_c();  continue;  }
-				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_si(); continue;  }
+				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
+				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_LEN);  continue;  }
 				// look up information of registers, memory, breakpoint, watchpoint
 				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
 				if (strcmp(p, "x") == 0)	{ cmd_x();	   continue;  }
@@ -110,8 +114,7 @@ char* rl_gets()
 
 	return line_read;
 }
-
-void cpu_exec(uint32_t);
+/*
 static void cmd_r()
 {
 	cpu_exec(-1);
@@ -126,7 +129,7 @@ static void cmd_c()
 {
 	cpu_exec(-1);
 }
-
+*/
 static void cmd_info()
 {
 	char* p = strtok_r(NULL, " ", &saveptr);
