@@ -125,30 +125,28 @@ static void cmd_r( )
 	switch( nemu_state )
 	{
 		case END:
-			goto nemu_state_CASE_END;
+			nemu_state = RUNNING;
 			break;
 
 		default:
 			while(1) 
 			{
-				char c;
-				printf("The program is running. Restart the program? (y or n)");
-				fflush(stdout);
-				scanf(" %c", &c);
+				printf("The program is running. Restart the program? (y or n)");  fflush(stdout);
+				char c;  scanf(" %c", &c);
 				switch(c)
 				{
-					case 'y':  goto nemu_state_CASE_END;
+					case 'y':  nemu_state = RUNNING;
 					case 'n':  return;
 					default:   puts("Please answer y or n.");
 				}
 			}
-
 	}
 
-nemu_state_CASE_END:
-	nemu_state = RUNNING;
 	restart();
 	cpu_exec(-1);
+
+	nemu_state = END;
+
 	return;
 }
 
