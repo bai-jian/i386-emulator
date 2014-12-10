@@ -42,8 +42,8 @@ static char* line_read = NULL;
 static char* saveptr = NULL;
 
 // Execute instructions of some length
-#define SUB_NUM strtok_r(NULL, " ", &saveptr)
-#define INSTR_LEN  SUB_NUM  ?  strtol(SUB_NUM, NULL, 0) : 1
+#define SUB_NUM ( strtok_r(NULL, " ", &saveptr) )
+#define INSTR_LEN  (SUB_NUM  ?  strtol(SUB_NUM, NULL, 0) : 1)
 #define INSTR_END  -1
 void cpu_exec(uint32_t);
 static void cmd_exec(uint32_t num)  { return cpu_exec(num);  }
@@ -59,7 +59,7 @@ static void cmd_p();
 void main_loop() 
 { 
  	while(1)
- 	{
+ 	{ 
         rl_gets();
 		char* p = strtok_r(line_read, " ", &saveptr);
 
@@ -71,7 +71,7 @@ void main_loop()
 		{
 			case END:
 				if (strcmp(p, "r")  == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_END);   continue;  }
-				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_LEN);  continue;  }
+				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_LEN);   continue;  }
 
 				puts("The Program does not start. Use 'r' or 'si' command to start the program.\n");
 
@@ -83,7 +83,7 @@ void main_loop()
 				// look up information of registers, memory, breakpoint, watchpoint
 				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
 				if (strcmp(p, "x") == 0)	{ cmd_x();	   continue;  }
-				if (strcmp(p, "p") == 0)	{ cmd_p();    continue; }
+				if (strcmp(p, "p") == 0)	{ cmd_p();     continue;  }
 
 				if (strcmp(p, "b") == 0)	{ cmd_b();     continue;  }
 				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
@@ -93,7 +93,7 @@ void main_loop()
 
 			case RUNNING:  break;
 			case INT:      break;
-		}
+	 	}
 
 		printf("Unknown command '%s'\n", p); 
     }
