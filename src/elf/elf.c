@@ -17,16 +17,9 @@ swaddr_t symbol(char* name)
 	int i;
 	for (i = 0; i < nr_symtab_entry; ++i)
 	{
-	//  symtab->st_info is a bit field. Only several bits is associative with the symbol type.
-	//	if (  (symtab[i].st_info & 0x0F)  ==  STT_OBJECT  || (symtab[i].st_info & 0x0F)  ==  STT_FUNC  )
-	
-//	for (j = 0; name[j] && ptr[j]; ++j)
-//		if (name[j] != ptr[j])  break;
-
-//	if (name[j] == '\0' && ptr[j] == '\0')
-//		return symtab[i].st_value;
-
-		if ( strcmp(name, strtab + symtab[i].st_name) == 0 )
+		//  symtab->st_info is a bit field and the Low 4 bits represent the symbol type.
+		if (  (symtab[i].st_info & 0x0F)  ==  STT_OBJECT  || (symtab[i].st_info & 0x0F)  ==  STT_FUNC  )
+		if (   strcmp(name, strtab + symtab[i].st_name) == 0    )
 				return symtab[i].st_value;
 	
 		Log("%d %x %s", symtab[i].st_info, symtab[i].st_value, strtab + symtab[i].st_name);
