@@ -25,5 +25,6 @@ void loader( )
 
 	( (void(*)(void)) elf->e_entry) ();
 
-	HIT_GOOD_TRAP;
+//	HIT_GOOD_TRAP;
 }
+
