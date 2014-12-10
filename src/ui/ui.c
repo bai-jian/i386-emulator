@@ -139,7 +139,11 @@ static void cmd_info()
 		return;
 	}
 
-	if (strcmp(p, "b") == 0)  print_bp();
+	if (strcmp(p, "b") == 0)
+	{
+		print_bp();
+		return;
+	}
 
 	printf("Unknown command 'info %s'\n", line_read);
 }
