@@ -130,23 +130,17 @@ static void cmd_r()
 			scanf(" %c", &c);
 			switch(c)
 			{
-				case 'y':
-					restart();
-					nemu_state = STOP;
-					cmd_c();
-					break;
-
+				case 'y': goto restart_;
 				case 'n': return;
 				default: puts("Please answer y or n.");
 			}
 		}
 	} 
-/*
+
 restart_:
 	restart();
 	nemu_state = STOP;
 	cmd_c();
-	*/
 }
 
 static void cmd_si()
