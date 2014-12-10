@@ -42,11 +42,11 @@ static char* line_read = NULL;
 static char* saveptr = NULL;
 
 // Execute instructions of some length
-#define SUB_NUM ( strtok_r(NULL, " ", &saveptr) )
+#define SUB_NUM ( strtok_r(NULL, "", &saveptr) )
 #define INSTR_LEN  (SUB_NUM  ?  strtol(SUB_NUM, NULL, 0) : 1)
 #define INSTR_END  -1
 void cpu_exec(uint32_t);
-static void cmd_exec(uint32_t num)  { return cpu_exec(num);  }
+static void cmd_exec(uint32_t num)  {  cpu_exec(num);  }
 
 char* rl_gets();
 void restart();
@@ -80,22 +80,24 @@ void main_loop()
 			case STOP:
 				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
 				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_LEN);  continue;  }
-				// look up information of registers, memory, breakpoint, watchpoint
+
+				// Look up information of registers, memory, breakpoint, watchpoint
 				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
 				if (strcmp(p, "x") == 0)	{ cmd_x();	   continue;  }
 				if (strcmp(p, "p") == 0)	{ cmd_p();     continue;  }
 
+				// Create or delete breakpoints and watchpoints
 				if (strcmp(p, "b") == 0)	{ cmd_b();     continue;  }
 				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
 				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  }
+
+				printf("Unknown command '%s'\n", p); 
 
 				break;
 
 			case RUNNING:  break;
 			case INT:      break;
 	 	}
-
-		printf("Unknown command '%s'\n", p); 
     }
 }
 
