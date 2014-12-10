@@ -135,6 +135,7 @@ static void cmd_info()
 		printf("  esp   0x%.8X    %d\n", cpu.esp, cpu.esp);
 		printf("  esi   0x%.8X    %d\n", cpu.esi, cpu.esi);
  		printf("  edi   0x%.8X    %d\n", cpu.edi, cpu.edi);
+		printf("  eip   0x%.8X    %d\n", cpu.eip, cpu.eip);
 		printf("  CF=%d  ZF=%d  SF=%d  PF=%d  OF=%d\n", (int)cpu.CF, (int)cpu.ZF, (int)cpu.SF, (int)cpu.PF, (int)cpu.OF );
 		return;
 	}
