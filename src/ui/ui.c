@@ -61,7 +61,8 @@ void main_loop()
 
 		if (p == NULL)            { continue; }
 		if (strcmp(p, "q") == 0)  { return;   }
-Log("%d\n", nemu_state);
+
+
 		switch( nemu_state )  // NEMU: a State Machine(nemu_state = END when initialization)
 		{
 			case END:
@@ -70,9 +71,6 @@ Log("%d\n", nemu_state);
 
 				puts("The Program does not start. Use 'r' or 'si' command to start the program.\n");
 
-				break;
-
-			case RUNNING:
 				break;
 
 			case STOP:
@@ -89,8 +87,8 @@ Log("%d\n", nemu_state);
 
 				break;
 
-			case INT:
-				break;
+			case RUNNING:  break;
+			case INT:      break;
 		}
 
 		printf("Unknown command '%s'\n", p); 
