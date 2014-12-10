@@ -14,14 +14,21 @@ static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
 swaddr_t symbol(char* name)
-{
+{ 
+	Log("%d\n", STT_NOTYPE);
+	Log("%d\n", STT_OBJECT);
+	Log("%d\n", STT_FUNC);
+	Log("%d\n", STT_SECTION);
 	int i;
 	for (i = 0; i < nr_symtab_entry; ++i)
 	{
 		if ( (symtab[i].st_info == STT_OBJECT || symtab[i].st_info == STT_FUNC)  && \
 			 (strcmp(name, strtab + symtab[i].st_name) == 0 ) )
 			return symtab[i].st_value;
-		if (i == 7)  assert(symtab[i].st_info == STT_NOTYPE);
+
+		if (i == 7)
+			Log("%s %d", strtab + symtab[i].st_name, symtab[i].st_info);
+
 	}
 	return 0;
 }
