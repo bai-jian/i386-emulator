@@ -43,7 +43,7 @@ static char* saveptr = NULL;
 
 // Execute instructions of some length
 #define SUB_NUM ( strtok_r(NULL, "", &saveptr) )
-#define INSTR_LEN  (SUB_NUM  ?  strtol(SUB_NUM, NULL, 0) : 1)
+#define INSTR_LEN  ((SUB_NUM)  ?  strtol((SUB_NUM), NULL, 0) : 1)
 #define INSTR_END  -1
 void cpu_exec(uint32_t);
 static void cmd_exec(uint32_t num)  {  cpu_exec(num);  }
@@ -73,7 +73,7 @@ void main_loop()
 				if (strcmp(p, "r")  == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_END);   continue;  }
 				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_LEN);   continue;  }
 
-				puts("The Program does not start. Use 'r' or 'si' command to start the program.\n");
+				puts("The Program does not start. Use 'r' or 'si' command to start the program.");
 
 				break;
 
