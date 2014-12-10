@@ -21,7 +21,7 @@ swaddr_t symbol(char* name)
 		if ( (symtab[i].st_info == STT_OBJECT || symtab[i].st_info == STT_FUNC)  && \
 			 (strcmp(name, strtab + symtab[i].st_name) == 0 ) )
 			return symtab[i].st_value;
-		if (i == 7)  assert(symtab[i].st_info == STT_FUNC);
+		if (i == 7)  assert(symtab[i].st_info == STB_GLOBAL);
 	}
 	return 0;
 }
