@@ -14,6 +14,8 @@
 #include <readline/history.h>
 
 
+extern uint32_t hit, miss;
+extern uint32_t cache_L2_hit, cache_L2, miss;
 
 int nemu_state = END;
 
@@ -40,6 +42,7 @@ static char* line_read = NULL;
 static char* saveptr = NULL;
 
 char* rl_gets();
+void restart();
 static void cmd_r();
 static void cmd_c();
 static void cmd_si();
@@ -56,34 +59,45 @@ void main_loop()
         rl_gets();
 		char* p = strtok_r(line_read, " ", &saveptr);
 
-		if (p == NULL) { continue; }
+		if (p == NULL)            { continue; }
+		if (strcmp(p, "q") == 0)  { return;   }
 
-		// nemu_state machine
-		// Init: nemu_state = END;
-		if (strcmp(p, "r") == 0)	{ cmd_r();	  continue; }
-		if (strcmp(p, "si") == 0)   { cmd_si();   continue; }
-		if (strcmp(p, "c") == 0)	{ cmd_c();	  continue; }
+		// NEMU: a State Machine(nemu_state = END when initialization)
+		switch( nemu_state )
+		{
+			case END:
+				if (strcmp(p, "r")  == 0)	{ nemu_state = RUNNING;  restart();  cmd_r();   continue;  }
+				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  restart();  cmd_si();  continue;  }
 
-		if (strcmp(p, "q") == 0) 	{ return;               }
+				puts("The Program does not start. Use 'r' or 'si' command to start the program.\n");
 
+				break;
 
-		if (strcmp(p, "info") == 0) { cmd_info(); continue; }
-		if (strcmp(p, "x") == 0)	{ cmd_x();	  continue; }
+			case RUNNING:
+				break;
 
-		if (strcmp(p, "b") == 0)	{ cmd_b();    continue; }
-		if (strcmp(p, "d") == 0)	{ cmd_d();    continue; }
-		if (strcmp(p, "w") == 0)	{ cmd_w();    continue; }
+			case STOP:
+				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_c();  continue;  }
+				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_si(); continue;  }
+				// look up information of registers, memory, breakpoint, watchpoint
+				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
+				if (strcmp(p, "x") == 0)	{ cmd_x();	   continue;  }
+				if (strcmp(p, "p") == 0)	{ cmd_p();    continue; }
 
-		if (strcmp(p, "p") == 0)	{ cmd_p();    continue; }
+				if (strcmp(p, "b") == 0)	{ cmd_b();     continue;  }
+				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
+				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  }
+
+				break;
+
+			case INT:
+				break;
+		}
 
 		printf("Unknown command '%s'\n", p); 
-    	} 
-
-	return;
+    }
 }
 
-
-void cpu_exec(uint32_t);
 char* rl_gets() 
 {
 	if (line_read) 
@@ -100,67 +114,20 @@ char* rl_gets()
 	return line_read;
 }
 
-
-extern uint32_t hit, miss;
-extern uint32_t cache_L2_hit, cache_L2, miss;
-static void cmd_c() 
+void cpu_exec(uint32_t);
+static void cmd_r()
 {
-	if(nemu_state == END) {
-		puts("The Program does not start. Use 'r' command to start the program.");
-		return; } 
-
-	nemu_state = RUNNING;
 	cpu_exec(-1);
-
-	printf("\nSome information on the program:\n");
-	printf("    cache L1:    hit = %u \t miss = %u\n", hit, miss);
-	printf("    cache L2:    hit = %u \t miss = %u\n", hit, miss);
-
-	if(nemu_state != END) { nemu_state = STOP; }
 }
-
-void restart();
-static void cmd_r( )
-{
-	switch( nemu_state )
-	{
-		case END:
-			nemu_state = RUNNING;
-			break;
-
-		default:
-			while(1) 
-			{
-				printf("The program is running. Restart the program? (y or n)");  fflush(stdout);
-				char c;  scanf(" %c", &c);
-				switch(c)
-				{
-					case 'y':  nemu_state = RUNNING;
-					case 'n':  return;
-					default:   puts("Please answer y or n.");
-				}
-			}
-	}
-
-	restart();
-	cpu_exec(-1);
-
-	nemu_state = END;
-
-	return;
-}
-
 static void cmd_si()
 {
-	static bool first = true;
-	if ( first )  {  restart();  first = false;  }
-
 	char* p = strtok_r(NULL, " ", &saveptr);
 	int num = p ? strtol(p, NULL, 0) : 1;
-
 	cpu_exec(num); 
-
-	return; 
+}
+static void cmd_c() 
+{
+	cpu_exec(-1);
 }
 
 static void cmd_info()
@@ -179,12 +146,15 @@ static void cmd_info()
  		printf("edi = 0x%.8X    %d\n", cpu.edi, cpu.edi);
 		printf("CF=%d  ZF=%d  SF=%d  PF=%d  OF=%d\n",\
 			   (int)cpu.CF, (int)cpu.ZF, (int)cpu.SF, (int)cpu.PF, (int)cpu.OF);
-	}
-	else  if (strcmp(p, "b") == 0) { print_bp(); }
-	else 
-		printf("Unknown command '%s'\n", line_read);
 
-	return;
+		return;
+	}
+	if (strcmp(p, "b") == 0)
+	{
+		print_bp();
+		return;
+	}
+	printf("Unknown command 'info %s'\n", line_read);
 }
 
 static void cmd_x()
