@@ -14,26 +14,41 @@
 #include <readline/history.h>
 
 
+
 int nemu_state = END;
 
+
+// This function will be called when you press <C-c>. And it will return to where you press <C-c>. 
+static void control_C(int signum) 
+{
+	if(nemu_state == RUNNING) 
+		nemu_state = INT;
+}
+void init_signal() 
+{
+	// Register a signal handler
+	struct sigaction s;
+	memset(&s, 0, sizeof(s));
+	s.sa_handler = control_C;
+	int ret = sigaction(SIGINT, &s, NULL);
+	assert(ret == 0);
+}
+
+
+// Commond Resolution
 static char* line_read = NULL;
 static char* saveptr = NULL;
 
 char* rl_gets();
 static void cmd_r();
 static void cmd_c();
-
 static void cmd_si();
-
 static void cmd_info();
 static void cmd_x();
-
 static void cmd_b();
 static void cmd_d();
 static void cmd_w();
-
 static void cmd_p();
-
 void main_loop() 
 { 
  	while(1)
@@ -45,6 +60,7 @@ void main_loop()
 
 		if (strcmp(p, "r") == 0)	{ cmd_r();	  continue; }
 		if (strcmp(p, "c") == 0)	{ cmd_c();	  continue; }
+
 		if (strcmp(p, "q") == 0) 	{ return;               }
 
 		if (strcmp(p, "si") == 0)   { cmd_si();   continue; }
@@ -83,25 +99,6 @@ char* rl_gets()
 	return line_read;
 }
 
-/* This function will be called when you press <C-c>. And it will return to 
- * where you press <C-c>. If you are interesting in how it works, please
- * search for "Unix signal" in the Internet.
- */
-static void control_C(int signum) 
-{
-	if(nemu_state == RUNNING) 
-		nemu_state = INT;
-}
-
-void init_signal() 
-{
-	/* Register a signal handler. */
-	struct sigaction s;
-	memset(&s, 0, sizeof(s));
-	s.sa_handler = control_C;
-	int ret = sigaction(SIGINT, &s, NULL);
-	assert(ret == 0);
-}
 
 extern uint32_t hit, miss;
 extern uint32_t cache_L2_hit, cache_L2, miss;
@@ -131,17 +128,25 @@ static void cmd_r()
 			printf("The program is running. Restart the program? (y or n)");
 			fflush(stdout);
 			scanf(" %c", &c);
-			switch(c) {
-				case 'y': goto restart_;
+			switch(c)
+			{
+				case 'y':
+					restart();
+					nemu_state = STOP;
+					cmd_c();
+					break;
+
 				case 'n': return;
-				default: puts("Please answer y or n."); }
+				default: puts("Please answer y or n.");
+			}
 		}
 	} 
-
+/*
 restart_:
 	restart();
 	nemu_state = STOP;
 	cmd_c();
+	*/
 }
 
 static void cmd_si()
