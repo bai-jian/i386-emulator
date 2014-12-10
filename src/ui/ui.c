@@ -13,6 +13,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+
 int nemu_state = END;
 
 static char* line_read = NULL;

@@ -21,14 +21,8 @@ swaddr_t symbol(char* name)
 		if ( /*(symtab[i].st_info == STT_OBJECT || symtab[i].st_info == STT_FUNC)  && */\
 			 (strcmp(name, strtab + symtab[i].st_name) == 0 ) )
 			return symtab[i].st_value;
-	//	if (i == 2) assert(strcmp(strtab + symtab[i].st_name, name) == 0 );
-	int j = strcmp(name, "main");
-	Log("%d\n", j);
-	Log("%s\n", name);
-	//	printf("%s\n", name);
-	//	printf("%s\n", strtab+symtab[i].st_name);
+		if (i == 7)  assert(symtab[i].st_info == STT_OBJECT);
 	}
-	Log("%d\n", i);
 	return 0;
 }
 
