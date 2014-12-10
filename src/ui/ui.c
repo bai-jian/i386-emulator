@@ -61,7 +61,7 @@ void main_loop()
 
 		if (p == NULL)            { continue; }
 		if (strcmp(p, "q") == 0)  { return;   }
-
+Log("%d\n", nemu_state);
 		switch( nemu_state )  // NEMU: a State Machine(nemu_state = END when initialization)
 		{
 			case END:
