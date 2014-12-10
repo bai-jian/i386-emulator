@@ -42,7 +42,6 @@ static char* line_read = NULL;
 static char* saveptr = NULL;
 
 // Execute instructions of some length
-#define SUB_NUM ( strtok_r(NULL, "", &saveptr) )
 #define INSTR_LEN  ((saveptr)  ?  strtol(saveptr, NULL, 0) : 1)
 #define INSTR_END  -1
 void cpu_exec(uint32_t);
