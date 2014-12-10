@@ -85,7 +85,7 @@ static struct rule
 	/*logical or */			{"\\|\\|",LOR, LOR_P},
 
 /*Uncommon Single Operators*/
-	/*reg        */			{"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi)", REG, REG_P},
+	/*reg        */			{"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip)", REG, REG_P},
 	/*div        */			{"/",   DIV, DIV_P},
 	/*mod        */			{"%",   MOD, MOD_P},
 	/*bitwise not*/			{"~",   BNT, BNT_P},
@@ -241,14 +241,15 @@ size_t eval_expr(int p, int q)
 			case SYM:
 				return symbol(tokens[p].str);
 			case REG:
-				if ( strcmp( tokens[p].str, "eax" ) ) return cpu.eax;
-				if ( strcmp( tokens[p].str, "ecx" ) ) return cpu.ecx;
-				if ( strcmp( tokens[p].str, "edx" ) ) return cpu.edx;
-				if ( strcmp( tokens[p].str, "ebx" ) ) return cpu.ebx;
-				if ( strcmp( tokens[p].str, "ebp" ) ) return cpu.ebp;
-				if ( strcmp( tokens[p].str, "esp" ) ) return cpu.esp;
-				if ( strcmp( tokens[p].str, "esi" ) ) return cpu.esi;
-				if ( strcmp( tokens[p].str, "edi" ) ) return cpu.edi;
+				if ( strcmp(tokens[p].str, "eax") == 0)  return cpu.eax;
+				if ( strcmp(tokens[p].str, "ecx") == 0)  return cpu.ecx;
+				if ( strcmp(tokens[p].str, "edx") == 0)  return cpu.edx;
+				if ( strcmp(tokens[p].str, "ebx") == 0)  return cpu.ebx;
+				if ( strcmp(tokens[p].str, "ebp") == 0)  return cpu.ebp;
+				if ( strcmp(tokens[p].str, "esp") == 0)  return cpu.esp;
+				if ( strcmp(tokens[p].str, "esi") == 0)  return cpu.esi;
+				if ( strcmp(tokens[p].str, "edi") == 0)  return cpu.edi;
+				if ( strcmp(tokens[p].str, "eip") == 0)  return cpu.eip;
  		}
 	}
 	else
