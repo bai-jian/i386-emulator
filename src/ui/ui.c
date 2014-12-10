@@ -143,15 +143,17 @@ static void cmd_x()
 {
 	char* p1 = strtok_r(NULL, " ", &saveptr);
 	char* p2 = strtok_r(NULL, " ", &saveptr);
-
 	int num = strtol(p1, NULL, 0);
-	unsigned int addr = strtol(p2, NULL, 16);
+	swaddr_t addr = expr(p2);
 
+	printf("  The beginning memory address: %.8X\n", addr);
 	int i = 0;
-	for (i = 0; i < num; ++i) 
-		printf("%2X\t %2X\t %2X\t %2X\n", \
-				swaddr_read(addr+4*i+0, 1), swaddr_read(addr+4*i+1, 1),\
+	for (i = 0; i < num; ++i)
+	{	
+		printf("      %.2X    %.2X    %.2X    %.2X\n",  \
+				swaddr_read(addr+4*i+0, 1), swaddr_read(addr+4*i+1, 1),  \
 				swaddr_read(addr+4*i+2, 1), swaddr_read(addr+4*i+3, 1));
+	}
 }
 
 static void cmd_b()
