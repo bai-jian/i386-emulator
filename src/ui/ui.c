@@ -118,7 +118,11 @@ char* rl_gets()
 
 static void cmd_info()
 {
-	if (saveptr == NULL)  printf("  Unknown command 'info'. Enter 'info r' or 'info b'.\n");
+	if (saveptr == NULL)
+	{
+		printf("  Unknown command 'info'. Enter 'info r' or 'info b'.\n");
+		return;
+	}
 	char* p = strtok_r(NULL, " ", &saveptr);
 
   	if (strcmp(p, "r") == 0) 
