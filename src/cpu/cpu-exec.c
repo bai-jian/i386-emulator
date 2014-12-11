@@ -6,8 +6,8 @@
 
 #include <setjmp.h>
 
-//LOADER_START should more larger, causing no conflict against ELF.
-//SO, change from 0x100000 to 0x1000000
+// The start address of 'loader' is at 0x100000
+// The start address of 'user program' is at 0x800000
 #define LOADER_START 0x100000
 
 jmp_buf jbuf;	/* Make it easy to perform exception handling */
