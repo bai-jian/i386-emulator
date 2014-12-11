@@ -152,8 +152,19 @@ static void cmd_info()
 
 static void cmd_x()
 {
+	if (*saveptr == '\0')
+	{
+		printf("  Unknown command. The formula should be 'x N EXPR'.\n");
+		return;
+	}	
 	char* p1 = strtok_r(NULL, " ", &saveptr);
+	if (*saveptr == '\0')
+	{
+		printf("  Unknown command. The formula should be 'x N EXPR'.\n");
+		return;
+	}	
 	char* p2 = strtok_r(NULL, " ", &saveptr);
+
 	int num = strtol(p1, NULL, 0);
 	swaddr_t addr = expr(p2);
 
