@@ -6,7 +6,7 @@
 
 #include <setjmp.h>
 
-#define LOADER_START 0x100000
+#define LOADER_START 0x1000000
 
 jmp_buf jbuf;	/* Make it easy to perform exception handling */
 extern int quiet;
