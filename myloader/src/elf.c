@@ -17,9 +17,9 @@ void loader( )
 		{
 			int j;
 			for (j = 0; j < ph[i].p_filesz; ++j)
-				*(uint8_t*)(ph[i].p_vaddr + j) = *(uint8_t*)(ph[i].p_offset + j);
+				*(uint8_t*)((uint8_t*)ph[i].p_vaddr + j) = *(uint8_t*)((uint8_t*)ph[i].p_offset + j);
 			for (; j < ph[i].p_memsz; ++j)
-				*(uint8_t*)(ph[i].p_vaddr + j) = 0;
+				*(uint8_t*)((uint8_t*)ph[i].p_vaddr + j) = 0;
 		}
 	}
 
