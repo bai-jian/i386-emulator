@@ -77,6 +77,7 @@ void main_loop()
 				break;
 
 			case STOP:
+				if (strcmp(p, "r")  == 0)   { nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
 				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
 				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_LEN);  continue;  }
 
@@ -159,10 +160,12 @@ static void cmd_x()
 	printf("  The beginning memory address: 0x%.8X\n", addr);
 	int i;
 	for (i = 0; i < num; ++i)
-	{	
-		printf("      %.2X    %.2X    %.2X    %.2X\n",  \
-				swaddr_read(addr+4*i+0, 1), swaddr_read(addr+4*i+1, 1),  \
-				swaddr_read(addr+4*i+2, 1), swaddr_read(addr+4*i+3, 1));
+	{
+		printf("      0x%.8X", addr + 4*i );
+		printf("    0x%.2X",   swaddr_read(addr+4*i+0, 1) );
+		printf("    0x%.2X",   swaddr_read(addr+4*i+1, 1) );
+		printf("    0x%.2X",   swaddr_read(addr+4*i+2, 1) );
+		printf("    0x%.2X\n", swaddr_read(addr+4*i+3, 1) );
 	}
 }
 
