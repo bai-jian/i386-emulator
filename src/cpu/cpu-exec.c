@@ -100,7 +100,7 @@ void restart()
 
 static void print_bin_instr(swaddr_t eip, int len) 
 {
-	printf("%8x:   ", eip);
+	printf("  0x%.8x:   ", eip);
 
 	int i;
 	for(i = 0; i < len; i ++) 
