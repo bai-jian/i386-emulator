@@ -62,13 +62,13 @@ typedef union
 				{
 					struct
 					{
-						uint32_t PE	: 1;  // Proctetion Enable
-						uint32_t MP : 1;  // Math Present
-						uint32_t EM : 1;  // EMulation
-						uint32_t TS : 1;  // Task Switched
-						uint32_t ET : 1;  // Extension Type
+						uint32_t CR0_PE	: 1;  // Proctetion Enable
+						uint32_t CR0_MP : 1;  // Math Present
+						uint32_t CR0_EM : 1;  // EMulation
+						uint32_t CR0_TS : 1;  // Task Switched
+						uint32_t CR0_ET : 1;  // Extension Type
 						uint32_t    : 26; // reserved
-						uint32_t PG : 1;  // paging
+						uint32_t CR0_PG : 1;  // paging
 					};
 					// CR1: reserved
 					// CR2: Page Fault Linear Address
