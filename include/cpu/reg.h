@@ -50,12 +50,16 @@ typedef struct
 
 	// Instruction Pointer Register
 		uint32_t eip;
-
 		
 	// Segment Registers
 		union
 		{
-			uint16_t sreg[6];
+			union
+			{
+				uint16_t RPL:   2;
+				uint16_t TI:    1;
+				uint16_t index:  13;
+			} sreg[6];
 			struct
 			{
 				uint16_t CS, SS, DS, ES, FS, GS;
@@ -89,6 +93,7 @@ typedef struct
 } CPU_state;
 extern CPU_state cpu;
 
+
 // GPR: usual usage
 #define reg_l(index) (cpu.gpr[index]._32)
 #define reg_w(index) (cpu.gpr[index]._16)
@@ -101,8 +106,10 @@ extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
 
+
 // SREG
 extern uint8_t current_sreg;
 enum { R_CS, R_SS, R_DS, R_ES, R_FS, R_GS };
+
 
 #endif

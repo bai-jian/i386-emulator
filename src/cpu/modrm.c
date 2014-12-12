@@ -4,23 +4,23 @@
 
 #include "nemu.h"
 
+
 char ModR_M_asm[MODRM_ASM_BUF_SIZE];
 #define print_ModR_M_asm(...) \
 	assert(snprintf(ModR_M_asm, MODRM_ASM_BUF_SIZE, __VA_ARGS__) < MODRM_ASM_BUF_SIZE )
 
-/* For more details about instruction format, please refer to i386 manual. */
-int read_ModR_M(swaddr_t eip, swaddr_t *addr) {
-	ModR_M m;
-	m.val = instr_fetch(eip, 1);
+
+int read_ModR_M(swaddr_t eip, swaddr_t* addr)
+{
+	int instr_len = 1;
+
+	ModR_M m;  m.val = instr_fetch(eip, 1);
 	int32_t disp;
-	int instr_len, disp_offset, disp_size;
+	int disp_offset, disp_size;
 	int base_reg = -1, index_reg = -1, scale = 0;
 
-	/* When m.mod == 3, the instruction is not going to access memory.
-	 * This situation should be handle before calling read_ModR_M(). 
-	 * Therefore, m.mod should not be 3 here.
-	 */
-	assert(m.mod != 3);
+	if (m.mod == 3)  assert(0);
+	
 	disp_size = 4;
 	if(m.R_M == R_ESP) {
 		SIB s;
