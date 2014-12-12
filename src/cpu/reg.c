@@ -10,6 +10,9 @@ const char *regsw[] = {"ax", "cx", "dx", "bx", "sp", "bp", "si", "di"};
 const char *regsb[] = {"al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"};
 
 
+uint8_t current_sreg = 0;
+
+
 
 #include <stdlib.h>
 #include <time.h>
