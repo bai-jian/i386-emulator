@@ -1,18 +1,17 @@
 #include "common.h"
 
-
 #include "cpu/reg.h"
 
+
+/* Memory Interfaces*/
+//uint32_t swaddr_read(swaddr_t addr, size_t len);
+//void swaddr_write(swaddr_t addr, size_t len, uint32_t data);
+//uint32_t instr_fetch(swaddr_t addr, size_t len);
 
 lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg);
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len);
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data);
-
-uint32_t swaddr_read(swaddr_t addr, size_t len);
-void swaddr_write(swaddr_t addr, size_t len, uint32_t data);
-uint32_t instr_fetch(swaddr_t addr, size_t len);
-
 
 uint32_t swaddr_read(swaddr_t addr, size_t len)
 {

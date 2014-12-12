@@ -44,6 +44,8 @@ int read_ModR_M(swaddr_t eip, swaddr_t* addr)
 	}
 	else if(m.mod == 1) { disp_size = 1; }
 
+	// Data Segment is DS or SS
+	current_sreg = (base_reg == R_EBP) ? R_SS : R_DS;
 
 	char disp_buf[16];
 	char base_buf[8];
