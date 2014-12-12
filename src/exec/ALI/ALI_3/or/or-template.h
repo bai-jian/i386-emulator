@@ -42,7 +42,7 @@ make_helper( concat(or_i2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("or" str(SUFFIX) "    $0x%x,%s", imm, ModR_M_asm);
+		print_asm("or" str(SUFFIX) "    $0x%x, %s", imm, ModR_M_asm);
 
 		return 1 + len + imm_byte;
 	}
@@ -60,7 +60,7 @@ make_helper( concat(or_i2rm_, SUFFIX) )
 		concat(set_SF_, SUFFIX) (value);
 		concat(set_PF_, SUFFIX) (value);
 
-		print_asm("or" str(SUFFIX) "    $0x%x,%%%s", imm, REG_NAME(reg_i));
+		print_asm("or" str(SUFFIX) "    $0x%x, %%%s", imm, REG_NAME(reg_i));
 
 		return 1 + 1 + imm_byte;
 	} 
