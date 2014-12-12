@@ -4,21 +4,23 @@
 #include "cpu/reg.h"
 #include "cpu/modrm.h"
 
+
+// lgdt  %GDTR, m16/m32(linear address, not virtual address)
+//     call the memory-visit function: uint32_t lnaddr_read(lnaddr_t addr, size_t len);
+uint32_t lnaddr_read(lnaddr_t addr, size_t len);
 make_helper( concat(lgdt_, SUFFIX) )
 {
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
-	if (m.mod != 3)
+	if (m.R_M == R_EBP && m.mod == 0)
 	{
-		uint32_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
+		uint32_t lnaddr = lnaddr_read(eip+2, 4);
+		cpu.GDTR = lnaddr_read(lnaddr, DATA_BYTE);
 
-		DATA_TYPE mem_v = MEM_R(mem_i);
-		cpu.GDTR = mem_v;
+		print_asm("lgdt   0x%x", lnaddr);
 
-		print_asm("lgdt   %s", ModR_M_asm);
-
-		return 1 + len;
+		return 1 + 1 + 4;
 	}
-	assert(0);
+	assert(0);  // never get here
 }
 
 
