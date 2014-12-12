@@ -15,8 +15,13 @@ typedef union
 
 	struct
 	{
+		// General Purpose Registers
 		uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
+
+		// Instruction Pointer Register
 		uint32_t eip;
+
+		// Flag Register
 		union
 		{ 
 			uint32_t eflags;
@@ -42,6 +47,13 @@ typedef union
     	        uint32_t     :  14;
 			};
 		};
+		
+		// Segment Registers
+		uint16_t CS, SS, DS, ES, FS, GS;
+
+		// Globl/Local Descriptor Table Registers
+		uint32_t GDTR, LDTR;
+
 	};
 } CPU_state;
 extern CPU_state cpu;

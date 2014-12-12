@@ -2,4 +2,5 @@
 /* CTI: control transfer instructions                 */  #include "CTI/CTI.h"
 /* DMI: data movement instructions                    */  #include "DMI/DMI.h"
 /* SCTI: string and character translation instructions*/  #include "SCTI/SCTI.h"
+/* SI: system instructions                            */  #include "SI/SI.h"
 /* misc: miscellaneous instructions                   */  #include "misc/misc.h"
