@@ -5,6 +5,6 @@
 /* System Instructions */
 
 
-#include "SI-opcode.h"
+#include "SI-opcode/SI-opcode.h"
 
 #endif
