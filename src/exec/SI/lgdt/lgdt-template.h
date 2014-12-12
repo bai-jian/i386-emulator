@@ -10,7 +10,7 @@
 uint32_t lnaddr_read(lnaddr_t addr, size_t len);
 make_helper( concat(lgdt_, SUFFIX) )
 {
-	ModR_M m;  m.val = instr_fetch(eip+1, 1);
+	ModR_M m;  m.val = lnaddr_read(eip+1, 1);
 	if (m.R_M == R_EBP && m.mod == 0)
 	{
 		uint32_t lnaddr = lnaddr_read(eip+2, 4);
