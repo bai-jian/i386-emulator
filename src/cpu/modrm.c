@@ -1,3 +1,4 @@
+#include "cpu/reg.h"
 #include "cpu/modrm.h"
 
 #include "exec/helper.h"
@@ -22,9 +23,9 @@ int read_ModR_M(swaddr_t eip, swaddr_t* addr)
 	if (m.mod == 3)  assert(0);
 	
 	disp_size = 4;
-	if(m.R_M == R_ESP) {
-		SIB s;
-		s.val = instr_fetch(eip + 1, 1);
+	if(m.R_M == R_ESP)
+	{
+		SIB s;	s.val = instr_fetch(eip+1, 1);
 		base_reg = s.base;
 		disp_offset = 2;
 		scale = s.ss;
