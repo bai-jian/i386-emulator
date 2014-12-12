@@ -94,6 +94,8 @@ make_helper(tran_mean)
 {
 	uint8_t inst = instr_fetch(eip+1, 1);
 	if ( inst == 0x01 )  return  1 + SI_v(eip + 1);
+	if ( inst == 0x20 )  return  1 + mov_cr2r(eip + 1);
+	if ( inst == 0x22 )  return  1 + mov_r2cr(eip + 1);
 	if ( inst == 0x82 )  return  1 + jb_v(eip + 1);
 	if ( inst == 0x83 )  return  1 + jae_v(eip + 1);
 	if ( inst == 0x84 )  return  1 + je_v(eip + 1);

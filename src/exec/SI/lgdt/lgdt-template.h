@@ -14,6 +14,8 @@ make_helper( concat(lgdt_, SUFFIX) )
 		DATA_TYPE mem_v = MEM_R(mem_i);
 		cpu.GDTR = mem_v;
 
+		print_asm("lgdt   %s", ModR_M_asm);
+
 		return 1 + len;
 	}
 	assert(0);

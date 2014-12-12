@@ -16,44 +16,65 @@ typedef union
 	struct
 	{
 		// General Purpose Registers
-		uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
+			uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
 
 		// Instruction Pointer Register
-		uint32_t eip;
+			uint32_t eip;
 
-		// Flag Register
-		union
-		{ 
-			uint32_t eflags;
-			struct
-		 	{
-				uint32_t CF  :  1;
-				uint32_t     :  1;
-				uint32_t PF  :  1;
-				uint32_t     :  1;
-				uint32_t AF  :  1;
-				uint32_t     :  1;
-				uint32_t ZF  :  1;
-				uint32_t SF  :  1;
-				uint32_t TF  :  1;
-				uint32_t IF  :  1;
-				uint32_t DF  :  1;
-				uint32_t OF  :  1;
-				uint32_t IOPL:  2;
-				uint32_t NT  :  1;
-				uint32_t     :  1;
-				uint32_t RF  :  1;
-				uint32_t VM  :  1;
-    	        uint32_t     :  14;
+		// Flags Register
+			union
+			{ 
+				uint32_t eflags;
+				struct
+		 		{
+					uint32_t CF  :  1;
+					uint32_t     :  1;
+					uint32_t PF  :  1;
+					uint32_t     :  1;
+					uint32_t AF  :  1;
+					uint32_t     :  1;
+					uint32_t ZF  :  1;
+					uint32_t SF  :  1;
+					uint32_t TF  :  1;
+					uint32_t IF  :  1;
+					uint32_t DF  :  1;
+					uint32_t OF  :  1;
+					uint32_t IOPL:  2;
+					uint32_t NT  :  1;
+					uint32_t     :  1;
+					uint32_t RF  :  1;
+					uint32_t VM  :  1;
+					uint32_t     :  14;
+				};
 			};
-		};
 		
 		// Segment Registers
-		uint16_t CS, SS, DS, ES, FS, GS;
+			uint16_t CS, SS, DS, ES, FS, GS;
 
 		// Globl/Local Descriptor Table Registers
-		uint32_t GDTR, LDTR;
+			uint32_t GDTR, LDTR;
 
+		// Control Registers
+			union
+			{
+				uint32_t CR[4];
+				struct
+				{
+					struct
+					{
+						uint32_t PE	: 1;  // Proctetion Enable
+						uint32_t MP : 1;  // Math Present
+						uint32_t EM : 1;  // EMulation
+						uint32_t TS : 1;  // Task Switched
+						uint32_t ET : 1;  // Extension Type
+						uint32_t    : 26; // reserved
+						uint32_t PG : 1;  // paging
+					};
+					// CR1: reserved
+					// CR2: Page Fault Linear Address
+					// CR3:
+				};
+			};
 	};
 } CPU_state;
 extern CPU_state cpu;
