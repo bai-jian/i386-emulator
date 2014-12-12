@@ -25,6 +25,6 @@ make_helper(mov_r2cr)
 	cpu.CR[m.R_M] = reg_l(m.reg);
 
 	print_asm("movl   %%%s, %%cr%d", regsl[m.reg], m.R_M);
-
+assert(0);
 	return 1 + 1;
 }
