@@ -21,7 +21,7 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	uint64_t descriptor = *( (uint64_t*)((TI == 0) ? cpu.GDTR : cpu.LDTR) + index );
 	uint8_t DPL = (descriptor >> 45) & 0x03;
 	
-
+assert(0);
 	/* Priviledge */
 	// CPL: Current Privilege Level = CS RPL
 	// RPL: Requestor's Privilege Level
@@ -33,7 +33,7 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	uint8_t CPL = cpu.sreg[R_CS].RPL;
 	if ( !(DPL >= RPL && DPL >= CPL) )  assert(0);
 
-assert(0);
+
 	uint32_t base = ( (descriptor >> 16) & 0x00FFFFFF ) + (descriptor >> 56 << 24);
 	uint32_t lnaddr = base + addr;
 
