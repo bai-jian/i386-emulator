@@ -20,7 +20,8 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	uint64_t descriptor = *( (uint64_t*)((TI == 0) ? cpu.GDTR : cpu.LDTR) + index );
 	uint8_t DPL = (descriptor >> 45) & 0x03;
 
-
+	
+	Log("%d %d %d\n", addr, addr, addr);
 	/* Priviledge */
 	// CPL: Current Privilege Level = CS RPL
 	// RPL: Requestor's Privilege Level
@@ -34,6 +35,6 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 
 	uint32_t base = ( (descriptor >> 16) & 0x00FFFFFF ) + (descriptor >> 56 << 24);
 	uint32_t lnaddr = base + addr;
-	Log("%d %d %d\n", base, addr, lnaddr);
+
 	return lnaddr;
 }
