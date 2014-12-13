@@ -25,8 +25,10 @@ void restart()
 	cpu.ebp = 0x00000000;
 	cpu.esp = 0x08000000;
 	cpu.eflags = 0x00000002;
-
+	
 	cpu.CR0_PE = 0;
+	// index: 1, TI: 0, RPL: 0
+	cpu.CS = 0x0008;
 
 	init_dram();
 	init_cache();
@@ -102,10 +104,10 @@ if (cpu.eip == 0x10000d) assert(0);
 static void print_bin_instr(swaddr_t eip, int len) 
 {
 	printf("  0x%.8x:   ", eip);
-Log("%d\n", len);
+
 	int i;
 	for(i = 0; i < len; i ++) 
-		printf("%02x ", swaddr_read(eip + i, 1));
+		printf("%.2x ", swaddr_read(eip + i, 1));
 
 	printf("%*.s", 50 - (12 + 3 * len), "");
 }
