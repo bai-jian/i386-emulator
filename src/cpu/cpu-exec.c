@@ -92,6 +92,8 @@ void restart()
 	cpu.esp = 0x08000000;
 	cpu.eflags = 0x00000002;
 
+	cpu.CR0_PE = 0;
+
 	init_dram();
 	init_cache();
 	init_cache_L2();
