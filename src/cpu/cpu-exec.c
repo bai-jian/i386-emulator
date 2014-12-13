@@ -52,12 +52,12 @@ void cpu_exec(volatile uint32_t n)
   	{
 		swaddr_t eip_temp = cpu.eip;
 		int instr_len = exec(cpu.eip);
-if (cpu.eip == 0x10000d) assert(0);
  	 	if(n_temp != -1 || (enable_debug && !quiet)) 
 		{
 			// print the instruction executed
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
+if (cpu.eip == 0x10000d) assert(0);
 		} 
 		cpu.eip += instr_len;
 
