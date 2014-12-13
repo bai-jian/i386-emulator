@@ -55,8 +55,8 @@ void cpu_exec(volatile uint32_t n)
  	 	if(n_temp != -1 || (enable_debug && !quiet)) 
 		{
 			// print the instruction executed
-if (cpu.eip == 0x10000d) assert(0);
 			print_bin_instr(eip_temp, instr_len);
+if (cpu.eip == 0x10000d) assert(0);
 			puts(assembly);
 		} 
 		cpu.eip += instr_len;
