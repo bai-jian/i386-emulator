@@ -18,7 +18,6 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	uint32_t index = cpu.sreg[cur_sreg].index;
 
 	Log("%x %x %x\n", addr, addr, index);
-	assert(0);
 	uint64_t descriptor = *( (uint64_t*)((TI == 0) ? cpu.GDTR : cpu.LDTR) + index );
 	uint8_t DPL = (descriptor >> 45) & 0x03;
 assert(0);
