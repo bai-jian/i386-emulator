@@ -32,6 +32,7 @@ void cpu_exec(volatile uint32_t n)
 
  	 	if(n_temp != -1 || (enable_debug && !quiet)) 
 		{
+			// print the last instruction executed
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
 		} 

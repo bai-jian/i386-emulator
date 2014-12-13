@@ -2,15 +2,18 @@
 
 #include "cpu/modrm.h"
 
+//jmp   rel8/rel16/rel32
+//jmp   rm16/rm32
+//jmp   ptr16:16 / ptr16:32
+
 make_helper( concat(jmp_i_, SUFFIX) )
 {
 	uint8_t instr_len = 1 + DATA_BYTE;
 
 	int32_t imm = (DATA_TYPE_S)instr_fetch(eip+1, DATA_BYTE);
+	cpu.eip += imm;
 
-	cpu.eip += imm; 
-
-	print_asm("jmp   " "0x%x", cpu.eip + instr_len);
+	print_asm("jmp    $0x%x", imm);
 
 	return instr_len;
 }
@@ -46,5 +49,16 @@ make_helper( concat(jmp_rm_, SUFFIX) )
 	}
 }
 
+make_helper( concat(jmp_seg_, SUFFIX) )
+{
+	uint8_t instr_len = 1 + 2 + DATA_BYTE;
+
+	cpu.CS = instr_fetch(eip+1, 2);
+	cpu.eip = instr_fetch(eip+3, DATA_BYTE) - instr_len;
+	
+	print_asm("jmp    $0x%x : $0x%x", cpu.CS, cpu.eip + instr_len);
+	
+	return instr_len;
+}
 
 #include "exec/template-end.h"

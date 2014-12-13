@@ -49,7 +49,11 @@ typedef struct
 		};
 
 	// Instruction Pointer Register
-		uint32_t eip;
+		union
+		{
+			uint16_t ip;
+			uint32_t eip;
+		};
 		
 	// Segment Registers
 		union
@@ -106,6 +110,9 @@ extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
 
+// IP
+#define ip_w  cpu.ip
+#define ip_l  cpu.eip
 
 // SREG
 extern uint8_t current_sreg;
