@@ -58,7 +58,7 @@ typedef struct
 	// Segment Registers
 		union
 		{
-			union
+			struct
 			{
 				uint16_t RPL:   2;
 				uint16_t TI:    1;
