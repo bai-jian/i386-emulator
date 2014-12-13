@@ -103,10 +103,10 @@ static void print_bin_instr(swaddr_t eip, int len)
 {
 	printf("  0x%.8x:   ", eip);
 
-if (cpu.eip == 0x10000d) assert(0);
 	int i;
 	for(i = 0; i < len; i ++) 
 		printf("%02x ", swaddr_read(eip + i, 1));
 
+if (cpu.eip == 0x10000d) assert(0);
 	printf("%*.s", 50 - (12 + 3 * len), "");
 }
