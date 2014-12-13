@@ -31,8 +31,8 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	//         iff    (1) target_descriptor.DPL >= requestor.RPL  &&
 	//                (2) target_descriptor.DPL >= current_program.RPL
 	uint8_t CPL = cpu.sreg[R_CS].RPL;
-	assert(0);
 	if ( !(DPL >= RPL && DPL >= CPL) )  assert(0);
+	assert(0);
 
 
 	uint32_t base = ( (descriptor >> 16) & 0x00FFFFFF ) + (descriptor >> 56 << 24);
