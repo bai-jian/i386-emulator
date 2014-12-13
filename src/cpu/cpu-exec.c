@@ -59,7 +59,7 @@ void cpu_exec(volatile uint32_t n)
 			puts(assembly);
 		} 
 		cpu.eip += instr_len;
-
+if (cpu.eip == 0x10010) assert(0);
 		switch (bp_state) 
 		{
 			case OFF: 
