@@ -38,7 +38,8 @@
 
 	.globl start
 	start:
-		lgdt    va_to_pa(gdtdesc) # See i386 manual for more information
+		lgdt    va_to_pa(gdtdesc)
+
 		movl    %cr0, %eax        # %CR0 |= PROTECT_ENABLE_BIT
 		orl     $0x1, %eax
 		movl    %eax, %cr0
@@ -70,7 +71,7 @@
 		MAKE_SEG_DESC(0x2, 0x0, 0xffffffff)  # data
 
 	gdtdesc:                      # descriptor
-		.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1
+	#	.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1
 		.long   va_to_pa(gdt)          # address of GDT
 
 
