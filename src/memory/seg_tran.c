@@ -13,13 +13,13 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	//               base[31-24] G   D   0   AVL  limit[19-16]  P    DPL   S    TYPE    A   base[23-0] limit[15-0] 
 
 
-	uint8_t RPL = cpu.sreg[cur_sreg].RPL;
+//	uint8_t RPL = cpu.sreg[cur_sreg].RPL;
 	uint8_t TI = cpu.sreg[cur_sreg].TI;
 	uint32_t index = cpu.sreg[cur_sreg].index;
 
 	Log("%x %x %x\n", addr, addr, index);
 	uint64_t descriptor = *( (uint64_t*)((TI == 0) ? cpu.GDTR : cpu.LDTR) + index );
-	uint8_t DPL = (descriptor >> 45) & 0x03;
+//	uint8_t DPL = (descriptor >> 45) & 0x03;
 	
 
 	/* Priviledge */
@@ -30,9 +30,8 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	// An changing-over of some data segment is legal
 	//         iff    (1) target_descriptor.DPL >= requestor.RPL  &&
 	//                (2) target_descriptor.DPL >= current_program.RPL
-	uint8_t CPL = cpu.sreg[R_CS].RPL;
-	if ( !(DPL >= RPL && DPL >= CPL) )  assert(0);
-	assert(0);
+//	uint8_t CPL = cpu.sreg[R_CS].RPL;
+//	if ( !(DPL >= RPL && DPL >= CPL) )  assert(0);
 
 
 	uint32_t base = ( (descriptor >> 16) & 0x00FFFFFF ) + (descriptor >> 56 << 24);
