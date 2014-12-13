@@ -51,8 +51,8 @@ void cpu_exec(volatile uint32_t n)
 	for(; n > 0; --n) 
   	{
 		swaddr_t eip_temp = cpu.eip;
-if (cpu.eip == 0x10000d) assert(0);
 		int instr_len = exec(cpu.eip);
+if (cpu.eip == 0x10000d) assert(0);
  	 	if(n_temp != -1 || (enable_debug && !quiet)) 
 		{
 			// print the instruction executed
