@@ -12,6 +12,8 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	// descriptor:     63...56   55  54  53  52     51...48     47  46 45  44  43...41  40   39...16     15...0
 	//               base[31-24] G   D   0   AVL  limit[19-16]  P    DPL   S    TYPE    A   base[23-0] limit[15-0] 
 
+	assert(0);
+
 
 	uint8_t RPL = cpu.sreg[cur_sreg].RPL;
 	uint8_t TI = cpu.sreg[cur_sreg].TI;
