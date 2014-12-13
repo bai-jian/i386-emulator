@@ -9,6 +9,31 @@
 // The start address of 'loader' is at 0x100000
 // The start address of 'user program' is at 0x800000
 #define LOADER_START 0x100000
+extern uint8_t loader [];
+extern uint32_t loader_len;
+void load_prog();
+void init_dram();
+void init_cache();
+void init_cache_L2();
+void restart() 
+{
+	/* Perform some initialization to restart a program */
+	load_prog();
+	memcpy(hwa_to_va(LOADER_START), loader, loader_len);
+
+	cpu.eip = LOADER_START;
+	cpu.ebp = 0x00000000;
+	cpu.esp = 0x08000000;
+	cpu.eflags = 0x00000002;
+
+	cpu.CR0_PE = 0;
+
+	init_dram();
+	init_cache();
+	init_cache_L2();
+}
+
+
 
 jmp_buf jbuf;	/* Make it easy to perform exception handling */
 extern int quiet;
@@ -61,7 +86,7 @@ void cpu_exec(volatile uint32_t n)
 			bool changed = test_wp();
 			if (changed) { nemu_state = STOP; return; }
 		}
-
+		assert(0);
 		switch(nemu_state)
 		{
 			case END:
@@ -71,32 +96,6 @@ void cpu_exec(volatile uint32_t n)
 				if (n == 1)  { nemu_state = STOP;  return;  }
 		}
 	}
-}
-
-
-extern uint8_t loader [];
-extern uint32_t loader_len;
-
-void load_prog();
-void init_dram();
-void init_cache();
-void init_cache_L2();
-void restart() 
-{
-	/* Perform some initialization to restart a program */
-	load_prog();
-	memcpy(hwa_to_va(LOADER_START), loader, loader_len);
-
-	cpu.eip = LOADER_START;
-	cpu.ebp = 0x00000000;
-	cpu.esp = 0x08000000;
-	cpu.eflags = 0x00000002;
-
-	cpu.CR0_PE = 0;
-
-	init_dram();
-	init_cache();
-	init_cache_L2();
 }
 
 static void print_bin_instr(swaddr_t eip, int len) 
