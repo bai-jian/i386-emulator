@@ -5,4 +5,5 @@
 #include "call/call.h"
 #include "push/push.h"
 
-#include "opcode/ALI_1-opcode.h"
+// opcode: 0xFE, 0xFF
+#include "opcode/opcode.h"
