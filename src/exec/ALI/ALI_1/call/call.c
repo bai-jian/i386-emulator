@@ -25,7 +25,7 @@ make_helper(call_rm)
 
 	ModR_M m;	m.val = instr_fetch(eip+1, 1);
 
-	int32_t disp;
+	uint32_t disp;
 	if (m.mod != 3)
 	{
 		swaddr_t mem_i;	 uint8_t len = read_ModR_M(eip+1, &mem_i);
@@ -37,7 +37,7 @@ make_helper(call_rm)
 
 	cpu.esp -= 4;
 	swaddr_write(cpu.esp, 4, eip+instr_len);
-	cpu.eip += disp;
+	cpu.eip = disp - instr_len;
 
 	print_asm("call  " "%x", cpu.eip + instr_len);
 
