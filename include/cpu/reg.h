@@ -99,7 +99,7 @@ typedef struct
 				struct
 				{
 					uint32_t     :  12;
-					uint32_t pdba:  20;
+					uint32_t CR3_pdba:  20;
 				};
 			};
 		};

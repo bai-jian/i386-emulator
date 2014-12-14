@@ -1,6 +1,8 @@
 #include "common.h"
 
-/* Virtual Memory Space <- Physical Memory Space */
+#include "cpu/reg.h"
+
+/* Virtual Memory Space <-> Physical Memory Space */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len);
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data);
@@ -11,15 +13,14 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data);
 #define DIR_WIDTH 10
 typedef struct
 {
-	uint32_t VPO  :  12;
-	uint32_t PAGE :  10;
-	uint32_t DIR  :  10;
+	uint32_t vpo  :  VPO_WIDTH;  // Virtual Page Offset
+	uint32_t page :  PAGE_WIDTH;
+	uint32_t dir  :  DIR_WIDTH; 
 } VA_t; // VA_t: Virtual Memory
 
 
-/* Define [Page Table] or [Page Directory Table] */
-#define NR_PAGE (1 << PAGE_WIDTH)
-struct
+/* Define [Page Table] or [Page Directory Table], they shares the same form */
+typedef struct
 {
 	uint32_t P   : 1;  // the page frame is Present
 	uint32_t RW  : 1;
@@ -31,31 +32,63 @@ struct
 	uint32_t     : 2;
 	uint32_t AVL : 3;
 	uint32_t PB  : 20;  // Physical Base
-} page_table[NR_PAGE];
-#define NR_DIR (1 << DIR_WIDTH)
-struct
-{
-	uint32_t P   : 1;
-	uint32_t RW  : 1;
-	uint32_t US  : 1;
-	uint32_t PWT : 1;
-	uint32_t PCD : 1;
-	uint32_t A   : 1;
-	uint32_t D   : 1;
-	uint32_t     : 2;
-	uint32_t AVL : 3;
-	uint32_t PB  : 20;
-} dir_table[NR_DIR];
+} page_t, dir_t;
 
+
+hwaddr_t page_translate(lnaddr_t addr)
+{
+	VA_t lnaddr;  *(lnaddr_t*)(&lnaddr) = addr;
+
+	hwaddr_t dir_base = cpu.CR3_pdba;
+	hwaddr_t page_base = ( (dir_t*) ((dir_base<<12)+(lnaddr.dir<<2)) )->PB;
+	hwaddr_t base = ( (page_t*) ((page_base<<12)+(lnaddr.page<<2)) )->PB;
+	hwaddr_t hwaddr = (base << 12) + lnaddr.vpo;
+
+	return hwaddr;
+}
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len)
 {
 	VA_t fstb;  *(lnaddr_t*)(&fstb) = addr;
 	VA_t lstb;  *(lnaddr_t*)(&lstb) = addr + len - 1;
-	return hwaddr_read(addr, len);
+	
+	// Judge whether data crosses the boundary
+	if (fstb.page != lstb.page)
+	{
+		lnaddr_t addr2 = (addr + len - 1) & 0xFFFFFC00;
+		size_t len1 = addr2 - addr;
+		size_t len2 = len - len1;
+		uint32_t data1 = lnaddr_read(addr, len1);
+		uint32_t data2 = lnaddr_read(addr2, len2);
+		return (data2 << (8*len1)) + data1;  // little endian
+	}
+	else
+	{
+		hwaddr_t hwaddr = page_translate(addr);
+		return hwaddr_read(hwaddr, len);
+	}
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data)
 {
-	return hwaddr_write(addr, len, data);
+	VA_t fstb;  *(lnaddr_t*)(&fstb) = addr;
+	VA_t lstb;  *(lnaddr_t*)(&lstb) = addr + len - 1;
+
+	// Judge whether data crosses the boundary
+	if (fstb.page != lstb.page)
+	{
+		lnaddr_t addr2 = (addr + len - 1) & 0xFFFFFC00;
+		size_t len1 = addr2 - addr;
+		size_t len2 = len - len1;
+		uint32_t data1 = data << (8*len2) >> (8*len2);
+		uint32_t data2 = data >> (8*len1);
+		lnaddr_write(addr, len1, data1);
+		lnaddr_write(addr2, len2, data2);
+		return;
+	}
+	else
+	{
+		hwaddr_t hwaddr = page_translate(addr);
+		return hwaddr_write(hwaddr, len, data);
+	}
 }
