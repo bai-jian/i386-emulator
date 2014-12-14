@@ -137,7 +137,7 @@ void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 		uint32_t data1 = data << (8*len2) >> (8*len2);
 		uint32_t data2 = data >> (8*len1);
 		cache_write(addr, len1, data1);
-		cache_write(addr2, len2, data2);
+		cache_write(addr, len2, data2);
 		return;
 	}
 	else  // data not crossing
