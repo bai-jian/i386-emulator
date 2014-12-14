@@ -64,7 +64,7 @@ uint32_t instr_fetch(swaddr_t addr, size_t len)
 	assert(len == 1 || len == 2 || len == 4);
 
 	if (cpu.CR0_PE == 0)
-		return lnaddr_read(addr, len);
+		return hwaddr_read(addr, len);
 	else
 	{
 		if (cpu.CR0_PG == 0)
