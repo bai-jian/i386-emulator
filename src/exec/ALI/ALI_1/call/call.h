@@ -2,8 +2,8 @@
 #define __CTI_CALL__
 
 
-make_helper(call_i);
-make_helper(call_rm);
+make_helper(call_i_v);
+make_helper(call_rm_v);
 
 
 #endif
