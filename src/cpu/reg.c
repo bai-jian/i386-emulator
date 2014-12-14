@@ -11,6 +11,7 @@ const char *regsb[] = {"al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"};
 
 // After loading loader into the memory, then just the instruction fetch
 uint8_t current_sreg = R_CS;
+const char *sregs[] = {"ES", "CS", "SS", "DS", "FS", "GS"};
 
 
 

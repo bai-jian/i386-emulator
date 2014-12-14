@@ -58,15 +58,19 @@ typedef struct
 	// Segment Registers
 		union
 		{
-			struct
+			union
 			{
-				uint16_t RPL:   2;
-				uint16_t TI:    1;
-				uint16_t index:  13;
+				uint16_t val;
+				struct
+				{
+					uint16_t RPL	:  2;
+					uint16_t TI		:  1;
+					uint16_t index	:  13;
+				};
 			} sreg[6];
 			struct
 			{
-				uint16_t CS, SS, DS, ES, FS, GS;
+				uint16_t ES, CS, SS, DS, FS, GS;
 			};
 		};
 
@@ -116,7 +120,8 @@ extern const char* regsb[];
 
 // SREG
 extern uint8_t current_sreg;
-enum { R_CS, R_SS, R_DS, R_ES, R_FS, R_GS };
+enum { R_ES, R_CS, R_SS, R_DS, R_FS, R_GS };
+extern const char* sregs[];
 
 
 #endif

@@ -47,7 +47,7 @@ helper_fun opcode_table [256] =
 /* 0x80 */	ALI_3_b,       ALI_3_v,       nemu_trap,     ALI_3_v, 
 /* 0x84 */	test_r2rm_b,   test_r2rm_v,   xchg_r2rm_b,   xchg_r2rm_v, 
 /* 0x88 */	mov_r2rm_b,    mov_r2rm_v,    mov_rm2r_b,    mov_rm2r_v,
-/* 0x8c */	inv,           lea_m2r_v,     inv,           DMI_3_v, 
+/* 0x8c */	mov_sreg2rm,   lea_m2r_v,     mov_rm2sreg,   DMI_3_v, 
 /* 0x90 */	xchg_r2r0_v,   xchg_r2r0_v,   xchg_r2r0_v,   xchg_r2r0_v,
 /* 0x94 */	xchg_r2r0_v,   xchg_r2r0_v,   xchg_r2r0_v,   xchg_r2r0_v,
 /* 0x98 */	inv, inv, inv, inv, 
