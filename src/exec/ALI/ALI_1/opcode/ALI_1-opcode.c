@@ -1,16 +1,10 @@
 #include "exec/helper.h"
 
-#include "inc/inc.h"
-#include "dec/dec.h"
-
-//#include "inc/inc.h"
-//#include "dec/dec.h"
-#include "call/call.h"
-#include "jmp/jmp.h"
-#include "push/push.h"
-
 #include "cpu/modrm.h"
 
+
+int inc_rm_b(swaddr_t eip);
+int dec_rm_b(swaddr_t eip);
 make_helper(ALI_1_b)
 {
 	ModR_M m;	m.val = instr_fetch(eip+1, 1);
@@ -19,6 +13,11 @@ make_helper(ALI_1_b)
 	assert(0); return 0;
 }
 
+int inc_rm_v(swaddr_t eip);
+int dec_rm_v(swaddr_t eip);
+int call_rm(swaddr_t eip);
+int jmp_rm_v(swaddr_t eip);
+int push_m_v(swaddr_t eip);
 make_helper(ALI_1_v)
 {
 	ModR_M m;   m.val = instr_fetch(eip+1, 1);
