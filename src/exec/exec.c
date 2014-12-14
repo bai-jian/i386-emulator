@@ -70,7 +70,7 @@ helper_fun opcode_table [256] =
 /* 0xdc */	inv, inv, inv, inv,
 /* 0xe0 */	inv, inv, inv, inv,
 /* 0xe4 */	inv, inv, inv, inv,
-/* 0xe8 */	call_i,        jmp_i_v,       jmp_seg_v,     jmp_i_b,
+/* 0xe8 */	call_i,        jmp_i_v,       jmp_seg,     jmp_i_b,
 /* 0xec */	inv, inv, inv, inv,
 /* 0xf0 */	inv, inv, inv,                               rep,
 /* 0xf4 */	inv, inv,                     ALI_2_b,       ALI_2_v,

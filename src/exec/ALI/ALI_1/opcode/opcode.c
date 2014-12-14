@@ -16,7 +16,7 @@ make_helper(ALI_1_b)
 int inc_rm_v(swaddr_t eip);
 int dec_rm_v(swaddr_t eip);
 int call_rm(swaddr_t eip);
-int jmp_rm_v(swaddr_t eip);
+int jmp_rm(swaddr_t eip);
 int push_m_v(swaddr_t eip);
 make_helper(ALI_1_v)
 {
@@ -24,7 +24,7 @@ make_helper(ALI_1_v)
 	if (m.reg == 0)  return inc_rm_v(eip);
 	if (m.reg == 1)  return dec_rm_v(eip);
 	if (m.reg == 2)  return call_rm(eip);
-	if (m.reg == 4)  return jmp_rm_v(eip);
+	if (m.reg == 4)  return jmp_rm(eip);
 	if (m.reg == 6)  return push_m_v(eip);
 	assert(0); return 0;
 }
