@@ -1,8 +1,4 @@
-#ifndef __SCTI__
-#define __SCTI__
-
+/* SCTI:  String and Character Translation Instructions */
 #include "rep/rep.h"
 #include "movs/movs.h"
 
-
-#endif
