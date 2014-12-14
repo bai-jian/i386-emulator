@@ -95,7 +95,12 @@ typedef struct
 				};
 				// CR1: reserved
 				// CR2: Page Fault Linear Address
-				// CR3:
+				// CR3: Page Directory Base Address (aligning 4KB)
+				struct
+				{
+					uint32_t     :  12;
+					uint32_t pdba:  20;
+				};
 			};
 		};
 } CPU_state;
