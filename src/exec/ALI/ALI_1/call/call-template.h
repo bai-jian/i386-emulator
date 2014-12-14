@@ -15,7 +15,7 @@ make_helper( concat(call_i_, SUFFIX) )
 	cpu.esp -= DATA_BYTE;
 	swaddr_write(cpu.esp, DATA_BYTE, eip + instr_len);
 	// Write cpu.eip
-	cpu.eip = (DATA_TYPE)cpu.eip + disp - (DATA_TYPE)instr_len;
+	cpu.eip = (DATA_TYPE)cpu.eip + disp;
 
 	print_asm("call   %x", disp);
 
