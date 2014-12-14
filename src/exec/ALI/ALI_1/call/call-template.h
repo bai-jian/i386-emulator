@@ -9,13 +9,13 @@ make_helper( concat(call_i_, SUFFIX) )
 {
 	uint8_t instr_len = 1 + DATA_BYTE;
 
-	int32_t disp = (DATA_TYPE_S) instr_fetch(eip+1, DATA_BYTE);
+	DATA_TYPE disp = instr_fetch(eip+1, DATA_BYTE);
 
 	// Push the return address into stack
 	cpu.esp -= DATA_BYTE;
 	swaddr_write(cpu.esp, DATA_BYTE, eip + instr_len);
 	// Write cpu.eip
-	cpu.eip = (int32_t)cpu.eip + disp - (int32_t)instr_len;
+	cpu.eip = (DATA_TYPE)cpu.eip + disp - (DATA_TYPE)instr_len;
 
 	print_asm("call   %x", disp);
 
