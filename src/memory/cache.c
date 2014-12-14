@@ -1,8 +1,17 @@
 #include "common.h"
 
-/* cache - cache L2 */
+
+/* physical memory interfaces <- cache <- cache L2 */
 uint32_t cache_L2_read(hwaddr_t, size_t);
 void cache_L2_write(hwaddr_t, size_t, uint32_t);
+
+uint32_t cache_read(hwaddr_t, size_t);
+void cache_write(hwaddr_t, size_t, uint32_t);
+
+uint32_t hwaddr_read(hwaddr_t addr, size_t len)
+{	return  cache_read(addr, len);  }
+void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data)
+{	return  cache_write(addr, len, data);  }
 
 
 /* Cache Memory Size: 64KB = (128 Set) * (8 Way/Set) * (64 B/Block) */
