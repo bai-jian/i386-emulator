@@ -25,16 +25,8 @@ uint32_t swaddr_read(swaddr_t addr, size_t len)
 		return hwaddr_read(addr, len);
 	else
 	{	
-		if (cpu.CR0_PG == 0)
-		{
-			hwaddr_t hwaddr = segment_translate(addr, len, current_sreg);
-			return hwaddr_read(hwaddr, len);
-		}
-		else
-		{
-			lnaddr_t lnaddr = segment_translate(addr, len, current_sreg);
-			return lnaddr_read(lnaddr, len);
-		}
+		lnaddr_t lnaddr = segment_translate(addr, len, current_sreg);
+		return lnaddr_read(lnaddr, len);
 	}
 }
 
@@ -46,16 +38,8 @@ void swaddr_write(swaddr_t addr, size_t len, uint32_t data)
 		return hwaddr_write(addr, len, data);
 	else
 	{
-		if (cpu.CR0_PG == 0)
-		{
-			hwaddr_t hwaddr = segment_translate(addr, len, current_sreg);
-			return hwaddr_write(hwaddr, len, data);
-		}
-		else
-		{
-			lnaddr_t lnaddr = segment_translate(addr, len, current_sreg);
-			return lnaddr_write(lnaddr, len, data);
-		}
+		lnaddr_t lnaddr = segment_translate(addr, len, current_sreg);
+		return lnaddr_write(lnaddr, len, data);
 	}
 }
 
@@ -67,15 +51,7 @@ uint32_t instr_fetch(swaddr_t addr, size_t len)
 		return hwaddr_read(addr, len);
 	else
 	{
-		if (cpu.CR0_PG == 0)
-		{
-			hwaddr_t hwaddr = segment_translate(addr, len, R_CS);
-			return hwaddr_read(hwaddr, len);
-		}
-		else
-		{
-			lnaddr_t lnaddr = segment_translate(addr, len, R_CS);
-			return lnaddr_read(lnaddr, len);
-		}
+		lnaddr_t lnaddr = segment_translate(addr, len, R_CS);
+		return lnaddr_read(lnaddr, len);
 	}
 }

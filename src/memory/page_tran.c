@@ -51,46 +51,56 @@ hwaddr_t page_translate(lnaddr_t addr)
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len)
 {
-	VA_t fstb;  *(lnaddr_t*)(&fstb) = addr;
-	VA_t lstb;  *(lnaddr_t*)(&lstb) = addr + len - 1;
-	
-	// Judge whether data crosses the boundary
-	if (fstb.page != lstb.page)
-	{
-		lnaddr_t addr2 = (addr + len - 1) & 0xFFFFFC00;
-		size_t len1 = addr2 - addr;
-		size_t len2 = len - len1;
-		uint32_t data1 = lnaddr_read(addr, len1);
-		uint32_t data2 = lnaddr_read(addr2, len2);
-		return (data2 << (8*len1)) + data1;  // little endian
-	}
+	if (cpu.CR0_PG == 0)
+		return hwaddr_read(addr, len);
 	else
 	{
-		hwaddr_t hwaddr = page_translate(addr);
-		return hwaddr_read(hwaddr, len);
+		VA_t fstb;  *(lnaddr_t*)(&fstb) = addr;
+		VA_t lstb;  *(lnaddr_t*)(&lstb) = addr + len - 1;
+	
+		// Judge whether data crosses the boundary
+		if (fstb.page != lstb.page)
+		{
+			lnaddr_t addr2 = (addr + len - 1) & 0xFFFFFC00;
+			size_t len1 = addr2 - addr;
+			size_t len2 = len - len1;
+			uint32_t data1 = lnaddr_read(addr, len1);
+			uint32_t data2 = lnaddr_read(addr2, len2);
+			return (data2 << (8*len1)) + data1;  // little endian
+		}
+		else
+		{
+			hwaddr_t hwaddr = page_translate(addr);
+			return hwaddr_read(hwaddr, len);
+		}
 	}
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data)
 {
-	VA_t fstb;  *(lnaddr_t*)(&fstb) = addr;
-	VA_t lstb;  *(lnaddr_t*)(&lstb) = addr + len - 1;
-
-	// Judge whether data crosses the boundary
-	if (fstb.page != lstb.page)
-	{
-		lnaddr_t addr2 = (addr + len - 1) & 0xFFFFFC00;
-		size_t len1 = addr2 - addr;
-		size_t len2 = len - len1;
-		uint32_t data1 = data << (8*len2) >> (8*len2);
-		uint32_t data2 = data >> (8*len1);
-		lnaddr_write(addr, len1, data1);
-		lnaddr_write(addr2, len2, data2);
-		return;
-	}
+	if (cpu.CR0_PG == 0)
+		return hwaddr_write(addr, len, data);
 	else
 	{
-		hwaddr_t hwaddr = page_translate(addr);
-		return hwaddr_write(hwaddr, len, data);
+		VA_t fstb;  *(lnaddr_t*)(&fstb) = addr;
+		VA_t lstb;  *(lnaddr_t*)(&lstb) = addr + len - 1;
+
+		// Judge whether data crosses the boundary
+		if (fstb.page != lstb.page)
+		{
+			lnaddr_t addr2 = (addr + len - 1) & 0xFFFFFC00;
+			size_t len1 = addr2 - addr;
+			size_t len2 = len - len1;
+			uint32_t data1 = data << (8*len2) >> (8*len2);
+			uint32_t data2 = data >> (8*len1);
+			lnaddr_write(addr, len1, data1);
+			lnaddr_write(addr2, len2, data2);
+			return;
+		}
+		else
+		{
+			hwaddr_t hwaddr = page_translate(addr);
+			return hwaddr_write(hwaddr, len, data);
+		}
 	}
 }
