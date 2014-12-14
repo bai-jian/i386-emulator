@@ -27,6 +27,7 @@ void restart()
 	cpu.eflags = 0x00000002;
 	
 	cpu.CR0_PE = 0;
+	cpu.CR0_PG = 0;
 	// index: 1, TI: 0, RPL: 0
 	cpu.CS = 0x0008;
 
