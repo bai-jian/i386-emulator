@@ -18,7 +18,7 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	uint8_t TI = cpu.sreg[cur_sreg].TI;
 	uint32_t index = cpu.sreg[cur_sreg].index;
 
-	Log("%x %x %x\n", addr, addr, index);
+	
 	uint32_t descriptor_l, descriptor_h;
 	if (TI == 0)
 	{
@@ -47,6 +47,6 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 
 	uint32_t base = ((descriptor_l >> 16) & 0x0000FFFF) + ((descriptor_h << 16) & 0x00FF0000) + (descriptor_h & 0xFF000000);
 	uint32_t lnaddr = base + addr;
-Log("%x %x\n", base, lnaddr);
+
 	return lnaddr;
 }
