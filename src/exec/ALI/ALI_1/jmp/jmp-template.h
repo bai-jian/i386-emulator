@@ -51,10 +51,10 @@ make_helper( concat(jmp_rm_, SUFFIX) )
 
 make_helper( concat(jmp_seg_, SUFFIX) )
 {
-	uint8_t instr_len = 1 + 2 + DATA_BYTE;
+	uint8_t instr_len = 1 + DATA_BYTE + 2;
 
-	cpu.CS = instr_fetch(eip+1, 2);
-	cpu.eip = instr_fetch(eip+3, DATA_BYTE) - instr_len;
+	cpu.eip = instr_fetch(eip+1, DATA_BYTE) - instr_len;
+	cpu.CS = instr_fetch(eip+1+DATA_BYTE, 2);
 	
 	print_asm("jmp    $0x%x : $0x%x", cpu.CS, cpu.eip + instr_len);
 	

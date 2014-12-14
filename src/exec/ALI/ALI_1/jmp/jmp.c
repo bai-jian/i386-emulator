@@ -13,13 +13,39 @@
 #undef   DATA_BYTE
 
 
+#include "cpu/reg.h"
+
 extern char suffix;
 
 make_helper(jmp_i_v)
-{	return  suffix == 'l'  ?  jmp_i_l(eip)  :  jmp_i_w(eip);  }
+{	
+	if (suffix == 'l')
+		return jmp_i_l(eip);
+	else
+	{
+		cpu.eip = cpu.eip & 0x0000FFFF;
+		return jmp_i_w(eip);
+	}
+}
 
 make_helper(jmp_rm_v)
-{	return  suffix == 'l'  ?  jmp_rm_l(eip)  :  jmp_rm_w(eip);	}
+{	
+	if (suffix == 'l')
+		return jmp_rm_l(eip);
+	else
+	{
+		cpu.eip = cpu.eip & 0x0000FFFF;
+		return jmp_rm_w(eip);
+	}
+}
 
 make_helper(jmp_seg_v)
-{	return  suffix == 'l'  ?  jmp_seg_l(eip)  :  jmp_seg_w(eip);  } 
+{	
+	if (suffix == 'l')
+		return jmp_seg_l(eip);
+	else
+	{
+		cpu.eip = cpu.eip & 0x0000FFFF;
+		return jmp_seg_w(eip);
+	}
+}
