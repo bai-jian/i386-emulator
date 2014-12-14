@@ -101,13 +101,14 @@ void cpu_exec(volatile uint32_t n)
 	}
 }
 
+uint32_t instr_fetch(swaddr_t eip, size_t len);
 static void print_bin_instr(swaddr_t eip, int len) 
 {
 	printf("  0x%.8x:   ", eip);
 
 	int i;
 	for(i = 0; i < len; i ++) 
-		printf("%.2x ", swaddr_read(eip + i, 1));
+		printf("%.2x ", instr_fetch(eip + i, 1));
 
 	printf("%*.s", 50 - (12 + 3 * len), "");
 }
