@@ -5,10 +5,10 @@
 
 	.globl start
 	start:
-	# Set up a stack for C code.
+		# Set up a stack for C code.
 		movl $0, %ebp
 		movl $(128 << 20), %esp
-		jmp init				# never return
+		jmp init				     # never return
 
 #else
 
@@ -29,17 +29,16 @@
 
 
 	#ifdef IA32_PAGE
-		#	define KOFFSET 0xc0000000
-		#	define va_to_pa(x) (x - KOFFSET)
+		#define KOFFSET 0xc0000000
+		#define va_to_pa(x) (x - KOFFSET)
 	#else
-		#	define va_to_pa(x) (x)
+		#define va_to_pa(x) (x)
 	#endif
 
 
 	.globl start
 	start:
 		lgdt    va_to_pa(gdtdesc)
-
 		movl    %cr0, %eax        # %CR0 |= PROTECT_ENABLE_BIT
 		orl     $0x1, %eax
 		movl    %eax, %cr0
@@ -51,7 +50,6 @@
 
 
 	start_cond:
-
 		# Set up the protected-mode data segment registers
 		movw    $GDT_ENTRY(2), %ax
 		movw    %ax, %ds          # %DS = %AX
@@ -73,9 +71,6 @@
 	gdtdesc:                      # descriptor
 	#	.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1
 		.long   va_to_pa(gdt)          # address of GDT
-
-
-	# end of IA32_SEG
 
 
 #endif

@@ -9,7 +9,8 @@ static PTE kptable[PHY_MEM / PAGE_SIZE] align_to_page;		// kernel page tables
 inline PDE* get_kpdir() { return kpdir; }
 
 /* set up page tables for kernel */
-void init_page(void) {
+void init_page(void)
+{
 	CR0 cr0;
 	CR3 cr3;
 	PDE *pdir = (PDE *)va_to_pa(kpdir);

@@ -17,7 +17,8 @@ void video_mapping_clear();
 
 
 /* Initialization phase 2 */
-void init_cond() {
+void init_cond( )
+{
 #ifdef IA32_INTR
 	/* Reset the GDT, since the old GDT in start.S cannot be used in the future. */
 	init_segment();
@@ -82,7 +83,8 @@ void init_cond() {
 /* Initialization phase 1
  * The assembly code in start.S will finally jump here.
  */
-void init() {
+void init()
+{
 #ifdef IA32_PAGE
 	/* We must set up kernel virtual memory first because our kernel thinks it 
 	 * is located at 0xc0100000, which is set by the linking options in Makefile.
@@ -99,4 +101,3 @@ void init() {
 	/* Should never reach here. */
 	nemu_assert(0);
 }
-
