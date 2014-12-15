@@ -11,22 +11,25 @@ make_helper(concat(mov_i2r_, SUFFIX)) {
 	return DATA_BYTE + 1;
 }
 
-make_helper(concat(mov_i2rm_, SUFFIX)) {
-	ModR_M m;
+make_helper(concat(mov_i2rm_, SUFFIX))
+{
+	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
 	DATA_TYPE imm;
-	m.val = instr_fetch(eip + 1, 1);
-	if(m.mod == 3) {
+	if(m.mod == 3)
+	{
 		imm = instr_fetch(eip + 1 + 1, DATA_BYTE);
 		REG(m.R_M) = imm;
-		print_asm("mov" str(SUFFIX) " $0x%x,%%%s", imm, REG_NAME(m.R_M));
+		print_asm("mov"str(SUFFIX)"   $0x%x, %%%s", imm, REG_NAME(m.R_M));
 		return 1 + DATA_BYTE + 1;
 	}
-	else {
+	else
+	{
 		swaddr_t addr;
 		int len = read_ModR_M(eip + 1, &addr);
 		imm = instr_fetch(eip + 1 + len, DATA_BYTE);
 		MEM_W(addr, imm);
-		print_asm("mov" str(SUFFIX) " $0x%x,%s", imm, ModR_M_asm);
+		Log("%d\n", addr);
+		print_asm("mov"str(SUFFIX)"   $0x%x, %s", imm, ModR_M_asm);
 		return len + DATA_BYTE + 1;
 	}
 }
