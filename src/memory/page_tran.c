@@ -23,6 +23,7 @@ typedef struct
 	uint32_t vpo  :  VPO_WIDTH;
 	uint32_t tag  :  (PAGE_WIDTH + DIR_WIDTH);
 } LA_t; // LA: Logical Memory
+
 /* Define [Page Table] or [Page Directory Table], they shares the same form */
 typedef struct
 {
@@ -123,10 +124,10 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len)
 		}
 		else
 		{
-			hwaddr_t hwaddr = page_translate(addr);
+			hwaddr_t hwaddr = page_tlb(addr);
 			return hwaddr_read(hwaddr, len);
-		}
-	}
+ 		}
+ 	}
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data)
@@ -152,7 +153,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data)
 		}
 		else
 		{
-			hwaddr_t hwaddr = page_translate(addr);
+			hwaddr_t hwaddr = page_tlb(addr);
 			return hwaddr_write(hwaddr, len, data);
 		}
 	}
