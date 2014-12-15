@@ -85,7 +85,7 @@ hwaddr_t page_tlb(lnaddr_t addr)
 		return hwaddr;
 	}
 	else  // miss
-	{assert(0);
+	{
 		// load or replace
 		int tlbe_num;
 		for (tlbe_num = 0; tlbe_num < NR_TLBE; ++tlbe_num)
