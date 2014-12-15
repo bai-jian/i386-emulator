@@ -61,7 +61,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	hwaddr_t base = page_term.PB;
 	Log("%x\n", base);
 	hwaddr_t hwaddr = (base << 12) + lnaddr.vpo;
-assert(0);
+if (dir_base == 0x128) assert(0);
 	return hwaddr;
 }
 
