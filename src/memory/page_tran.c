@@ -38,7 +38,7 @@ typedef struct
 hwaddr_t page_translate(lnaddr_t addr)
 {
 	VA_t lnaddr;  *(lnaddr_t*)(&lnaddr) = addr;
-assert(0);
+
 	hwaddr_t dir_base = cpu.CR3_pdba;
 	dir_t dir_term; *(uint32_t*)(&dir_term) = hwaddr_read((dir_base<<12)+(lnaddr.dir<<2), 4);
 	hwaddr_t page_base = dir_term.PB;
