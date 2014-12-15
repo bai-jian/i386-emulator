@@ -53,10 +53,8 @@ hwaddr_t page_translate(lnaddr_t addr)
 	VA_t lnaddr;  *(lnaddr_t*)(&lnaddr) = addr;
 
 	hwaddr_t dir_base = cpu.CR3_pdba;
-	Log("%x\n", dir_base);
 	dir_t dir_term; *(uint32_t*)(&dir_term) = hwaddr_read((dir_base<<12)+(lnaddr.dir<<2), 4);
 	hwaddr_t page_base = dir_term.PB;
-	Log("%x\n", page_base);
 	page_t page_term; *(uint32_t*)(&page_term) = hwaddr_read((page_base<<12)+(lnaddr.page<<2), 4);
 	hwaddr_t base = page_term.PB;
 	Log("%x\n", base);
@@ -101,7 +99,6 @@ hwaddr_t page_tlb(lnaddr_t addr)
 		TLB[tlbe_num].valid = 1;
 		TLB[tlbe_num].tag = lnaddr.tag;
 		TLB[tlbe_num].frame = hwaddr >> VPO_WIDTH;
-		Log("miss %x\n", hwaddr);
 		return hwaddr;
 	}
 }
