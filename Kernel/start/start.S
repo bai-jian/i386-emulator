@@ -61,6 +61,7 @@
 		movl $(128 << 20), %esp
 		jmp init				# never return
 
+
 	# GDT
 	.p2align 2                    # force 4 byte alignment
 	gdt:
@@ -69,7 +70,7 @@
 		MAKE_SEG_DESC(0x2, 0x0, 0xffffffff)  # data
 
 	gdtdesc:                      # descriptor
-	#	.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1
+		.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1
 		.long   va_to_pa(gdt)          # address of GDT
 
 
