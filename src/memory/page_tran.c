@@ -47,7 +47,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	page_t page_term; *(uint32_t*)(&page_term) = hwaddr_read((page_base<<12)+(lnaddr.page<<2), 4);
 	hwaddr_t base = page_term.PB;
 	hwaddr_t hwaddr = (base << 12) + lnaddr.vpo;
-	Log("%x \n", hwaddr);  assert(0);
+	Log("%x \n", hwaddr);
 
 	return hwaddr;
 }
