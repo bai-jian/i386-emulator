@@ -39,7 +39,6 @@ void swaddr_write(swaddr_t addr, size_t len, uint32_t data)
 	else
 	{
 		lnaddr_t lnaddr = segment_translate(addr, len, current_sreg);
-		Log("lnaddr = %x\n", lnaddr);
 		return lnaddr_write(lnaddr, len, data);
 	}
 }
