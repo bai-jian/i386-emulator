@@ -15,7 +15,7 @@ CFILES  = $(shell find src/ -name "*.c")
 OBJS    = $(CFILES:.c=.o)
 
 # test files
-TESTFILE = testcase/asm/mov
+TESTFILE = testcase/c/leap-year
 C_TEST_FILE_LIST = $(shell find testcase/c/ -name "*.c")
 S_TEST_FILE_LIST = $(shell find testcase/asm/ -name "*.S")
 TEST_FILE_LIST = $(C_TEST_FILE_LIST:.c=) $(S_TEST_FILE_LIST:.S=)
