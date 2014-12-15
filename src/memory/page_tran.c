@@ -15,10 +15,14 @@ typedef struct
 {
 	uint32_t vpo  :  VPO_WIDTH;  // Virtual Page Offset
 	uint32_t page :  PAGE_WIDTH;
-	uint32_t dir  :  DIR_WIDTH; 
-} VA_t; // VA_t: Virtual Memory
+	uint32_t dir  :  DIR_WIDTH;
+} VA_t; // VA: Virtual Memory
 
-
+typedef struct
+{
+	uint32_t vpo  :  VPO_WIDTH;
+	uint32_t tag  :  (PAGE_WIDTH + DIR_WIDTH);
+} LA_t; // LA: Logical Memory
 /* Define [Page Table] or [Page Directory Table], they shares the same form */
 typedef struct
 {
@@ -34,6 +38,14 @@ typedef struct
 	uint32_t PB  : 20;  // Physical Base
 } page_t, dir_t;
 
+/* Define [TLB] */
+#define NR_TLBE 64
+struct
+{
+	bool valid;
+	uint32_t frame;
+	uint32_t tag;
+} TLB[NR_TLBE];
 
 hwaddr_t page_translate(lnaddr_t addr)
 {
@@ -47,6 +59,47 @@ hwaddr_t page_translate(lnaddr_t addr)
 	hwaddr_t hwaddr = (base << 12) + lnaddr.vpo;
 
 	return hwaddr;
+}
+
+void init_TLB( )
+{
+	int i;
+	for (i = 0; i < NR_TLBE; ++i)
+		TLB[i].valid = 0;
+}
+hwaddr_t page_tlb(lnaddr_t addr)
+{
+	LA_t lnaddr;  *(lnaddr_t*)(&lnaddr) = addr;
+
+	int i;
+	for (i = 0; i < NR_TLBE; ++i)
+		if (TLB[i].valid && lnaddr.tag == TLB[i].tag)
+			break;
+
+	// Judge hit or miss
+	if (i < NR_TLBE)  // hit
+	{
+		hwaddr_t base = TLB[i].frame;
+		hwaddr_t hwaddr = (base << VPO_WIDTH) + lnaddr.vpo;
+		return hwaddr;
+	}
+	else  // miss
+	{
+		// load or replace
+		int tlbe_num;
+		for (tlbe_num = 0; tlbe_num < NR_TLBE; ++tlbe_num)
+			if ( !TLB[tlbe_num].valid )
+				break;
+		if (tlbe_num == NR_TLBE)  tlbe_num = 0;
+
+		hwaddr_t hwaddr = page_translate(addr);
+
+		TLB[tlbe_num].valid = 1;
+		TLB[tlbe_num].tag = lnaddr.tag;
+		TLB[tlbe_num].frame = hwaddr >> VPO_WIDTH;
+	
+		return hwaddr;
+	}
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len)
