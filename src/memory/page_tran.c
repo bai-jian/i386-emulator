@@ -61,7 +61,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	hwaddr_t base = page_term.PB;
 	Log("%x\n", base);
 	hwaddr_t hwaddr = (base << 12) + lnaddr.vpo;
-if (dir_base == 0x128) assert(0);
+
 	return hwaddr;
 }
 
@@ -85,7 +85,6 @@ hwaddr_t page_tlb(lnaddr_t addr)
 	{
 		hwaddr_t base = TLB[i].frame;
 		hwaddr_t hwaddr = (base << VPO_WIDTH) + lnaddr.vpo;
-		Log("base %x  hit %x\n", base, hwaddr);
 		return hwaddr;
 	}
 	else  // miss
