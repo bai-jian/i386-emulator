@@ -27,7 +27,6 @@ make_helper(concat(mov_i2rm_, SUFFIX))
 		swaddr_t addr;
 		int len = read_ModR_M(eip + 1, &addr);
 		imm = instr_fetch(eip + 1 + len, DATA_BYTE);
-		Log("%x\n", addr);
 		MEM_W(addr, imm);
 		print_asm("mov"str(SUFFIX)"   $0x%x, %s", imm, ModR_M_asm);
 		return len + DATA_BYTE + 1;
