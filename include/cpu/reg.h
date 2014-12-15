@@ -94,7 +94,15 @@ typedef struct
 					uint32_t CR0_PG : 1;  // paging
 				};
 				// CR1: reserved
+				struct
+				{
+					uint32_t     : 32;
+				};
 				// CR2: Page Fault Linear Address
+				struct
+				{
+					uint32_t     :  32;
+				};
 				// CR3: Page Directory Base Address (aligning 4KB)
 				struct
 				{
