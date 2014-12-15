@@ -10,11 +10,15 @@ make_helper(mov_cr2r)
 {
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	
-	reg_l(m.reg) = cpu.CR[m.R_M];
+	if (m.mod == 3)
+	{
+		reg_l(m.R_M) = cpu.CR[m.reg];
 
-	print_asm("movl   %%cr%d, %%%s", m.R_M, regsl[m.reg]);
+		print_asm("movl   %%cr%d, %%%s", m.reg, regsl[m.R_M]);
 
-	return 1 + 1;
+		return 1 + 1;
+	}
+	assert(0);
 }
 
 // movl   %cr0/%cr1/%cr2/%cr3, r32
@@ -22,11 +26,15 @@ make_helper(mov_r2cr)
 {
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 
-	cpu.CR[m.R_M] = reg_l(m.reg);
+	if (m.mod == 3)
+	{
+		cpu.CR[m.reg] = reg_l(m.R_M);
 
-	print_asm("movl   %%%s, %%cr%d", regsl[m.reg], m.R_M);
+		print_asm("movl   %%%s, %%cr%d", regsl[m.R_M], m.reg);
 
-	return 1 + 1;
+		return 1 + 1;
+	}
+	assert(0);
 }
 
 // movw   rm, %ES/CS/SS/DS/FS/GS
