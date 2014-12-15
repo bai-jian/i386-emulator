@@ -79,13 +79,13 @@ hwaddr_t page_tlb(lnaddr_t addr)
 
 	// Judge hit or miss
 	if (i < NR_TLBE)  // hit
-	{assert(0);
+	{
 		hwaddr_t base = TLB[i].frame;
 		hwaddr_t hwaddr = (base << VPO_WIDTH) + lnaddr.vpo;
 		return hwaddr;
 	}
 	else  // miss
-	{
+	{assert(0);
 		// load or replace
 		int tlbe_num;
 		for (tlbe_num = 0; tlbe_num < NR_TLBE; ++tlbe_num)
