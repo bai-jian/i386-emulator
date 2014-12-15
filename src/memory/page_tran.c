@@ -53,6 +53,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	VA_t lnaddr;  *(lnaddr_t*)(&lnaddr) = addr;
 
 	hwaddr_t dir_base = cpu.CR3_pdba;
+	Log("%x\n", dir_base);
 	dir_t dir_term; *(uint32_t*)(&dir_term) = hwaddr_read((dir_base<<12)+(lnaddr.dir<<2), 4);
 	hwaddr_t page_base = dir_term.PB;
 	Log("%x\n", page_base);
