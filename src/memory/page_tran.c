@@ -54,8 +54,12 @@ hwaddr_t page_translate(lnaddr_t addr)
 
 	hwaddr_t dir_base = cpu.CR3_pdba;
 	dir_t dir_term; *(uint32_t*)(&dir_term) = hwaddr_read((dir_base<<12)+(lnaddr.dir<<2), 4);
+	if (dir_term.P == 0)  assert(0);  // The Dir is absent.
+
 	hwaddr_t page_base = dir_term.PB;
 	page_t page_term; *(uint32_t*)(&page_term) = hwaddr_read((page_base<<12)+(lnaddr.page<<2), 4);
+	if (page_term.P == 0)  assert(0);  // The Page is absent. 
+	
 	hwaddr_t base = page_term.PB;
 	hwaddr_t hwaddr = (base << 12) + lnaddr.vpo;
 
