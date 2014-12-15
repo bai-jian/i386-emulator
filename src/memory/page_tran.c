@@ -82,6 +82,7 @@ hwaddr_t page_tlb(lnaddr_t addr)
 	{
 		hwaddr_t base = TLB[i].frame;
 		hwaddr_t hwaddr = (base << VPO_WIDTH) + lnaddr.vpo;
+		Log("hit %x\n", hwaddr);
 		return hwaddr;
 	}
 	else  // miss
@@ -98,7 +99,7 @@ hwaddr_t page_tlb(lnaddr_t addr)
 		TLB[tlbe_num].valid = 1;
 		TLB[tlbe_num].tag = lnaddr.tag;
 		TLB[tlbe_num].frame = hwaddr >> VPO_WIDTH;
-	
+		Log("miss %x\n", hwaddr);
 		return hwaddr;
 	}
 }
