@@ -191,13 +191,13 @@ static void cmd_bt()
 	int i;
 	for (i = 0; ebp != 0; ++i)
 	{
-		find_funcname(addr);
+	//	find_funcname(addr);
 		printf("    #%d    0x%.8x    %s\n", i, addr, funcname);
 
 		addr = swaddr_read(ebp + 4, 4);
 		ebp = swaddr_read(ebp, 4);
 	}
-		printf("    #%d    0x%.8x    main\n", i, addr);
+	Log("%d\n", i);
 }
 static void cmd_b()
 {
