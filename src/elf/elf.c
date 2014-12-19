@@ -23,8 +23,9 @@ void find_funcname(swaddr_t addr)
 		if ( (symtab[i].st_info & 0x0F) == STT_FUNC )  // TYPE == FUNC
 		if ( addr >= symtab[i].st_value  &&  addr < symtab[i].st_value + symtab[i].st_size )  // addr is in the function
 			strcpy(funcname, strtab + symtab[i].st_name);
+
 	}
-	assert(0);
+	if (i == nr_symtab_entry)  assert(0);
 }
 
 swaddr_t symbol(char* name)
