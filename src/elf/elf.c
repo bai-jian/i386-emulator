@@ -12,6 +12,21 @@ static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
+
+#define FUNCNAME_SIZE 32
+char funcname[FUNCNAME_SIZE];
+void find_funcname(swaddr_t addr)
+{
+	int i;
+	for (i = 0; i < nr_symtab_entry; ++i)
+	{
+		if ( (symtab[i].st_info & 0x0F) == STT_FUNC )  // TYPE == FUNC
+		if ( addr >= symtab[i].st_value  &&  addr < symtab[i].st_value + symtab[i].st_size )  // addr is in the function
+			strcpy(funcname, strtab + symtab[i].st_name);
+	}
+	assert(0);
+}
+
 swaddr_t symbol(char* name)
 { 
 	int i;

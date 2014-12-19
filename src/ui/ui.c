@@ -51,10 +51,11 @@ char* rl_gets();
 void restart();
 static void cmd_info();
 static void cmd_x();
+static void cmd_p();
+static void cmd_bt();
 static void cmd_b();
 static void cmd_d();
 static void cmd_w();
-static void cmd_p();
 void main_loop() 
 { 
  	while(1)
@@ -81,10 +82,11 @@ void main_loop()
 				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
 				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_LEN);  continue;  }
 
-				// Look up information of registers, memory, breakpoint, watchpoint
+				// Look up information of registers, memory, breakpoint, watchpoint, stack frame linked lists
 				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
 				if (strcmp(p, "x") == 0)	{ cmd_x();	   continue;  }
 				if (strcmp(p, "p") == 0)	{ cmd_p();     continue;  }
+				if (strcmp(p, "bt") == 0)   { cmd_bt();    continue;  }
 
 				// Create or delete breakpoints and watchpoints
 				if (strcmp(p, "b") == 0)	{ cmd_b();     continue;  }
@@ -180,6 +182,23 @@ static void cmd_x()
 	}
 }
 
+extern char funcname[];
+void find_funcname(swaddr_t addr);
+static void cmd_bt()
+{
+	swaddr_t ebp = cpu.ebp;
+	swaddr_t addr = cpu.eip;
+	int i;
+	for (i = 0; ebp != 0; ++i)
+	{
+		find_funcname(addr);
+		printf("    #%d    0x%.8x    %s\n", i, addr, funcname);
+
+		addr = swaddr_read(ebp + 4, 4);
+		ebp = swaddr_read(ebp, 4);
+	}
+		printf("    #%d    0x%.8x    main\n", i, addr);
+}
 static void cmd_b()
 {
 	char* e = strtok_r(NULL, "", &saveptr);
