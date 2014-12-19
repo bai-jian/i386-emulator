@@ -189,15 +189,14 @@ static void cmd_bt()
 	swaddr_t ebp = cpu.ebp;
 	swaddr_t addr = cpu.eip;
 	int i;
-	for (i = 0; ebp != 0; ++i)
+	for (i = 0; strcmp(funcname, "main") != 0; ++i)
 	{
-	//	find_funcname(addr);
+		find_funcname(addr);
 		printf("    #%d    0x%.8x    %s\n", i, addr, funcname);
 
 		addr = swaddr_read(ebp + 4, 4);
 		ebp = swaddr_read(ebp, 4);
 	}
-	Log("%d\n", i);
 }
 static void cmd_b()
 {
