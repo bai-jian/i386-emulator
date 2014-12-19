@@ -78,7 +78,7 @@ void main_loop()
 				break;
 
 			case STOP:
-				if (strcmp(p, "r")  == 0)   { nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
+				if (strcmp(p, "r")  == 0)   { nemu_state = RUNNING;  restart();  cmd_exec(INSTR_END);  continue;  }
 				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
 				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_LEN);  continue;  }
 
@@ -202,7 +202,7 @@ static void cmd_bt()
 static void cmd_b()
 {
 	char* e = strtok_r(NULL, "", &saveptr);
-	size_t addr = expr(e);
+	swaddr_t addr = expr(e);
 
 	new_bp(addr);
 }
