@@ -186,6 +186,9 @@ extern char funcname[];
 void find_funcname(swaddr_t addr);
 static void cmd_bt()
 {
+	// Initialization
+	funcname[0] = '\0';
+
 	swaddr_t ebp = cpu.ebp;
 	swaddr_t addr = cpu.eip;
 	int i;
