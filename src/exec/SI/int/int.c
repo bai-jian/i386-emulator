@@ -6,7 +6,7 @@
 #include "cpu/reg.h"
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len);
-void swaddr_write(swaddr_t addr, uint32_t data, size_t len);
+void swaddr_write(swaddr_t addr, size_t len, uint32_t data);
 make_helper(INT)
 {
 	uint8_t instr_len = 2;
@@ -24,9 +24,9 @@ make_helper(INT)
 
 
 	// Push EFLAGS, CS, EIP
-	cpu.esp -= 4;  swaddr_write(cpu.esp, cpu.eflags, 4);
-	cpu.esp -= 2;  swaddr_write(cpu.esp, cpu.CS, 2);
-	cpu.esp -= 4;  swaddr_write(cpu.esp, cpu.eip + instr_len, 4);
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
+	cpu.esp -= 2;  swaddr_write(cpu.esp, 2, cpu.CS);
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eip + instr_len);
 
 
 	// Load CS, EIP with the Gate Descriptor
