@@ -33,6 +33,7 @@ make_helper(INT)
 	cpu.CS = gate_desc.selector;
 	cpu.eip = ((uint32_t)gate_desc.off_h << 16) + (uint32_t)gate_desc.off_l - instr_len;
 	
+	Log("cpu.CS = 0x%x, 0x%x\n", cpu.CS, cpu.eip);
 	print_asm("int    $0x%x", imm);
 
 	return instr_len;
