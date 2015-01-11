@@ -23,13 +23,13 @@ lnaddr_t segment_translate(swaddr_t addr, size_t len, uint8_t cur_sreg)
 	uint32_t descriptor_l, descriptor_h;
 	if (TI == 0)
 	{
-		descriptor_l = hwaddr_read(cpu.GDTR + 8 * index, 4);
-		descriptor_h = hwaddr_read(cpu.GDTR + 4 + 8 * index, 4);
+		descriptor_l = lnaddr_read(cpu.GDTR.base + 8 * index, 4);
+		descriptor_h = lnaddr_read(cpu.GDTR.base + 4 + 8 * index, 4);
 	}
 	else
 	{
-		descriptor_l = hwaddr_read(cpu.LDTR + 8 * index, 4);
-		descriptor_h = hwaddr_read(cpu.LDTR + 4 + 8 * index, 4);
+		descriptor_l = lnaddr_read(cpu.LDTR.base + 8 * index, 4);
+		descriptor_h = lnaddr_read(cpu.LDTR.base + 4 + 8 * index, 4);
 	}
 	uint8_t DPL = (descriptor_h >> 13) & 0x03;
 	

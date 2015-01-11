@@ -2,7 +2,7 @@
 #define __SI_LGDT__
 
 
-make_helper(lgdt_v);
+make_helper(lgdt);
 
 
 #endif

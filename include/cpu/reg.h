@@ -74,8 +74,25 @@ typedef struct
 			};
 		};
 
-	// Globl/Local Descriptor Table Registers
-		uint32_t GDTR, LDTR;
+	// Globl/Local/Interrupt Descriptor Table Registers
+		struct
+		{
+			struct
+			{
+				uint16_t limit;
+				uint32_t base;
+			} GDTR;
+			struct
+			{
+				uint16_t limit;
+				uint32_t base;
+			} LDTR;
+			struct
+			{
+				uint16_t limit;
+				uint32_t base;
+			} IDTR;
+		};
 
 	// Control Registers
 		union
