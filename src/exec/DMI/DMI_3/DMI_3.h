@@ -1,4 +1,5 @@
 #include "pop/pop.h"
+#include "pusha/pusha.h"
+#include "popa/popa.h"
 
-
-#include "DMI_3-opcode.h"
+#include "opcode/opcode.h"

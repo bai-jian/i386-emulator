@@ -2,8 +2,9 @@
 #define __SI_H__
 
 
-/* System Instructions */
-
+/* System Instructions      */
+/*                          */
+/*   Interrupt Instruction:  INT  IRET  CLI */
 
 #include "SI-opcode/SI-opcode.h"
 #include "int/int.h"
