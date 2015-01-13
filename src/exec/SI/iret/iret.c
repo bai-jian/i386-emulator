@@ -12,7 +12,7 @@ make_helper(iret)
 	cpu.eip = swaddr_read(cpu.esp, 4) - instr_len;     cpu.esp += 4;
 	cpu.CS = swaddr_read(cpu.esp, 2);                  cpu.esp += 2;
 	cpu.eflags = swaddr_read(cpu.esp, 4);              cpu.esp += 4;
-Log("eip 0x%x\n", cpu.eip);
+Log("eip 0x%x, 0x%x, 0x%x\n", cpu.eip, cpu.CS, cpu.eflags);
 	int i;
 	for (i = 0; i < 100; ++i)
 		Log("0x%x  %x", swaddr_read(cpu.esp - i, 1), swaddr_read(cpu.esp + i, 1));
