@@ -23,10 +23,43 @@ make_helper(int3)
 	return 1;
 }
 
-make_helper(nemu_trap) {
-	printf("nemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", (cpu.eax == 0 ? "GOOD" : "BAD"), cpu.eip);
-	nemu_state = END;
+make_helper(nemu_trap)
+{
+	switch( cpu.eax )
+	{
+		case 0:
+		{
+			printf("nemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "GOOD", cpu.eip);
+			nemu_state = END;
 
-	print_asm("nemu trap");
-	return 1;
+			print_asm("nemu trap");
+
+			return 1;
+		}
+		case 1:
+		{	
+			printf("nemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "BAD", cpu.eip);
+			nemu_state = END;
+
+			print_asm("nemu trap");
+
+			return 1;
+		}
+		case 2:  // SYS_write
+		{
+			char buffer[1024];
+
+			uint32_t buf = cpu.ecx;
+			uint32_t len = cpu.edx;
+
+			int i;
+			for (i = 0; i < len; ++ i)
+				buffer[i] = swaddr_read(buf + i, 1);
+			printf("%s", buffer);
+			
+			return 1;
+		}
+		default:
+		{	assert(0);  return 0;    }
+	}
 }
