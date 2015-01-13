@@ -1,6 +1,8 @@
 #include "exec/template-start.h"
 
 
+#include "cpu/modrm.h"
+
 make_helper( concat(not_, SUFFIX) )
 {
 	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
