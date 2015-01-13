@@ -21,7 +21,7 @@ make_helper(INT)
 	uint64_t descriptor_h = lnaddr_read(lnaddr + 4, 4);
 	uint64_t descriptor   = (descriptor_h << 32) + descriptor_l;
 	GateDesc_t gate_desc = *(GateDesc_t*)(&descriptor);
-Log("eip: 0x%x", cpu.eip + instr_len); assert(0);
+	
 	// Push EFLAGS, CS, EIP
 	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
 	cpu.esp -= 2;  swaddr_write(cpu.esp, 2, cpu.CS);
