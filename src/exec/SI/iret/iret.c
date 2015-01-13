@@ -10,9 +10,10 @@ make_helper(iret)
 
 	// Pop EIP, CS, EFLAGS
 	cpu.eip = swaddr_read(cpu.esp, 4) - instr_len;     cpu.esp += 4;
-//	Log("eip %x\n", cpu.eip); assert(0);
 	cpu.CS = swaddr_read(cpu.esp, 2);                  cpu.esp += 2;
 	cpu.eflags = swaddr_read(cpu.esp, 4);              cpu.esp += 4;
+
+Log("eip 0x%x 0x%x 0x%x\n", cpu.eip, cpu.CS, cpu.eflags); assert(0);
 
 	print_asm("iret");
 	swaddr_read(cpu.eip, 1);assert(0);
