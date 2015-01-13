@@ -99,6 +99,7 @@ make_helper(tran_mean)
 	if ( inst == 0x82 )  return  1 + jb_v(eip + 1);
 	if ( inst == 0x83 )  return  1 + jae_v(eip + 1);
 	if ( inst == 0x84 )  return  1 + je_v(eip + 1);
+	if ( inst == 0x85 )  return  1 + jne_v(eip + 1);
 	if ( inst == 0x86 )  return  1 + jbe_v(eip + 1);
 	if ( inst == 0x87 )  return  1 + ja_v(eip + 1);
 	if ( inst == 0x88 )  return  1 + js_v(eip + 1);
