@@ -7,6 +7,7 @@
 
 // lidt  %IDTR, m16&m32(linear base address)
 uint32_t hwaddr_read(hwaddr_t addr, size_t len);
+uint32_t swaddr_read(swaddr_t addr, size_t len);
 make_helper(lidt)
 {
 	// ModR_M:  mod  reg  R_M
@@ -19,8 +20,8 @@ make_helper(lidt)
 		hwaddr_t ph_addr;
 		uint8_t len = read_ModR_M(eip + 1, &ph_addr);
 
-		cpu.IDTR.limit = hwaddr_read(ph_addr    , 2);
-		cpu.IDTR.base  = hwaddr_read(ph_addr + 2, 4);
+		cpu.IDTR.limit = swaddr_read(ph_addr    , 2);
+		cpu.IDTR.base  = swaddr_read(ph_addr + 2, 4);
 
 		print_asm("lidt   %s", ModR_M_asm);
 
@@ -30,8 +31,8 @@ make_helper(lidt)
 	{
 		hwaddr_t ph_addr = reg_l(m.R_M);
 
-		cpu.IDTR.limit = hwaddr_read(ph_addr    , 2);
-		cpu.IDTR.base  = hwaddr_read(ph_addr + 2, 4);
+		cpu.IDTR.limit = swaddr_read(ph_addr    , 2);
+		cpu.IDTR.base  = swaddr_read(ph_addr + 2, 4);
 		
 		print_asm("lidt   %%%s", regsl[m.R_M]);
 
