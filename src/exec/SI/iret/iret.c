@@ -15,6 +15,6 @@ make_helper(iret)
 	cpu.eflags = swaddr_read(cpu.esp, 4);              cpu.esp += 4;
 
 	print_asm("iret");
-assert(0);
+	swaddr_read(cpu.eip, 1);assert(0);
 	return instr_len;
 }
