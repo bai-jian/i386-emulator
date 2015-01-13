@@ -29,7 +29,7 @@ make_helper(lgdt)
 	else
 	{
 		hwaddr_t ph_addr = reg_l(m.R_M);
-
+Log("0x%x\n", ph_addr);
 		cpu.GDTR.limit = hwaddr_read(ph_addr    , 2);
 		cpu.GDTR.base  = hwaddr_read(ph_addr + 2, 4);
 
