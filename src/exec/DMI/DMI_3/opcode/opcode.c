@@ -2,8 +2,8 @@
 
 #include "cpu/modrm.h"
 
-#include "pop/pop.h"
 
+/* reg == 0 */  int pop_m_v(swaddr_t eip);
 make_helper(DMI_3_v)
 {
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);

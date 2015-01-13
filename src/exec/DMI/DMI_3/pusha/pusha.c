@@ -36,6 +36,5 @@ make_helper(pusha_l)
 }
 
 extern char suffix;
-
 make_helper(pusha_v)
 {	return  suffix == 'l'  ?  pusha_l(eip)  :  pusha_w(eip);  }
