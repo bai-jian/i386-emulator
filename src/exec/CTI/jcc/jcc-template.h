@@ -92,5 +92,23 @@ make_helper( concat(jle_, SUFFIX) )
 	return instr_len;
 }
 
+make_helper( concat(js_, SUFFIX) )
+{
+	uint8_t instr_len = 1 + DATA_BYTE;
+	int32_t disp = (DATA_TYPE_S)instr_fetch(eip+1, DATA_BYTE);
+	cpu.eip += (cpu.SF ? disp : 0);
+	print_asm("js     0x%x", disp);
+	return instr_len;
+}
+
+make_helper( concat(jns_, SUFFIX) )
+{
+	uint8_t instr_len = 1 + DATA_BYTE;
+	int32_t disp = (DATA_TYPE_S)instr_fetch(eip+1, DATA_BYTE);
+	cpu.eip += (!cpu.SF ? disp : 0);
+	print_asm("js     0x%x", disp);
+	return instr_len;
+}
+
 
 #include "exec/template-end.h"

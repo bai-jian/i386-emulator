@@ -33,10 +33,10 @@ make_helper(jno_b);					make_helper(jno_v);
 
 make_helper(jz_b);					make_helper(jz_v);
 make_helper(jnz_b);					make_helper(jnz_v);
-
+*/
 make_helper(js_b);					make_helper(js_v);
-make_helper(js_b);					make_helper(js_v);
-
+make_helper(jns_b);					make_helper(jns_v);
+/*
 make_helper(jp_b);					make_helper(jp_v);
 make_helper(jnp_b);					make_helper(jnp_v);
 make_helper(jpe_b);					make_helper(jpe_v);

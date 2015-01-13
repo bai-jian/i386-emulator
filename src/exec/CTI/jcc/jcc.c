@@ -44,3 +44,9 @@ make_helper(jge_v)
 
 make_helper(jle_v)
 {	return  suffix == 'l'  ?  jle_l(eip)  :  jle_w(eip);	}
+
+make_helper(js_v)
+{	return  suffix == 'l'  ?  js_l(eip)  :  js_w(eip);  }
+
+make_helper(jns_v)
+{	return  suffix == 'l'  ?  jns_l(eip)  :  jns_w(eip);  }
