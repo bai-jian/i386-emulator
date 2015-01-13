@@ -7,6 +7,7 @@
 
 // lgdt  %GDTR, m16&m32(linear base address)
 uint32_t hwaddr_read(hwaddr_t addr, size_t len);
+uint32_t swaddr_read(swaddr_t addr, size_t len);
 make_helper(lgdt)
 {
 	// ModR_M:  mod  reg  R_M
@@ -20,8 +21,8 @@ make_helper(lgdt)
 		uint8_t len = read_ModR_M(eip + 1, &ph_addr);
 
 Log("0x%x\n", ph_addr);
-		cpu.GDTR.limit = hwaddr_read(ph_addr    , 2);
-		cpu.GDTR.base  = hwaddr_read(ph_addr + 2, 4);
+		cpu.GDTR.limit = swaddr_read(ph_addr    , 2);
+		cpu.GDTR.base  = swaddr_read(ph_addr + 2, 4);
 
 		print_asm("lgdt   %s", ModR_M_asm);
 
@@ -31,8 +32,8 @@ Log("0x%x\n", ph_addr);
 	{
 		hwaddr_t ph_addr = reg_l(m.R_M);
 
-		cpu.GDTR.limit = hwaddr_read(ph_addr    , 2);
-		cpu.GDTR.base  = hwaddr_read(ph_addr + 2, 4);
+		cpu.GDTR.limit = swaddr_read(ph_addr    , 2);
+		cpu.GDTR.base  = swaddr_read(ph_addr + 2, 4);
 
 		print_asm("lgdt   %%%s", regsl[m.R_M]);
 
