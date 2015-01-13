@@ -11,8 +11,8 @@ make_helper(call_i)
 	int32_t disp = instr_fetch(eip+1, 4);
 
 	// Push the return address into stack
-	cpu.esp -= 4;
-	swaddr_write(cpu.esp, 4, eip + instr_len);
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, eip + instr_len);
+
 	// Write cpu.eip
 	cpu.eip = (int32_t)cpu.eip + disp;
 
