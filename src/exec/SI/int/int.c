@@ -22,7 +22,6 @@ make_helper(INT)
 	uint64_t descriptor   = (descriptor_h << 32) + descriptor_l;
 	GateDesc_t gate_desc = *(GateDesc_t*)(&descriptor);
 
-
 	// Push EFLAGS, CS, EIP
 	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
 	cpu.esp -= 2;  swaddr_write(cpu.esp, 2, cpu.CS);
@@ -34,6 +33,6 @@ make_helper(INT)
 	cpu.eip = ((uint32_t)gate_desc.off_h << 16) + (uint32_t)gate_desc.off_l - instr_len;
 	
 	print_asm("int    $0x%x", imm);
-
+Log("CS,EIP: %x, %x\n", cpu.CS, cpu.eip);assert(0);
 	return instr_len;
 }
