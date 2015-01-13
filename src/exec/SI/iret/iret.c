@@ -9,9 +9,9 @@ make_helper(iret)
 	uint8_t instr_len = 1;
 
 	// Pop EIP, CS, EFLAGS
-	cpu.eip = swaddr_read(cpu.esp, 4) - instr_len;     cpu.esp += 4;
-	cpu.CS = swaddr_read(cpu.esp, 2);                  cpu.esp += 2;
-	cpu.eflags = swaddr_read(cpu.esp, 4);              cpu.esp += 4;
+	cpu.eip    = (uint32_t)swaddr_read(cpu.esp, 4) - instr_len;  cpu.esp += 4;
+	cpu.CS     = (uint16_t)swaddr_read(cpu.esp, 2);              cpu.esp += 2;
+	cpu.eflags = (uint32_t)swaddr_read(cpu.esp, 4);              cpu.esp += 4;
 Log("eip 0x%x, 0x%x, 0x%x\n", cpu.eip, cpu.CS, cpu.eflags);
 	int i;
 	for (i = 0; i < 100; ++i)
