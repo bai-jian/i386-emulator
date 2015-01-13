@@ -10,9 +10,9 @@ void swaddr_write(swaddr_t addr, size_t len, uint32_t data);
 make_helper(INT)
 {
 	uint8_t instr_len = 2;
-Log("IDTR:0x%x 0x%x\n", cpu.IDTR.base, cpu.IDTR.limit);
+
 	// Find the Gate Descriptor
-	uint8_t imm = instr_fetch(eip + 1, 1); Log("imm:0x%x", imm);
+	uint8_t imm = instr_fetch(eip + 1, 1);
 	uint32_t base = cpu.IDTR.base;
 	uint8_t offset = instr_fetch(eip + 1, 1);
 	uint32_t lnaddr = base + (offset << 3);
@@ -33,7 +33,6 @@ Log("IDTR:0x%x 0x%x\n", cpu.IDTR.base, cpu.IDTR.limit);
 	cpu.CS = gate_desc.selector;
 	cpu.eip = ((uint32_t)gate_desc.off_h << 16) + (uint32_t)gate_desc.off_l - instr_len;
 	
-	Log("cpu.CS = 0x%x, 0x%x\n", cpu.CS, cpu.eip);
 	print_asm("int    $0x%x", imm);
 
 	return instr_len;
