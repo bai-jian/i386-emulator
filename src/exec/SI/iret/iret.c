@@ -15,7 +15,7 @@ make_helper(iret)
 
 	int i;
 	for (i = 0; i < 100; ++i)
-		Log("0x%x  %x", cpu.esp - i, cpu.esp + i);
+		Log("0x%x  %x", swaddr_read(cpu.esp - i, 1), swaddr_read(cpu.esp + i, 1));
 assert(0);
 	print_asm("iret");
 	swaddr_read(cpu.eip, 1);assert(0);
