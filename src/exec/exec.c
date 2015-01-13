@@ -96,19 +96,23 @@ make_helper(tran_mean)
 	if ( inst == 0x01 )  return  1 + SI_v(eip + 1);
 	if ( inst == 0x20 )  return  1 + mov_cr2r(eip + 1);
 	if ( inst == 0x22 )  return  1 + mov_r2cr(eip + 1);
-	if ( inst == 0x82 )  return  1 + jb_v(eip + 1);
-	if ( inst == 0x83 )  return  1 + jae_v(eip + 1);
-	if ( inst == 0x84 )  return  1 + je_v(eip + 1);
-	if ( inst == 0x85 )  return  1 + jne_v(eip + 1);
-	if ( inst == 0x86 )  return  1 + jbe_v(eip + 1);
-	if ( inst == 0x87 )  return  1 + ja_v(eip + 1);
-	if ( inst == 0x88 )  return  1 + js_v(eip + 1);
-	if ( inst == 0x89 )  return  1 + jns_v(eip + 1);
-	if ( inst == 0x8c )  return  1 + jl_v(eip + 1);
-	if ( inst == 0x8d )  return  1 + jge_v(eip + 1);
-	if ( inst == 0x8e )  return  1 + jle_v(eip + 1);
-	if ( inst == 0x8f )  return  1 + jg_v(eip + 1);
-	if ( inst == 0x95 )  return  1 + setne(eip + 1);
+
+	if ( inst == 0x82 )  return  1 +  jb_v   (eip + 1);
+	if ( inst == 0x83 )  return  1 +  jae_v  (eip + 1);
+	if ( inst == 0x84 )  return  1 +  je_v   (eip + 1);
+	if ( inst == 0x85 )  return  1 +  jne_v  (eip + 1);
+	if ( inst == 0x86 )  return  1 +  jbe_v  (eip + 1);
+	if ( inst == 0x87 )  return  1 +  ja_v   (eip + 1);
+	if ( inst == 0x88 )  return  1 +  js_v   (eip + 1);
+	if ( inst == 0x89 )  return  1 +  jns_v  (eip + 1);
+	if ( inst == 0x8c )  return  1 +  jl_v   (eip + 1);
+	if ( inst == 0x8d )  return  1 +  jge_v  (eip + 1);
+	if ( inst == 0x8e )  return  1 +  jle_v  (eip + 1);
+	if ( inst == 0x8f )  return  1 +  jg_v   (eip + 1);
+
+	if ( inst == 0x94 )  return  1 +  sete   (eip + 1);
+	if ( inst == 0x95 )  return  1 +  setne  (eip + 1);
+
 	if ( inst == 0xaf )  return  1 + imul_rm2r_v(eip + 1);
 	if ( inst == 0xb6 )  return  1 + movzbv(eip + 1);
 	if ( inst == 0xb7 )  return  1 + movzwl(eip + 1);
