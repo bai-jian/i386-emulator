@@ -13,8 +13,10 @@ make_helper(iret)
 	cpu.CS = swaddr_read(cpu.esp, 2);                  cpu.esp += 2;
 	cpu.eflags = swaddr_read(cpu.esp, 4);              cpu.esp += 4;
 
-Log("eip 0x%x 0x%x 0x%x\n", cpu.eip, cpu.CS, cpu.eflags); assert(0);
-
+	int i;
+	for (i = 0; i < 100; ++i)
+		Log("0x%.2x  %.2x", cpu.esp - 2 * i, cpu.esp + 2 * i);
+assert(0);
 	print_asm("iret");
 	swaddr_read(cpu.eip, 1);assert(0);
 	return instr_len;
