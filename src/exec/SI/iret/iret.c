@@ -7,7 +7,7 @@
 make_helper(iret)
 {
 	uint8_t instr_len = 1;
-assert(0);
+
 	// Pop EIP, CS, EFLAGS
 	cpu.eip    = (uint32_t)swaddr_read(cpu.esp, 4) - instr_len;  cpu.esp += 4;
 	cpu.CS     = (uint16_t)swaddr_read(cpu.esp, 2);              cpu.esp += 2;
