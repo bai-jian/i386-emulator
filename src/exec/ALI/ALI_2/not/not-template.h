@@ -6,7 +6,6 @@
 make_helper( concat(not_, SUFFIX) )
 {
 	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
-
 	if (m.mod != 3)
 	{
 		swaddr_t mem_a;
