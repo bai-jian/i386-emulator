@@ -10,7 +10,7 @@ int quiet = false;         // not allowing to print the execution process
 void set_main_args(int, char * []);
 static void process_args(int argc, char* argv[])
 {
-	int opt;
+	char opt;
 	while( (opt = getopt(argc, argv, "dq")) != -1)
 	{
 		switch(opt)
