@@ -2,11 +2,21 @@
 
 #include <unistd.h>
 
+/* Run 'nemu' Format:
+ * 	(1) a program: ./nemu [short arguments] exec_file
+ * 	               ./nemu [short arguments] exec_file
+ * 	(2) programs:  ./nemu [short arguments] exec_file1, exec_file2, ...
+ */ 	
 
-/* arguments for main() function */
+
+/* -d -q: arguments for main() function */
 int enable_debug = false;  // allowing to debug
 int quiet = false;         // not allowing to print the execution process
 
+// int getopt(int argc, char* argv, char*) : Process short arguments
+// 		opterr:  option error
+// 		optind:  option index
+// 		optarg:  option argument
 void set_main_args(int, char * []);
 static void process_args(int argc, char* argv[])
 {
@@ -45,9 +55,8 @@ int main(int argc, char* argv[])
 	init_wp_pool();
 	load_table();
 
-
-	reg_test();  // Test whether the 'CPU_state' structure is organized correctly.
-
+   		// Test whether the 'CPU_state' structure is organized correctly.
+		reg_test(); 
 
 	main_loop();
 
