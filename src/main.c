@@ -8,22 +8,16 @@ int enable_debug = false;  // allowing to debug
 int quiet = false;         // not allowing to print the execution process
 
 void set_main_args(int, char * []);
-static void process_args(int argc, char *argv[])
+static void process_args(int argc, char* argv[])
 {
 	int opt;
 	while( (opt = getopt(argc, argv, "dq")) != -1)
 	{
 		switch(opt)
 		{
-			case 'd':
-				enable_debug = true;
-				break;
-			case 'q':
-				quiet = true;
-				break;
-			default:
-				test(0, "bad option = %s\n", optarg);
-				break;
+			case 'd':  enable_debug = true;                   break;
+			case 'q':  quiet = true;                          break;
+			default :  test(0, "bad option = %s\n", optarg);  break;
 		}
 	}
 
