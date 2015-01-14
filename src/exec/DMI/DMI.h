@@ -4,7 +4,10 @@
 
 /*Data Movement Instructions:          */
 /*                                     */
-/*  DMI_1: MOV   MOVSX  MOVZX   XCHG   */  #include "DMI_1/DMI_1.h"
+/*  DMI_1: MOV   MOVSX  MOVZX          */  #include "DMI_1/DMI_1.h"
+/*         MOVSR                       */
+/*         CMOVcc                      */
+/*         XCHG                        */
 /*         (+) NOP  <- misc            */
 /*                                     */
 /*  DMI_2: LEA                         */  #include "lea/lea.h"

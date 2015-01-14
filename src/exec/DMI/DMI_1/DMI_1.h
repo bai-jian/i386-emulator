@@ -3,3 +3,4 @@
 #include "xchg/xchg.h"
 #include "movsx/movsx.h"
 #include "movzx/movzx.h"
+#include "cmovcc/cmovcc.h"
