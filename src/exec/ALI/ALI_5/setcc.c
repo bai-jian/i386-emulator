@@ -16,9 +16,8 @@ make_helper(setne)
 	}
 	else
 	{
-		uint8_t reg_i = m.R_M;
-		reg_b(reg_i) = !cpu.ZF;
-		print_asm("setne  %%%s", regsb[reg_i]);
+		reg_b(m.R_M) = !cpu.ZF;
+		print_asm("setne  %%%s", regsb[m.R_M]);
 	}
 	return 2;
 }
@@ -36,9 +35,8 @@ make_helper(sete)
 	}
 	else
 	{
-		uint8_t reg_i = m.R_M;
-		reg_b(reg_i) = cpu.ZF;
-		print_asm("sete   %%%s", regsb[reg_i]);
+		reg_b(m.R_M) = cpu.ZF;
+		print_asm("sete   %%%s", regsb[m.R_M]);
 	}
 	return 2;
 }
