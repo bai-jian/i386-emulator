@@ -4,7 +4,6 @@
 #include "ui/breakpoint.h"
 #include "ui/watchpoint.h"
 
-#include <setjmp.h>
 
 // The start address of 'loader' is at 0x100000
 // The start address of 'user program' is at 0x800000
@@ -39,8 +38,6 @@ void restart()
 }
 
 
-
-jmp_buf jbuf;	/* Make it easy to perform exception handling */
 extern int quiet;
 
 int exec(swaddr_t);
@@ -52,7 +49,6 @@ void cpu_exec(volatile uint32_t n)
 {
 	volatile uint32_t n_temp = n;
 
-	setjmp(jbuf);
 	while(n -- )
   	{
 		swaddr_t eip_temp = cpu.eip;
@@ -100,7 +96,7 @@ void cpu_exec(volatile uint32_t n)
 				return;
 
 			case RUNNING:
-				if (n == 1)  { nemu_state = STOP;  return;  }
+				if (n == 0)  { nemu_state = STOP;  return;  }
 		 }
 	}
 }
