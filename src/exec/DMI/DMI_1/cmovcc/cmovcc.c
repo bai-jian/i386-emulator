@@ -17,3 +17,6 @@ make_helper(cmove_v)
 
 make_helper(cmova_v)
 {	return  suffix == 'l' ? cmova_l(eip) : cmova_w(eip);	}
+
+make_helper(cmovs_v)
+{	return  suffix == 'l' ? cmovs_l(eip) : cmovs_w(eip);	}
