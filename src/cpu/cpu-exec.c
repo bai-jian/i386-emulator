@@ -37,7 +37,7 @@ void restart()
 	init_TLB();
 }
 
-
+extern int enable_debug;
 extern int quiet;
 
 int exec(swaddr_t);

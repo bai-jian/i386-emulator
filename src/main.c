@@ -2,12 +2,37 @@
 
 #include <unistd.h>
 
+
 /* arguments for main() function */
 int enable_debug = false;  // allowing to debug
 int quiet = false;         // not allowing to print the execution process
 
+void set_main_args(int, char * []);
+static void process_args(int argc, char *argv[])
+{
+	int opt;
+	while( (opt = getopt(argc, argv, "dq")) != -1)
+	{
+		switch(opt)
+		{
+			case 'd':
+				enable_debug = true;
+				break;
+			case 'q':
+				quiet = true;
+				break;
+			default:
+				test(0, "bad option = %s\n", optarg);
+				break;
+		}
+	}
 
-static void process_args(int argc, char* argv[]);
+	test(argc > optind, "Program is not given\n");
+
+	set_main_args(argc - optind, argv + optind);
+}
+
+
 void init_bp_pool();
 void init_wp_pool();
 void init_regex();
@@ -33,29 +58,4 @@ int main(int argc, char* argv[])
 	main_loop();
 
 	return 0;
-}
-
-void set_main_args(int, char * []);
-static void process_args(int argc, char *argv[])
-{
-	int opt;
-	while( (opt = getopt(argc, argv, "dq")) != -1)
-	{
-		switch(opt)
-		{
-			case 'd':
-				enable_debug = true;
-				break;
-			case 'q':
-				quiet = true;
-				break;
-			default:
-				test(0, "bad option = %s\n", optarg);
-				break;
-		}
-	}
-
-	test(argc > optind, "Program is not given\n");
-
-	set_main_args(argc - optind, argv + optind);
 }
