@@ -10,7 +10,7 @@ void swaddr_write(swaddr_t addr, size_t len, uint32_t data);
 make_helper(INT)
 {
 	uint8_t instr_len = 2;
-	assert(0);
+
 	// Find the Gate Descriptor
 	uint8_t imm = instr_fetch(eip + 1, 1);
 	uint32_t base = cpu.IDTR.base;
