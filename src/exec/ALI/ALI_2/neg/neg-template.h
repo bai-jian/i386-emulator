@@ -13,7 +13,7 @@ make_helper( concat(neg_, SUFFIX) )
 		swaddr_t mem_a;  uint8_t len = read_ModR_M(eip + 1, &mem_a);
 
 		DATA_TYPE opd = MEM_R(mem_a);
-		DATA_TYPE val = -opd;
+		DATA_TYPE val = -opd + 1;
 		MEM_W(mem_a, val);
 		cpu.CF = !(opd == 0);
 		concat(set_ZF_, SUFFIX) (val);
@@ -27,7 +27,7 @@ make_helper( concat(neg_, SUFFIX) )
 	else
 	{
 		DATA_TYPE opd = REG(m.R_M);
-		DATA_TYPE val = -opd;
+		DATA_TYPE val = -opd + 1;
 		REG(m.R_M) = val;
 		cpu.CF = !(opd == 0);
 		concat(set_ZF_, SUFFIX) (val);
