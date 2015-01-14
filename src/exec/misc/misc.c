@@ -24,7 +24,7 @@ make_helper(int3)
 }
 
 make_helper(nemu_trap)
-{assert(0);
+{
 	switch( cpu.eax )
 	{
 		case 0:

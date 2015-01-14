@@ -53,16 +53,18 @@ void cpu_exec(volatile uint32_t n)
 	volatile uint32_t n_temp = n;
 
 	setjmp(jbuf);
-	for(; n > 0; --n) 
+	while(n -- )
   	{
 		swaddr_t eip_temp = cpu.eip;
 		int instr_len = exec(cpu.eip);
+
  	 	if(n_temp != -1 || (enable_debug && !quiet)) 
 		{
 			// print the instruction executed
 			print_bin_instr(eip_temp, instr_len);
 			puts(assembly);
 		} 
+
 		cpu.eip += instr_len;
 
 		switch (bp_state) 
@@ -99,7 +101,7 @@ void cpu_exec(volatile uint32_t n)
 
 			case RUNNING:
 				if (n == 1)  { nemu_state = STOP;  return;  }
-		}
+		 }
 	}
 }
 
