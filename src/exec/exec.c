@@ -100,6 +100,7 @@ make_helper(tran_mean)
 	if ( inst == 0x44 )  return  1 +  cmove_v (eip + 1);
 	if ( inst == 0x47 )  return  1 +  cmova_v (eip + 1);
 	if ( inst == 0x48 )  return  1 +  cmovs_v (eip + 1);
+	if ( inst == 0x4D )  return  1 +  cmovge_v(eip + 1);
 
 	if ( inst == 0x82 )  return  1 +  jb_v   (eip + 1);
 	if ( inst == 0x83 )  return  1 +  jae_v  (eip + 1);

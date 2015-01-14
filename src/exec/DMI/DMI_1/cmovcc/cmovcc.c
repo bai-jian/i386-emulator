@@ -20,3 +20,6 @@ make_helper(cmova_v)
 
 make_helper(cmovs_v)
 {	return  suffix == 'l' ? cmovs_l(eip) : cmovs_w(eip);	}
+
+make_helper(cmovge_v)
+{	return  suffix == 'l' ? cmovge_l(eip) : cmovge_w(eip);	}
