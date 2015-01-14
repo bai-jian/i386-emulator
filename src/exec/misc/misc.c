@@ -56,7 +56,7 @@ make_helper(nemu_trap)
 			for (i = 0; i < len; ++ i)
 				buffer[i] = swaddr_read(buf + i, 1);
 			printf("%s", buffer);
-			assert(0);		
+			
 			return 1;
 		}
 		default:
