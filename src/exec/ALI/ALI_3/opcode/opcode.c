@@ -1,16 +1,17 @@
 #include "exec/helper.h"
 
+
 #include "cpu/modrm.h"
 
-#include "add/add.h"
-#include "or/or.h"
-#include "adc/adc.h"
-#include "sbb/sbb.h"
-#include "and/and.h"
-#include "sub/sub.h"
-#include "xor/xor.h"
-#include "cmp/cmp.h"
 
+int  add_i2rm_b  (swaddr_t eip);
+int   or_i2rm_b  (swaddr_t eip);
+int  adc_i2rm_b  (swaddr_t eip);
+int  sbb_i2rm_b  (swaddr_t eip);
+int  and_i2rm_b  (swaddr_t eip);
+int  sub_i2rm_b  (swaddr_t eip);
+int  xor_i2rm_b  (swaddr_t eip);
+int  cmp_i2rm_b  (swaddr_t eip);
 make_helper(ALI_3_b)
 {	
 	ModR_M m;	m.val = instr_fetch(eip+1, 1);
@@ -25,6 +26,14 @@ make_helper(ALI_3_b)
 	assert(0);	return 0;
 }
 
+int  add_i2rm_v  (swaddr_t eip);
+int   or_i2rm_v  (swaddr_t eip);
+int  adc_i2rm_v  (swaddr_t eip);
+int  sbb_i2rm_v  (swaddr_t eip);
+int  and_i2rm_v  (swaddr_t eip);
+int  sub_i2rm_v  (swaddr_t eip);
+int  xor_i2rm_v  (swaddr_t eip);
+int  cmp_i2rm_v  (swaddr_t eip);
 make_helper(ALI_3_v)
 {	
 	ModR_M m;	m.val = instr_fetch(eip+1, 1);

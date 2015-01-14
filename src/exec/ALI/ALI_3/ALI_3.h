@@ -7,4 +7,4 @@
 #include "xor/xor.h"
 #include "cmp/cmp.h"
 
-#include "ALI_3-opcode.h"
+#include "opcode/opcode.h"
