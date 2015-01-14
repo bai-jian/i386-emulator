@@ -8,7 +8,10 @@ make_helper( concat(push_i_, SUFFIX) )
 	DATA_TYPE imm = instr_fetch(eip + 1, DATA_BYTE);
 
 	// Push imm
-	cpu.esp -= DATA_BYTE;  MEM_W(cpu.esp, imm);
+	if ( instr_fetch(eip, 1) == 0x6A )
+	{	cpu.esp -= 4;          MEM_W(cpu.esp, imm);  }
+	else
+	{	cpu.esp -= DATA_BYTE;  MEM_W(cpu.esp, imm);	 }
 
 	print_asm("push" str(SUFFIX) "  $0x%x", imm);
 
