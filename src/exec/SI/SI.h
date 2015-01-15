@@ -15,6 +15,8 @@
 #include "int/int.h"
 #include "iret/iret.h"
 
+#include "hlt/hlt.h"
+
 #include "in/in.h"
 #include "out/out.h"
 

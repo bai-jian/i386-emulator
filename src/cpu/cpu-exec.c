@@ -21,7 +21,7 @@ void sdl_clear_event_queue();
 void restart() 
 {
 	/* Perform some initialization to restart a program */
-	load_prog();
+	// load_prog();
 	memcpy(hwa_to_va(LOADER_START), loader, loader_len);
 
 	cpu.eip = LOADER_START;
