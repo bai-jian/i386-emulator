@@ -1,11 +1,11 @@
 #include "common.h"
 #include "memory.h"
-#include <string.h>
 
 #include <elf.h>
+#include <string.h>
 
 #ifdef HAS_DEVICE
-#define ELF_OFFSET_IN_DISK 0
+	#define ELF_OFFSET_IN_DISK 0
 #endif
 
 #define STACK_SIZE (1 << 20)
@@ -63,15 +63,13 @@ uint32_t loader( )
 
 	volatile uint32_t entry = elf->e_entry;
 
-#ifdef IA32_PAGE
-	mm_malloc(KOFFSET - STACK_SIZE, STACK_SIZE);
-
-#ifdef HAS_DEVICE
-	create_video_mapping();
-#endif
-
-	write_cr3(get_ucr3());
-#endif
+	#ifdef IA32_PAGE
+		mm_malloc(KOFFSET - STACK_SIZE, STACK_SIZE);
+		#ifdef HAS_DEVICE
+			create_video_mapping();
+		#endif
+		write_cr3(get_ucr3());
+	#endif
 
 	return entry;
 }
