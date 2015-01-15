@@ -1,5 +1,9 @@
 #include "exec/helper.h"
 
+#include "memory.h"
+#include "cpu/reg.h"
+#include "cpu/modrm.h"
+
 
 #define  DATA_BYTE 2
 #include "imul-template.h"
@@ -10,12 +14,12 @@
 #undef   DATA_BYTE
 
 
+int imul_b(swaddr_t eip);
+int imul_w(swaddr_t eip);
+int imul_l(swaddr_t eip);
+
+
 extern char suffix;
-
-make_helper(imul_b);
-make_helper(imul_w);
-make_helper(imul_l);
-
 make_helper(imul_v)
 {	return  suffix == 'l'  ?  imul_l(eip)  :  imul_w(eip);	}
 
@@ -26,96 +30,106 @@ make_helper(imul_i2r_v)
 {	return  suffix == 'l'  ?  imul_i2r_l(eip)  :  imul_i2r_w(eip);		}
 
 
-#include "cpu/modrm.h"
-#include "cpu/reg.h"
-
-make_helper(imul_b)
+int imul_b(swaddr_t eip)
 {
-	ModR_M m;  m.val = instr_fetch(eip+1, 1);
+	// ModR_M:  mod  reg  R_M
+	//           xx  101  xxx
+	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
+	assert(m.reg == 5);
+
 	if (m.mod != 3)
 	{
-		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
+		swaddr_t mem_a;
+		uint8_t len = read_ModR_M(eip + 1, &mem_a);
 
-		int8_t mem_v = swaddr_read(mem_i, 1);
-		reg_w(R_AX) = ((int16_t)((int8_t)reg_b(R_AL))) * mem_v;
-		cpu.CF = cpu.OF =  reg_b(R_AL) == reg_w(R_AX);
+		int16_t opd1 = (int8_t)reg_b(R_AL);
+		int16_t opd2 = (int8_t)swaddr_read(mem_a, 1);
+		reg_w(R_AX) = opd1 * opd2;
+		cpu.CF = cpu.OF = !(reg_w(R_AX) == (int16_t)(int8_t)reg_b(R_AL));
 		
-		print_asm("imulb " "%s", ModR_M_asm);
-
+		print_asm("imulb     %s", ModR_M_asm);
 		return 1 + len;
 	}
 	else
 	{
-		uint8_t reg_i = m.R_M;
+		int16_t opd1 = (int8_t)reg_b(R_AL);
+		int16_t opd2 = (int8_t)reg_b(m.R_M);
+		reg_w(R_AX) = opd1 * opd2;
+		cpu.CF = cpu.OF = !(reg_w(R_AX) == (int16_t)(int8_t)reg_b(R_AL));
 
-		int8_t reg_v = reg_b(reg_i);
-		reg_w(R_AX) = ((int16_t)((int8_t)reg_b(R_AL))) * reg_v;
-		cpu.CF = cpu.OF =  reg_b(R_AL) == reg_w(R_AX);
-
-		print_asm("imulb " "%%%s", regsb[reg_i]);
-
+		print_asm("imulb     %%%s", regsb[m.R_M]);
 		return 1 + 1;
 	}
 }
 
-make_helper(imul_w)
+int imul_w(swaddr_t eip)
 {
-	ModR_M m;  m.val = instr_fetch(eip+1, 1);
+	// ModR_M:  mod  reg  R_M
+	//           xx  101  xxx
+	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
+	assert(m.reg == 5);
+
 	if (m.mod != 3)
 	{
-		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
+		swaddr_t mem_a;
+		uint8_t len = read_ModR_M(eip + 1, &mem_a);
 
-		int16_t mem_v = swaddr_read(mem_i, 2);
-		reg_l(R_EAX) = ((int32_t)((int16_t)reg_w(R_AX))) * mem_v;
-		cpu.CF = cpu.OF =  reg_w(R_AX) == reg_l(R_EAX);
+		int32_t opd1 = (int16_t)reg_w(R_AX);
+		int32_t opd2 = (int16_t)swaddr_read(mem_a, 2);
+		int32_t valu = opd1 * opd2;
+		reg_w(R_AX) =  valu & 0x0000FFFF;
+		reg_w(R_DX) = (valu & 0xFFFF0000) >> 16;
+		cpu.CF = cpu.OF = !(valu == (int32_t)(int16_t)reg_w(R_AX));
 		
-		print_asm("imulw " "%s", ModR_M_asm);
-
+		print_asm("imulw     %s", ModR_M_asm);
 		return 1 + len;
 	}
 	else
 	{
-		uint8_t reg_i = m.R_M;
+		int32_t opd1 = (int16_t)reg_w(R_AX);
+		int32_t opd2 = (int16_t)reg_w(m.R_M);
+		int32_t valu = opd1 * opd2;
+		reg_w(R_AX) =  valu & 0x0000FFFF;
+		reg_w(R_DX) = (valu & 0xFFFF0000) >> 16;
+		cpu.CF = cpu.OF = !(valu == (int32_t)(int16_t)reg_w(R_AX));
 
-		int16_t reg_v = reg_w(reg_i);
-		reg_l(R_EAX) = ((int32_t)((int16_t)reg_w(R_AX))) * reg_v;
-		cpu.CF = cpu.OF =  reg_w(R_AX) == reg_l(R_EAX);
-
-		print_asm("imulw " "%%%s", regsw[reg_i]);
-
+		print_asm("imulw     %%%s", regsw[m.R_M]);
 		return 1 + 1;
 	}
 }
 
-make_helper(imul_l)
+int imul_l(swaddr_t eip)
 {
-	ModR_M m;  m.val = instr_fetch(eip+1, 1);
+	// ModR_M:  mod  reg  R_M
+	//           xx  101  xxx
+	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
+	assert(m.reg == 5);
+
 	if (m.mod != 3)
 	{
-		swaddr_t mem_i;  uint8_t len = read_ModR_M(eip+1, &mem_i);
+		swaddr_t mem_a;
+		uint8_t len = read_ModR_M(eip + 1, &mem_a);
 
-		int32_t mem_v = swaddr_read(mem_i, 4);
-		int64_t value = ((int64_t)((int32_t)reg_l(R_EAX))) * mem_v;
-		reg_l(R_EAX) = value & 0xFFFFFFFF;
-		reg_l(R_EDX) = (value >> 32) & 0xFFFFFFFF; 
-		cpu.CF = cpu.OF =  reg_l(R_EAX) == value;
+		int64_t opd1 = (int32_t)reg_l(R_EAX);
+		int64_t opd2 = (int32_t)swaddr_read(mem_a, 4);
+		int64_t valu = opd1 * opd2;
+		reg_l(R_EAX) =  valu & 0x00000000FFFFFFFF;
+		reg_l(R_EDX) = (valu & 0xFFFFFFFF00000000) >> 32;
+		cpu.CF = cpu.OF = !(valu == (int64_t)(int32_t)reg_l(R_EAX));
 		
-		print_asm("imull " "%s", ModR_M_asm);
-
+		print_asm("imull     %s", ModR_M_asm);
 		return 1 + len;
 	}
 	else
 	{
-		uint8_t reg_i = m.R_M;
+		int64_t opd1 = (int32_t)reg_l(R_EAX);
+		int64_t opd2 = (int32_t)reg_l(m.R_M);
+		int64_t valu = opd1 * opd2;
+		reg_l(R_EAX) =  valu & 0x00000000FFFFFFFF;
+		reg_l(R_EDX) = (valu & 0xFFFFFFFF00000000) >> 32;
+		cpu.CF = cpu.OF = !(valu == (int64_t)(int32_t)reg_l(R_EAX));
 
-		int32_t reg_v = reg_l(reg_i);
-		int64_t value = ((int64_t)((int32_t)reg_l(R_EAX))) * reg_v;
-		reg_l(R_EAX) = value & 0xFFFFFFFF;
-		reg_l(R_EDX) = (value >> 32) & 0xFFFFFFFF;
-		cpu.CF = cpu.OF =  reg_l(R_EAX) == value;
-
-		print_asm("imull " "%%%s", regsl[reg_i]);
-
+		print_asm("imull     %%%s", regsl[m.R_M]);
 		return 1 + 1;
 	}
 }
