@@ -15,6 +15,7 @@ void init_dram();
 void init_cache();
 void init_cache_L2();
 void init_TLB();
+void sdl_clear_event_queue();
 void restart() 
 {
 	/* Perform some initialization to restart a program */
@@ -35,6 +36,8 @@ void restart()
 	init_cache();
 	init_cache_L2();
 	init_TLB();
+
+	sdl_clear_event_queue();
 }
 
 extern int enable_debug;

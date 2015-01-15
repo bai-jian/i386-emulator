@@ -128,6 +128,9 @@ typedef struct
 				};
 			};
 		};
+
+	// Intrrupt Register
+		bool INTR;
 } CPU_state;
 extern CPU_state cpu;
 

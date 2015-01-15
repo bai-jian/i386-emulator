@@ -6,7 +6,7 @@
 
 static int main_argc;
 static char **main_argv;
-static char *exec_file;
+char *exec_file;
 
 static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
