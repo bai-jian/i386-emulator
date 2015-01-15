@@ -1,5 +1,7 @@
 #include "nemu.h"
 
+#include "device/i8259.h"
+
 #include "ui/ui.h"
 #include "ui/breakpoint.h"
 #include "ui/watchpoint.h"
@@ -47,7 +49,7 @@ int exec(swaddr_t);
 
 char assembly[40];
 static void print_bin_instr(swaddr_t, int);
-
+void raise_intr(uint8_t);
 void cpu_exec(volatile uint32_t n) 
 {
 	volatile uint32_t n_temp = n;
@@ -93,6 +95,13 @@ void cpu_exec(volatile uint32_t n)
 			if (changed) { nemu_state = STOP; return; }
 		}
 
+		if (cpu.INTR & cpu.IF )
+		{
+			uint8_t intr_no = i8259_query_intr();
+			i8259_ack_intr();
+			raise_intr(intr_no);
+		}
+
 		switch(nemu_state)
 		{
 			case END:
@@ -101,7 +110,7 @@ void cpu_exec(volatile uint32_t n)
 			case RUNNING:
 				if (n == 0)  { nemu_state = STOP;  return;  }
 		 }
-	}
+	} 
 }
 
 uint32_t instr_fetch(swaddr_t eip, size_t len);

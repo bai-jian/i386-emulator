@@ -35,3 +35,24 @@ make_helper(INT)
 
 	return instr_len;
 }
+
+void raise_intr(uint8_t no)
+{
+	uint8_t offset = no;
+	uint32_t base = cpu.IDTR.base;
+	uint32_t lnaddr = base + (offset << 3);
+
+	uint64_t descriptor_l = lnaddr_read(lnaddr    , 4);
+	uint64_t descriptor_h = lnaddr_read(lnaddr + 4, 4);
+	uint64_t descriptor   = (descriptor_h << 32) + descriptor_l;
+	GateDesc_t gate_desc = *(GateDesc_t*)(&descriptor);
+	
+	// Push EFLAGS, CS, EIP
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
+	cpu.esp -= 2;  swaddr_write(cpu.esp, 2, cpu.CS);
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eip);
+
+	// Load CS, EIP with the Gate Descriptor
+	cpu.CS = gate_desc.selector;
+	cpu.eip = ((uint32_t)gate_desc.off_h << 16) + (uint32_t)gate_desc.off_l;
+}
