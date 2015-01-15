@@ -32,6 +32,7 @@ make_helper(imul_i2r_v)
 
 int imul_b(swaddr_t eip)
 {
+	assert(0);
 	// ModR_M:  mod  reg  R_M
 	//           xx  101  xxx
 	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
@@ -64,6 +65,7 @@ int imul_b(swaddr_t eip)
 
 int imul_w(swaddr_t eip)
 {
+	assert(0);
 	// ModR_M:  mod  reg  R_M
 	//           xx  101  xxx
 	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
@@ -100,6 +102,7 @@ int imul_w(swaddr_t eip)
 
 int imul_l(swaddr_t eip)
 {
+	assert(0);
 	// ModR_M:  mod  reg  R_M
 	//           xx  101  xxx
 	ModR_M m;  m.val = instr_fetch(eip + 1, 1);
