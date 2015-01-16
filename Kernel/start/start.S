@@ -18,10 +18,6 @@
 		.word 0, 0;              \
 		.byte 0, 0, 0, 0
 
-	# 0x90 = 1   00   1   0   0   0   0
-	#        P   DPL  S       E   W   A
-	# 0xC0 = 1   1    0   0      0000
-	#        G   D       AVL    L19-16
 	#define MAKE_SEG_DESC(type, base, lim)                        \
 		.word (((lim) >> 12) & 0xffff), ((base) & 0xffff);        \
 		.byte (((base) >> 16) & 0xff), (0x90 | (type)),           \
