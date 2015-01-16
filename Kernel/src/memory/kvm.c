@@ -51,8 +51,8 @@ void init_page(void)
 /* GDT in the kernel's memory, whose virtual memory is greater than 0xC0000000. */
 static SegDesc gdt[NR_SEGMENTS];
 
-static void
-set_segment(SegDesc *ptr, uint32_t pl, uint32_t type) {
+static void set_segment(SegDesc* ptr, uint32_t pl, uint32_t type)
+{
 	ptr->limit_15_0  = 0xFFFF;
 	ptr->base_15_0   = 0x0;
 	ptr->base_23_16  = 0x0;
@@ -79,4 +79,3 @@ init_segment(void) {
 
 	write_gdtr(gdt, sizeof(gdt));
 }
-

@@ -53,12 +53,12 @@
 		movw    %ax, %ss          # %SS = %AX
 
 		# Set up a stack for C code.
-		movl $0, %ebp
+		movl $0,           %ebp
 		movl $(128 << 20), %esp
 		jmp init				# never return
 
 
-	# GDT
+	## GDT ######################################################
 	.p2align 2                    # force 4 byte alignment
 	gdt:
 		MAKE_NULL_SEG_DESC                   # empty segment
@@ -68,6 +68,6 @@
 	gdtdesc:                      # descriptor
 		.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1
 		.long   va_to_pa(gdt)          # address of GDT
-
+	#############################################################
 
 #endif

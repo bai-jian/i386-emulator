@@ -3,7 +3,7 @@
 #ifndef __VMM_H__
 #define __VMM_H__
 
-/*************** Segment Selector ***************/
+/** Segment Selector ****************************/
 /*                                              */
 /*             +-------------+--+---+           */
 /*             |    INDEX    |TI|RPL|           */
@@ -13,17 +13,17 @@
 /*   TI  - Table Indicator                      */
 /*   RPL - Requtor's Privilege Level            */
 /*                                              */
+/*                                              */
+/************************************************/
 	typedef struct SegmentSelector_t
 	{
 		uint16_t RPL	: 2;
 		uint16_t TI		: 1;
 		uint16_t INDEX	: 13;
 	} SegSel_t;
-/*                                              */
-/************************************************/
 
 
-/********************************* Segment Descriptor ******************************************/
+/** Segment Descriptor *************************************************************************/
 /*                                                                                             */
 /*                                                                                             */
 /*  |63            56|55  54  53  52  51         48|47  46 45 44  43   40|39            32     */
@@ -49,7 +49,8 @@
 /*      A   - 0   - Accessed                                                                   */
 /*      (1) limit = 0x0FFFF, thus, Physical Memory Size = 4KB * 2^16 = 256M                    */
 /*                                                                                             */
-	typedef struct SegmentDescriptor
+/***********************************************************************************************/
+	typedef struct SegmentDescriptor_t
 	{
 		uint64_t limit_15_0			: 16;
 		uint64_t base_15_0			: 16;
@@ -64,10 +65,45 @@
 		uint64_t D					: 1;
 		uint64_t G					: 1;
 		uint64_t base_31_24			: 8;
-	} SegDesc;
+	} SegDesc_t;
+
+
+
+/** Gate Descriptor ****************************************************************************/
+/*                                                                                             */
+/*                                                                                             */
+/*            |63                                  48|47  46 45 44  43    40|39            32  */
+/*            +--------------------------------------+---+-----+---+--------+----------------+ */
+/*            |                                      |   |     |   |        |                | */
+/*            |           offset[31:16]              | P | DPL | S |  TYPE  |                | */
+/*            |                                      |   |     |   |        |                | */
+/*            +--------------------------------------+---+-----+---+--------+----------------+ */
+/*            |                                      |                                       | */
+/*            |              selector                |           offset[15:0]                | */
+/*            |                                      |                                       | */
+/*            +--------------------------------------+---------------------------------------+ */
+/*            |31                                  16|15                                    0| */
+/*	                                                                                           */
+/*              P   - 1   - Present: 0, not present; 1, present                                */
+/*              DPL - 00  - Descriptor Privilege Level                                         */
+/*              S   - 1   - System: 0, system; 1, user.                                        */
+/*              TYPE:                                                                          */
+/*                  0101    Task      Gate                                                     */
+/*                  1110    Interrupt Gate                                                     */
+/*                  1111    Trap      Gate                                                     */
 /*                                                                                             */
 /***********************************************************************************************/
-	
+	typedef struct GateDescriptor_t
+	{
+		uint64_t off_l		: 16;	// offset[0...15]
+		uint64_t selector	: 16;	// segment selector
+		uint64_t pad0		: 8;
+		uint64_t type		: 4;
+		uint64_t S			: 1;	// system
+		uint64_t DPL		: 2;	// descriptor privilege level
+		uint64_t P			: 1;	// present
+		uint64_t off_h		: 16;	// offset[16...31]
+	};
 
 
 #endif

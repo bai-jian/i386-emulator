@@ -7,8 +7,9 @@
 /* Each entry of the IDT is either an interrupt gate, or a trap gate */
 static GateDesc idt[NR_IRQ];
 
-/* Setup a interrupt gate for interrupt handler. */
-static void set_intr(GateDesc *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
+// Setup a interrupt gate for interrupt handler
+static void set_intr(GateDesc *ptr, uint32_t selector, uint32_t offset, uint32_t dpl)
+{
 	ptr->offset_15_0 = offset & 0xFFFF;
 	ptr->segment = selector;
 	ptr->pad0 = 0;
@@ -19,8 +20,9 @@ static void set_intr(GateDesc *ptr, uint32_t selector, uint32_t offset, uint32_t
 	ptr->offset_31_16 = (offset >> 16) & 0xFFFF;
 }
 
-/* Setup a trap gate for cpu exception. */
-static void set_trap(GateDesc *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
+// Setup a trap gate for cpu exception
+static void set_trap(GateDesc *ptr, uint32_t selector, uint32_t offset, uint32_t dpl)
+{
 	ptr->offset_15_0 = offset & 0xFFFF;
 	ptr->segment = selector;
 	ptr->pad0 = 0;
@@ -52,21 +54,22 @@ void vecsys();
 
 void irq_empty();
 
-void init_idt() {
+void init_idt()
+{
 	int i;
-	for (i = 0; i < NR_IRQ; i ++) {
-		set_trap(idt + i, SEG_KERNEL_CODE << 3, (uint32_t)irq_empty, DPL_KERNEL);
-	}
-	set_trap(idt + 0, SEG_KERNEL_CODE << 3, (uint32_t)vec0, DPL_KERNEL);
-	set_trap(idt + 1, SEG_KERNEL_CODE << 3, (uint32_t)vec1, DPL_KERNEL);
-	set_trap(idt + 2, SEG_KERNEL_CODE << 3, (uint32_t)vec2, DPL_KERNEL);
-	set_trap(idt + 3, SEG_KERNEL_CODE << 3, (uint32_t)vec3, DPL_KERNEL);
-	set_trap(idt + 4, SEG_KERNEL_CODE << 3, (uint32_t)vec4, DPL_KERNEL);
-	set_trap(idt + 5, SEG_KERNEL_CODE << 3, (uint32_t)vec5, DPL_KERNEL);
-	set_trap(idt + 6, SEG_KERNEL_CODE << 3, (uint32_t)vec6, DPL_KERNEL);
-	set_trap(idt + 7, SEG_KERNEL_CODE << 3, (uint32_t)vec7, DPL_KERNEL);
-	set_trap(idt + 8, SEG_KERNEL_CODE << 3, (uint32_t)vec8, DPL_KERNEL);
-	set_trap(idt + 9, SEG_KERNEL_CODE << 3, (uint32_t)vec9, DPL_KERNEL);
+	for (i = 0; i < NR_IRQ; i ++)
+	{	set_trap(idt + i, SEG_KERNEL_CODE << 3, (uint32_t)irq_empty, DPL_KERNEL);  }
+	
+	set_trap(idt + 0,  SEG_KERNEL_CODE << 3, (uint32_t)vec0,  DPL_KERNEL);
+	set_trap(idt + 1,  SEG_KERNEL_CODE << 3, (uint32_t)vec1,  DPL_KERNEL);
+	set_trap(idt + 2,  SEG_KERNEL_CODE << 3, (uint32_t)vec2,  DPL_KERNEL);
+	set_trap(idt + 3,  SEG_KERNEL_CODE << 3, (uint32_t)vec3,  DPL_KERNEL);
+	set_trap(idt + 4,  SEG_KERNEL_CODE << 3, (uint32_t)vec4,  DPL_KERNEL);
+	set_trap(idt + 5,  SEG_KERNEL_CODE << 3, (uint32_t)vec5,  DPL_KERNEL);
+	set_trap(idt + 6,  SEG_KERNEL_CODE << 3, (uint32_t)vec6,  DPL_KERNEL);
+	set_trap(idt + 7,  SEG_KERNEL_CODE << 3, (uint32_t)vec7,  DPL_KERNEL);
+	set_trap(idt + 8,  SEG_KERNEL_CODE << 3, (uint32_t)vec8,  DPL_KERNEL);
+	set_trap(idt + 9,  SEG_KERNEL_CODE << 3, (uint32_t)vec9,  DPL_KERNEL);
 	set_trap(idt + 10, SEG_KERNEL_CODE << 3, (uint32_t)vec10, DPL_KERNEL);
 	set_trap(idt + 11, SEG_KERNEL_CODE << 3, (uint32_t)vec11, DPL_KERNEL);
 	set_trap(idt + 12, SEG_KERNEL_CODE << 3, (uint32_t)vec12, DPL_KERNEL);
