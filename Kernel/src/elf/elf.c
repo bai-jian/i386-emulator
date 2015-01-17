@@ -45,7 +45,7 @@ uint32_t loader( )
 	assert(elf->e_version == EV_CURRENT);				// current version
 
 
-	Elf32_Phdr* ph = (void*)elf->e_phoff;
+	Elf32_Phdr* ph = (void*)((void*)elf + elf->e_phoff);
 
 	// Load each program segment 
 	uint32_t i;
@@ -55,7 +55,6 @@ uint32_t loader( )
 		if (ph[i].p_type == PT_LOAD)
 		{
 			#ifdef IA32_PAGE
-				Log("here\n");
 				uint32_t pa = mm_malloc(ph[i].p_vaddr, ph[i].p_memsz);
 
 //				if (ph[i].p_offset + ph[i].p_filesz > BUF_SIZE)
@@ -85,7 +84,7 @@ uint32_t loader( )
 			if(brk < new_brk) { brk = new_brk; }
 		}
 	}
-	assert(0);
+
 	volatile uint32_t entry = elf->e_entry;
 
 	#ifdef IA32_PAGE
