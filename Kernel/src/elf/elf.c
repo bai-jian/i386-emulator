@@ -56,6 +56,7 @@ uint32_t loader( )
 				int k;
 				for (k = 0; k < ph[i].p_filesz; ++k)
 					Log("0x%x ", buf_t[k]);
+				assert(0);
 			#else
 				uint32_t j;
 				// read the content of the segment from the ELF file to the memory region [VirtAddr, VirtAddr + FileSiz)
