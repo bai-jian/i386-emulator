@@ -20,14 +20,11 @@ void init_page(void)
 	memset(pdir, 0, NR_PDE * sizeof(PDE));
 
 	/* fill PDEs and PTEs */
-	// PHY_MEM / PT_SIZE = 32, meaning the number of page frame in the physical memory
-	// KOFFSET / PT_SIZE = 768, meaning the beginning of stack
-	// pdir[0...31] and pdir[768...799] is set valid because they are the code/data and stack dirs.
 	uint32_t pdir_idx, ptable_idx, pframe_idx = 0;
 	for (pdir_idx = 0; pdir_idx < PHY_MEM / PT_SIZE; pdir_idx ++)
 	{
-		pdir[pdir_idx].val = make_pde(ptable);                      // code/data
-		pdir[pdir_idx + KOFFSET / PT_SIZE].val = make_pde(ptable);  // stack
+		pdir[pdir_idx].val = make_pde(ptable);
+		pdir[pdir_idx + KOFFSET / PT_SIZE].val = make_pde(ptable);
 		for (ptable_idx = 0; ptable_idx < NR_PTE; ptable_idx ++)
 		{
 			ptable->val = make_pte(pframe_idx << 12);

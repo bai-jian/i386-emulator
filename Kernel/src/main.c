@@ -80,9 +80,7 @@ void init_cond( )
 	HIT_GOOD_TRAP;
 }
 
-/* Initialization phase 1
- * The assembly code in start.S will finally jump here.
- */
+// Initialization phase 1: the assembly code in start.S will finally jump here
 void init()
 {
 #ifdef IA32_PAGE

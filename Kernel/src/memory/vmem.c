@@ -8,13 +8,17 @@
 /* Use the function to get the start address of user page directory. */
 inline PDE* get_updir();
 
-void create_video_mapping() {
-	/* TODO: create an identical mapping from virtual memory area 
-	 * [0xa0000, 0xa0000 + SCR_SIZE) to physical memory area 
-	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
-	 * some page tables to create this mapping.
-	 */
-	nemu_assert(0);
+// Mapping 
+// from virtual  memory area [0xa0000, 0xa0000 + SCR_SIZE)
+// to   physical memory area [0xa0000, 0xa0000 + SCR_SIZE)
+void create_video_mapping( )
+{
+	// fill some PDEs and PTEs
+/*	uint32_t pdir_idx, ptable_idx, pframe_idx = 0;
+	for (pdir_idx = 
+*/
+	return ;
+
 }
 
 void video_mapping_write_test() {
