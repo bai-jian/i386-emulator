@@ -32,7 +32,8 @@ uint32_t loader( )
 	#endif
 
 	Elf32_Phdr* ph = (void*)elf->e_phoff;
-
+	Log("HI 1 + 1 = %d\n", 2);
+	Log("%d\n", elf->e_phnum);
 	assert(0);
 	// Load each program segment 
 	uint32_t i;
