@@ -11,8 +11,10 @@
 
 #define STACK_SIZE (1 << 20)
 
-#define BUF_SIZE 4096
-static uint8_t buf[BUF_SIZE];
+#define BUF_SIZE   4096
+#define BUF_T_SIZE 4096
+static uint8_t buf  [BUF_SIZE  ];  // buffer head
+static uint8_t buf_t[BUF_T_SIZE];  // buffer temp
 
 void ide_read(uint8_t*, uint32_t, uint32_t);
 void create_video_mapping();
@@ -45,6 +47,7 @@ uint32_t loader( )
 	assert(elf->e_version == EV_CURRENT);				// current version
 
 
+	// Debug the base 'elf', 10 hours
 	Elf32_Phdr* ph = (void*)((void*)elf + elf->e_phoff);
 
 	// Load each program segment 
@@ -57,12 +60,12 @@ uint32_t loader( )
 			#ifdef IA32_PAGE
 				uint32_t pa = mm_malloc(ph[i].p_vaddr, ph[i].p_memsz);
 
-//				if (ph[i].p_offset + ph[i].p_filesz > BUF_SIZE)
-//					ide_read(buf, ph[i].p_offset, ph[i].p_filesz);
+				assert(ph[i].p_filesz < BUF_T_SIZE);
+				ide_read(buf_t, ELF_OFFSET_IN_DISK + ph[i].p_offset, ph[i].p_filesz);
 
-				uint32_t j, offset = ph[i].p_offset;
+				uint32_t j;
 				for (j = 0; j < ph[i].p_filesz; ++j)
-					*(uint8_t*)(pa + j) = buf[offset + j];
+					*(uint8_t*)(pa + j) = buf_t[j];
 				for (     ; j < ph[i].p_memsz;  ++j)
 					*(uint8_t*)(pa + j) = (uint8_t)0;
 
