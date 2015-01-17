@@ -68,13 +68,12 @@ void init_cond( )
 
 
 #ifdef IA32_PAGE
-	/* Set the %esp for user program, which is one of the
-	 * convention of the "advanced" runtime environment. */
+	// Set the %esp for user program
 	asm volatile("movl %0, %%esp" : : "i"(KOFFSET));
 #endif
 
 
-	/* Here we go! */
+	// Here we go!!!
 	((void(*)(void))eip)();
 
 	HIT_GOOD_TRAP;

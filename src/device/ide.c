@@ -61,11 +61,12 @@ void ide_io_handler(ioaddr_t addr, size_t len, bool is_write) {
 	}
 }
 
-void init_ide() {
+void init_ide()
+{
 	ide_port_base = add_pio_map(IDE_PORT, 8, ide_io_handler);
 	ide_port_base[7] = 0x40;
 
-	extern char *exec_file;
+	extern char* exec_file;
 	disk_fp = fopen(exec_file, "r+");
 	assert(disk_fp);
 }

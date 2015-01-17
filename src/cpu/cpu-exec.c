@@ -20,8 +20,8 @@ void init_TLB();
 void sdl_clear_event_queue();
 void restart() 
 {
-	/* Perform some initialization to restart a program */
-	// load_prog();
+	// Perform some initialization to restart a program
+//  load_prog();
 	memcpy(hwa_to_va(LOADER_START), loader, loader_len);
 
 	cpu.eip = LOADER_START;
@@ -42,12 +42,11 @@ void restart()
 	sdl_clear_event_queue();
 }
 
-extern int enable_debug;
-extern int quiet;
-
-int exec(swaddr_t);
 
 char assembly[40];
+extern int enable_debug;
+extern int quiet;
+int exec(swaddr_t);
 static void print_bin_instr(swaddr_t, int);
 void raise_intr(uint8_t);
 void cpu_exec(volatile uint32_t n) 
