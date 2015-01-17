@@ -6,7 +6,7 @@
 
 make_helper( concat(imul_rm2r_, SUFFIX) )
 {
-	assert(0);
+//	assert(0);
 	ModR_M m;  m.val = instr_fetch(eip+1, 1);
 	if (m.mod != 3)
 	{
@@ -39,7 +39,7 @@ make_helper( concat(imul_rm2r_, SUFFIX) )
 
 make_helper( concat(imul_i2r_, SUFFIX) )
 {
-	assert(0);
+//	assert(0);
 	uint8_t imm_byte = DATA_BYTE;
 	if ( instr_fetch(eip, 1) == 0x6b )  imm_byte = 1;
 
