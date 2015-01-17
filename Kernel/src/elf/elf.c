@@ -55,7 +55,7 @@ uint32_t loader( )
 		if (ph[i].p_type == PT_LOAD)
 		{
 			#ifdef IA32_PAGE
-
+				Log("here\n");
 				uint32_t pa = mm_malloc(ph[i].p_vaddr, ph[i].p_memsz);
 
 //				if (ph[i].p_offset + ph[i].p_filesz > BUF_SIZE)
