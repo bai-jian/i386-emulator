@@ -1,29 +1,33 @@
 #include "common.h"
+
+
 #define NR_SEC_CACHE    128   /* sector cache is a direct address hash */
 
 void disk_do_read(void *, uint32_t);
 void disk_do_write(void *, uint32_t);
 
-struct SectorCache {
+struct SectorCache
+{
 	uint32_t sector;
 	bool used, dirty;
 	uint8_t content[512];
 };
 static struct SectorCache cache[NR_SEC_CACHE];
 
-void
-cache_init(void) {
+void cache_init(void)
+{
 	int i;
-	for (i = 0; i < NR_SEC_CACHE; i ++) {
+	for (i = 0; i < NR_SEC_CACHE; i ++)
 		cache[i].used = false;
-	}
 }
 
-void
-cache_writeback(void) {
+void cache_writeback(void)
+{
 	int i;
-	for (i = 0; i < NR_SEC_CACHE; i ++) {
-		if (cache[i].dirty == true) {
+	for (i = 0; i < NR_SEC_CACHE; i ++)
+	{
+		if (cache[i].dirty == true)
+		{
 			disk_do_write(&cache[i].content, cache[i].sector);
 			cache[i].dirty = false;
 		}
