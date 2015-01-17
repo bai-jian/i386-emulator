@@ -34,9 +34,9 @@ uint32_t loader( )
 
 	// The first several bytes contain the ELF header
 	// Check ELF header
-	char magic[] = {ELFMAG0, ELFMAG1, ELFMAG2, ELFMAG3};
 
-	assert(memcmp(elf->e_ident, magic, 4) == 0);		// magic number
+//	char magic[] = {ELFMAG0, ELFMAG1, ELFMAG2, ELFMAG3};
+//	assert(memcmp(elf->e_ident, magic, 4) == 0);		// magic number
 	assert(elf->e_ident[EI_CLASS] == ELFCLASS32);		// 32-bit architecture
 	assert(elf->e_ident[EI_DATA] == ELFDATA2LSB);		// littel-endian
 	assert(elf->e_ident[EI_VERSION] == EV_CURRENT);		// current version
