@@ -58,6 +58,10 @@ uint32_t loader( )
 	uint32_t i;
 	for (i = 0; i < elf->e_phnum; ++i)
 	{
+	Log("%d\n", elf->e_phnum);
+	Log("%d\n", ph[0].p_offset);
+	Log("%d\n", ph[0].p_filesz);
+	Log("%d\n", ph[0].p_memsz);
 		// Scan the program header table, load each segment into memory
 		if (ph[i].p_type == PT_LOAD)
 		{
