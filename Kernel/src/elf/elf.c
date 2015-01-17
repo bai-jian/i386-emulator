@@ -31,6 +31,23 @@ uint32_t loader( )
 		elf = (void*)0x0;
 	#endif
 
+
+	// The first several bytes contain the ELF header
+	// Check ELF header
+	char magic[] = {ELFMAG0, ELFMAG1, ELFMAG2, ELFMAG3};
+
+	assert(memcmp(elf->e_ident, magic, 4) == 0);		// magic number
+	assert(elf->e_ident[EI_CLASS] == ELFCLASS32);		// 32-bit architecture
+	assert(elf->e_ident[EI_DATA] == ELFDATA2LSB);		// littel-endian
+	assert(elf->e_ident[EI_VERSION] == EV_CURRENT);		// current version
+	assert(elf->e_ident[EI_OSABI] == ELFOSABI_SYSV || 	// UNIX System V ABI
+			elf->e_ident[EI_OSABI] == ELFOSABI_LINUX); 	// UNIX - GNU
+	assert(elf->e_ident[EI_ABIVERSION] == 0);			// should be 0
+	assert(elf->e_type == ET_EXEC);						// executable file
+	assert(elf->e_machine == EM_386);					// Intel 80386 architecture
+	assert(elf->e_version == EV_CURRENT);				// current version
+
+
 	Elf32_Phdr* ph = (void*)elf->e_phoff;
 	Log("HI 1 + 1 = %d\n", 2);
 	Log("%d\n", elf->e_phnum);
