@@ -34,7 +34,6 @@ uint32_t loader( )
 
 	// The first several bytes contain the ELF header
 	// Check ELF header
-
 //	char magic[] = {ELFMAG0, ELFMAG1, ELFMAG2, ELFMAG3};
 //	assert(memcmp(elf->e_ident, magic, 4) == 0);		// magic number
 	assert(elf->e_ident[EI_CLASS] == ELFCLASS32);		// 32-bit architecture
@@ -51,7 +50,10 @@ uint32_t loader( )
 	Elf32_Phdr* ph = (void*)elf->e_phoff;
 	Log("HI 1 + 1 = %d\n", 2);
 	Log("%d\n", elf->e_phnum);
-	assert(0);
+	Log("%d\n", ph[0].p_offset);
+	Log("%d\n", ph[0].p_filesz);
+	Log("%d\n", ph[0].p_memsz);
+
 	// Load each program segment 
 	uint32_t i;
 	for (i = 0; i < elf->e_phnum; ++i)
@@ -76,6 +78,7 @@ uint32_t loader( )
 				for (k = 0; k < ph[i].p_filesz; ++k)
 					Log("0x%x ", buf_t[k]);
 				assert(0);
+
 			#else
 				uint32_t j;
 				// read the content of the segment from the ELF file to the memory region [VirtAddr, VirtAddr + FileSiz)
@@ -92,6 +95,8 @@ uint32_t loader( )
 			if(brk < new_brk) { brk = new_brk; }
 		}
 	}
+
+	assert(0);
 
 	volatile uint32_t entry = elf->e_entry;
 
