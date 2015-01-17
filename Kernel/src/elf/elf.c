@@ -40,11 +40,16 @@ uint32_t loader( )
 	assert(elf->e_ident[EI_DATA] == ELFDATA2LSB);		// littel-endian
 	assert(elf->e_ident[EI_VERSION] == EV_CURRENT);		// current version
 	assert(elf->e_ident[EI_OSABI] == ELFOSABI_SYSV || 	// UNIX System V ABI
-			elf->e_ident[EI_OSABI] == ELFOSABI_LINUX); 	// UNIX - GNU
+           elf->e_ident[EI_OSABI] == ELFOSABI_LINUX); 	// UNIX - GNU
 	assert(elf->e_ident[EI_ABIVERSION] == 0);			// should be 0
 	assert(elf->e_type == ET_EXEC);						// executable file
 	assert(elf->e_machine == EM_386);					// Intel 80386 architecture
 	assert(elf->e_version == EV_CURRENT);				// current version
+
+	
+	int ii;
+	for (ii = 0; ii < 800; ++ii)
+		Log("%.2x ", buf_h[ii]);
 
 
 	Elf32_Phdr* ph = (void*)elf->e_phoff;
@@ -58,9 +63,6 @@ uint32_t loader( )
 	uint32_t i;
 	for (i = 0; i < elf->e_phnum; ++i)
 	{
-	Log("%d\n", ph[i].p_offset);
-	Log("%d\n", ph[i].p_filesz);
-	Log("%d\n", ph[i].p_memsz);
 		// Scan the program header table, load each segment into memory
 		if (ph[i].p_type == PT_LOAD)
 		{
@@ -76,11 +78,6 @@ uint32_t loader( )
 					*(uint8_t*)(pa + j) = buf_t[j];
 				for (     ; j < ph[i].p_memsz;  ++j)
 					*(uint8_t*)(pa + j) = (uint8_t)0;
-
-				int k;
-				for (k = 0; k < ph[i].p_filesz; ++k)
-					Log("0x%x ", buf_t[k]);
-				assert(0);
 
 			#else
 				uint32_t j;
