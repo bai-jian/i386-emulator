@@ -53,6 +53,7 @@ uint32_t loader( )
 
 
 	Elf32_Phdr* ph = (void*)elf->e_phoff;
+	Log("0x%x", (uint32_t)ph);
 	Log("HI 1 + 1 = %d\n", 2);
 	Log("%d\n", elf->e_phnum);
 	Log("%d\n", ph[0].p_offset);
