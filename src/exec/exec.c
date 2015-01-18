@@ -120,6 +120,8 @@ make_helper(tran_mean)
 	if ( inst == 0x94 )  return  1 +  sete   (eip + 1);
 	if ( inst == 0x95 )  return  1 +  setne  (eip + 1);
 
+	if ( inst == 0xa3 )  return  1 +  bt_r_v (eip + 1);
+
 	if ( inst == 0xaf )  return  1 + imul_rm2r_v(eip + 1);
 	if ( inst == 0xb6 )  return  1 + movzbv(eip + 1);
 	if ( inst == 0xb7 )  return  1 + movzwl(eip + 1);
