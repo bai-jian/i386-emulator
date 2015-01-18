@@ -2,6 +2,6 @@
 
 make_helper(hlt)
 {
-	while(!(cpu.IF && cpu.INTR)) ;
+	//while(!(cpu.IF && cpu.INTR)) ;
 	return 1;
 }
