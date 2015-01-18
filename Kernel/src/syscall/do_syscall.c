@@ -32,6 +32,7 @@ static void sys_brk(TrapFrame* tf)
 	tf->eax = 0;
 }
 
+
 void serial_printc(char ch);
 static void sys_write(TrapFrame* tf)
 {
