@@ -6,6 +6,7 @@
 
 int __attribute__((__noinline__))
 syscall(int id, ...) {
+	nemu_assert(0);
 	int ret;
 	int* args = &id;
 	asm volatile("int $0x80": "=a"(ret) : "a"(args[0]), "b"(args[1]), "c"(args[2]), "d"(args[3]));
@@ -19,7 +20,7 @@ int read(int fd, char* buf, int len)
 }
 
 int write(int fd, void* buf, int len)
-{
+{nemu_assert(0);
 	return syscall(SYS_write, fd, buf, len);
 }
 
