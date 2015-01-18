@@ -4,12 +4,10 @@
 
 make_helper(ret)
 {
-	Log("ret\n");
 	uint8_t instr_len = 1;
 	uint32_t ret_addr = swaddr_read(cpu.esp, 4);  cpu.esp += 4;
 	cpu.eip = ret_addr - instr_len;
-	print_asm("ret");
-	Log("ret\n");
+	print_asm("ret ");
 	return instr_len;
 }
 
