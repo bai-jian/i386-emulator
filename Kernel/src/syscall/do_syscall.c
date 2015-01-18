@@ -2,7 +2,6 @@
 
 #include <sys/syscall.h>
 
-
 void add_irq_handle(int, void (*)(void));
 static void sys_brk(TrapFrame* tf);
 static void sys_write(TrapFrame* tf);
@@ -33,6 +32,7 @@ static void sys_brk(TrapFrame* tf)
 	tf->eax = 0;
 }
 
+void serial_printc(char ch);
 static void sys_write(TrapFrame* tf)
 {
 	uint32_t buf = tf->ecx;
@@ -42,6 +42,10 @@ static void sys_write(TrapFrame* tf)
 	// fd = 1: stdout;  fd = 2: stderr
 	assert(fd == 1 || fd == 2);
 
+	uint32_t i;
+	for (i = 0; i < len; ++ i)
+		serial_printc(buf + i);
+assert(0);
 	asm volatile (".byte 0x82" : : "a"(2), "c"(buf), "d"(len));
 			
 	tf->eax = len;
