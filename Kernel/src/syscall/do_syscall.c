@@ -45,8 +45,7 @@ static void sys_write(TrapFrame* tf)
 	uint32_t i;
 	for (i = 0; i < len; ++ i)
 		serial_printc(buf + i);
-assert(0);
-	asm volatile (".byte 0x82" : : "a"(2), "c"(buf), "d"(len));
+//	asm volatile (".byte 0x82" : : "a"(2), "c"(buf), "d"(len));
 			
 	tf->eax = len;
 }
