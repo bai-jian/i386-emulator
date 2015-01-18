@@ -9,9 +9,15 @@ static inline int32_t F2int(FLOAT a) {
 	return 0;
 }
 
-static inline FLOAT int2F(int32_t a) {
-	assert(0);
-	return 0;
+static inline FLOAT int2F(int32_t a)
+{
+	if (a < 0)
+		return -int2F(-a);
+	else
+	{
+		assert(a < (1 << 15));
+		return a << 16;
+	}
 }
 
 static inline FLOAT F_mul_int(FLOAT a, int32_t b) {
