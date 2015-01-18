@@ -9,6 +9,7 @@ static void sys_write(TrapFrame* tf);
 void do_syscall(TrapFrame* tf)
 {
 	Log("%x %x %x\n", tf->eax, tf->irq, tf->error_code);
+	Log("%x\n", SYS_brk);
 	switch(tf->eax)
 	{
 		/* The ``add_irq_handle'' system call is artificial. We use it to 
