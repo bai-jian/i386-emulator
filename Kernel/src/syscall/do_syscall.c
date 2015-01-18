@@ -43,11 +43,10 @@ static void sys_write(TrapFrame* tf)
 
 	// fd = 1: stdout;  fd = 2: stderr
 	assert(fd == 1 || fd == 2);
-
+assert(0);
 	uint32_t i;
 	for (i = 0; i < len; ++ i)
 		serial_printc(*(char*)(void*)(buf + i));
-//	asm volatile (".byte 0x82" : : "a"(2), "c"(buf), "d"(len));
-			
+
 	tf->eax = len;
 }

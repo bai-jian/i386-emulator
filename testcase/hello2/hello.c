@@ -20,7 +20,7 @@ int read(int fd, char* buf, int len)
 
 int write(int fd, char* buf, int len)
 {
-	return syscall(SYS_write, fd, buf, len);
+	return syscall(SYS_write, 1, buf, len);
 }
 
 off_t lseek(int fd, off_t offset, int whence)
