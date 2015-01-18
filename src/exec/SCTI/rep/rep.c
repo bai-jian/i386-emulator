@@ -8,7 +8,7 @@ extern uint8_t current_sreg;
 
 make_helper(rep)
 {
-	uint8_t inst = instr_fetch(eip+1, 1);
+	uint8_t inst = instr_fetch(eip + 1, 1);
 
 	if ( inst == 0xa4 )
 	{
@@ -96,6 +96,9 @@ make_helper(rep)
 
 		return 2;
 	}
+
+	// REP RET
+	if ( inst == 0xC3 )  {  print_asm("rep");  return 1;  }
 
 	assert(0);  return 0;
 }
