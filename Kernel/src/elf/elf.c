@@ -58,14 +58,21 @@ uint32_t loader( )
 		if (ph[i].p_type == PT_LOAD)
 		{
 			#ifdef IA32_PAGE
+
 				uint32_t pa = mm_malloc(ph[i].p_vaddr, ph[i].p_memsz);
 
-				assert(ph[i].p_filesz < BUF_T_SIZE);
-				ide_read(buf_t, ELF_OFFSET_IN_DISK + ph[i].p_offset, ph[i].p_filesz);
-
-				uint32_t j;
+				uint32_t base = ELF_OFFSET_IN_DISK + ph[i].p_offset;
+				uint32_t j, fact = -1;
 				for (j = 0; j < ph[i].p_filesz; ++j)
-					*(uint8_t*)(pa + j) = buf_t[j];
+				{
+					if (j % BUF_T_SIZE == 0)
+					{
+						++ fact;
+						ide_read(buf_t, base + fact * BUF_T_SIZE, BUF_T_SIZE);
+					}
+					*(uint8_t*)(pa + j) = buf_t[j - fact * BUF_T_SIZE];
+				}
+
 				for (     ; j < ph[i].p_memsz;  ++j)
 					*(uint8_t*)(pa + j) = (uint8_t)0;
 
