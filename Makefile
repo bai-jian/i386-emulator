@@ -37,7 +37,7 @@ loader:
 	rm loader
 
 run: nemu
-	./nemu -d $(TESTFILE) 2>&1 | tee log.txt
+	./nemu  $(TESTFILE) 2>&1 | tee log.txt
 
 gdb: nemu
 	gdb --args ./nemu -dq $(TESTFILE)
