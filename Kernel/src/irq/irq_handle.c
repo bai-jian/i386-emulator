@@ -1,10 +1,9 @@
 #include "common.h"
 #include "x86.h"
 
-#define NR_IRQ_HANDLE 32
 
-/* There are no more than 16(actually, 3) kinds of hardward interrupts. */
-#define NR_HARD_INTR 16
+#define NR_IRQ_HANDLE 32
+#define NR_HARD_INTR 16    // There are no more than 16(actually, 3) kinds of hardward interrupts
 
 struct IRQ_t
 {
@@ -15,8 +14,6 @@ struct IRQ_t
 static struct IRQ_t handle_pool[NR_IRQ_HANDLE];
 static struct IRQ_t* handles[NR_HARD_INTR];
 static int handle_count = 0;
-
-void do_syscall(TrapFrame*);
 
 void add_irq_handle(int irq, void (*func)(void) )
 {
@@ -30,6 +27,7 @@ void add_irq_handle(int irq, void (*func)(void) )
 	handles[irq] = ptr;
 }
 
+void do_syscall(TrapFrame*);
 void irq_handle(TrapFrame *tf)
 {
 	int irq = tf->irq;
@@ -54,4 +52,3 @@ void irq_handle(TrapFrame *tf)
 		}
 	}
 }
-
