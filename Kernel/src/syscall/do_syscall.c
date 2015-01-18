@@ -19,8 +19,8 @@ void do_syscall(TrapFrame* tf)
 		 */
 		case 0: add_irq_handle(tf->ebx, (void*)tf->ecx); break;
 
-		case SYS_brk:  		sys_brk(tf);	break;
 		case SYS_write:  	sys_write(tf);  break;
+		case SYS_brk:  		sys_brk(tf);	break;
 
 		default: panic("Unhandled system call: id = %d", tf->eax);
 	}
@@ -45,7 +45,6 @@ static void sys_write(TrapFrame* tf)
 
 	// fd = 1: stdout;  fd = 2: stderr
 	assert(fd == 1 || fd == 2);
-assert(0);
 	uint32_t i;
 	for (i = 0; i < len; ++ i)
 		serial_printc(*(char*)(void*)(buf + i));

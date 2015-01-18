@@ -8,7 +8,7 @@ int __attribute__((__noinline__))
 syscall(int id, ...) {
 	int ret;
 	int* args = &id;
-	asm volatile("int $0x80" : "=a"(ret) : "a"(args[0]), "b"(args[1]), "c"(args[2]), "d"(args[3]));
+	asm volatile("int $0x80": "=a"(ret) : "a"(args[0]), "b"(args[1]), "c"(args[2]), "d"(args[3]));
 	return ret;
 }
 
@@ -18,9 +18,9 @@ int read(int fd, char* buf, int len)
 	return 0;
 }
 
-int write(int fd, char* buf, int len)
+int write(int fd, void* buf, int len)
 {
-	return syscall(SYS_write, 1, buf, len);
+	return syscall(SYS_write, fd, buf, len);
 }
 
 off_t lseek(int fd, off_t offset, int whence)
@@ -35,12 +35,13 @@ void *sbrk(int incr)
 	static char* heap_end;
 	char* prev_heap_end;
 
-	if (heap_end == 0)
+	if (heap_end == 0) {
 		heap_end = &end;
+	}
 	prev_heap_end = heap_end;
 
-	if (syscall(SYS_brk, heap_end + incr) == 0)
-		heap_end += incr;
+	if (syscall(SYS_brk, heap_end + incr) == 0) {
+		heap_end += incr; }
 
 	return prev_heap_end;
 }
