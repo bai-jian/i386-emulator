@@ -1,6 +1,7 @@
 #include "x86.h"
 
 #include <sys/syscall.h>
+#include <stdio.h>
 
 void add_irq_handle(int, void (*)(void));
 static void sys_brk(TrapFrame* tf);
@@ -45,7 +46,7 @@ static void sys_write(TrapFrame* tf)
 
 	uint32_t i;
 	for (i = 0; i < len; ++ i)
-		serial_printc(buf + i);
+		serial_printc(*(char*)(void*)(buf + i));
 //	asm volatile (".byte 0x82" : : "a"(2), "c"(buf), "d"(len));
 			
 	tf->eax = len;
