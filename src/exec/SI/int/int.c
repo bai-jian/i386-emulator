@@ -42,6 +42,7 @@ make_helper(INT)
 
 void raise_intr(uint8_t no)
 {
+	Log("no: 0x%x\n", no);
 	uint8_t offset = no;
 	uint32_t base = cpu.IDTR.base;
 	uint32_t lnaddr = base + (offset << 3);
