@@ -38,7 +38,11 @@ void irq_handle(TrapFrame *tf)
 	if (irq < 0)
 		panic("Unhandled exception!");
 	else if (irq == 0x80)
+	{
+	Log("%x %x %x %x %x %x %x %x\n", tf->edi, tf->esi, tf->ebp, tf->xxx, tf->ebx, tf->edx, tf->ecx, tf->eax);
+	Log("%x %x %x %x %x\n", tf->irq, tf->error_code, tf->eip, tf->cs, tf->eflags);
 		do_syscall(tf);
+	}
 	else if (irq < 1000)
 		panic("Unexpected exception #%d at eip = %x", irq, tf->eip);
 	else if (irq >= 1000)
