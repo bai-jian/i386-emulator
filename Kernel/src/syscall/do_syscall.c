@@ -9,7 +9,7 @@ static void sys_open  (TrapFrame* tf);
 static void sys_brk   (TrapFrame* tf);
 void do_syscall(TrapFrame* tf)
 {
-	Log("brk %x, write %x, open %x, \n", SYS_brk, SYS_write, SYS_open);
+//	Log("brk %x, write %x, open %x, \n", SYS_brk, SYS_write, SYS_open);
 	switch(tf->eax)
 	{
 		/* The ``add_irq_handle'' system call is artificial. We use it to 
