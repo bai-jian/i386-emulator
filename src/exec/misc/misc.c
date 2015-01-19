@@ -56,6 +56,6 @@ static void hit_trap_bad()
 static void hit_trap_stop()
 {
 	printf("\nnemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x :\n", "STOP", cpu.eip);
-	puts("The Kernel has been restarted. Use 'c' to continue to run the user program.\n");
+	puts  ("    The Kernel has been restarted. Use 'c' to continue to run the user program.\n");
 	nemu_state = STOP;
 }

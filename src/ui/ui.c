@@ -49,6 +49,7 @@ static void cmd_exec(uint32_t num)  {  cpu_exec(num);  }
 
 char* rl_gets();
 void restart();
+static void cmd_STOP_r();
 static void cmd_info();
 static void cmd_x();
 static void cmd_p();
@@ -78,7 +79,7 @@ void main_loop()
 				break;
 
 			case STOP:
-				if (strcmp(p, "r")  == 0)   { nemu_state = RUNNING;  restart();  cmd_exec(INSTR_END);  continue;  }
+				if (strcmp(p, "r")  == 0)	{ cmd_STOP_r();  continue; }
 				if (strcmp(p, "c")  == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_END);  continue;  }
 				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_LEN);  continue;  }
 
@@ -117,6 +118,29 @@ char* rl_gets()
 		add_history(line_read);
 
 	return line_read;
+}
+
+static void cmd_STOP_r()
+{
+	char c;
+	while( true ) 
+	{
+		printf("The program is running. Restart the program? (y or n)");
+		fflush(stdout);
+		scanf(" %c", &c);
+		switch(c)
+		{
+			case 'y': goto restart_;
+			case 'n': return;
+			default : puts("Please answer y or n.");
+		}
+	} 
+restart_:
+
+	nemu_state = RUNNING;
+
+	restart();
+	cpu_exec(-1);
 }
 
 static void cmd_info()
