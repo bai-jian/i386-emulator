@@ -51,6 +51,7 @@ char* rl_gets();
 void restart();
 static void cmd_STOP_r();
 static void cmd_STOP_c();
+static void cmd_STOP_si();
 static void cmd_info();
 static void cmd_x();
 static void cmd_p();
@@ -82,7 +83,7 @@ void main_loop()
 			case STOP:
 				if (strcmp(p, "r")  == 0)	{ cmd_STOP_r();  continue; }
 				if (strcmp(p, "c")  == 0)	{ cmd_STOP_c();	 continue; }
-				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  cmd_exec(INSTR_LEN);  continue;  }
+				if (strcmp(p, "si") == 0)	{ cmd_STOP_si(); continue; }
 
 				// Look up information of registers, memory, breakpoint, watchpoint, stack frame linked lists
 				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
@@ -148,6 +149,14 @@ static void cmd_STOP_c()
 {
 	nemu_state = RUNNING;
 	cpu_exec(-1);
+}
+
+static void cmd_STOP_si()
+{
+	Log("%s\n", saveptr);	
+//	(strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0)
+	nemu_state = RUNNING;
+//	cmd_exec(INSTR_LEN);
 }
 
 static void cmd_info()
