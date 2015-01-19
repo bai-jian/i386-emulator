@@ -74,7 +74,7 @@ void init_cond( )
 
 
 	// Stop the Kernel, indicating to run the user program
-	asm volatile(".byte 0x82" : : "a"(0x10));
+	asm volatile(".byte 0x82" : : "a"(2));
 
 	// Here we go!!! Run the user program.
 	((void(*)(void))eip)();
