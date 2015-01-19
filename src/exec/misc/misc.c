@@ -35,20 +35,6 @@ make_helper(nemu_trap)
 		case TRAP_good	:	hit_trap_good();	break;
 		case TRAP_bad 	:	hit_trap_bad();		break;
 		case TRAP_stop	:	hit_trap_stop();	break;
-	/*	case 2:  // SYS_write
-		{
-			char buffer[1024];
-
-			uint32_t buf = cpu.ecx;
-			uint32_t len = cpu.edx;
-
-			int i;
-			for (i = 0; i < len; ++ i)
-				buffer[i] = swaddr_read(buf + i, 1);
-			printf("%s", buffer);
-			
-			return 1;
-		} */
 		default			:	assert(0);
 	}
 	print_asm("nemu trap");
@@ -69,6 +55,7 @@ static void hit_trap_bad()
 
 static void hit_trap_stop()
 {
-	printf("\nnemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "STOP", cpu.eip);
+	printf("\nnemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x :\n", "STOP", cpu.eip);
+	puts("The Kernel has been restarted. Use 'c' to continue to run the user program.\n");
 	nemu_state = STOP;
 }
