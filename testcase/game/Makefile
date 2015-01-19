@@ -3,8 +3,8 @@ CFLAGS = -m32 -MD -O2 -Wall -Werror -I./include -I../lib/newlib \
 		 -fno-builtin -fno-omit-frame-pointer -fno-stack-protector 
 LDFLAGS = -melf_i386
 
-#GAME = typing
-GAME = nemu-pal
+GAME = typing
+#GAME = nemu-pal
 
 CFLAGS += -I./src/$(GAME)/include
 
