@@ -67,6 +67,7 @@ int main()
 {
 	printf("Hello world!\n");
 	printf("%s", "Hello world!\n");
+	nemu_assert(0);
 	printf("%d + %d = %d\n", 1, 1, 2);
 
 	return 0;

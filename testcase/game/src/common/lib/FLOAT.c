@@ -18,9 +18,9 @@ FLOAT f2F(float a)
 	return  (sign_b << 31) + valu_b;
 }
 
-static inline FLOAT Fabs(FLOAT x) {
-	assert(0);
-	return 0;
+static inline FLOAT Fabs(FLOAT x)
+{
+	return ((int)x >= 0) ? x : -x;
 }
 
 
