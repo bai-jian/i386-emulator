@@ -46,15 +46,15 @@ void ide_write(uint8_t *, uint32_t, uint32_t);
 int fs_open(const char* pathname, int flags)
 {
 	uint32_t i;
-	for (i = 3; i < NR_FILES + 3; ++ i)
+	for (i = 0; i < NR_FILES; ++ i)
 		if (strcmp(pathname, file_table[i].name) == 0)
 			break;
-	if (i == NR_FILES + 3)  assert(0);
+	if (i == NR_FILES)  assert(0);
+assert(0);
+	fstat[i + 3].opened = true;
+	fstat[i + 3].offset = 0;
 
-	fstat[i].opened = true;
-	fstat[i].offset = 0;
-
-	return i;
+	return file_table[i].disk_offset;
 }
 
 
