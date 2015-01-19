@@ -22,7 +22,7 @@ make_helper(INT)
 	uint64_t descriptor_h = lnaddr_read(lnaddr + 4, 4);
 	uint64_t descriptor   = (descriptor_h << 32) + descriptor_l;
 	GateDesc_t gate_desc = *(GateDesc_t*)(&descriptor);
-	
+
 	// Push EFLAGS, CS, EIP
 	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
 	cpu.esp -= 2;  swaddr_write(cpu.esp, 2, cpu.CS);
@@ -32,6 +32,7 @@ make_helper(INT)
 	cpu.CS = gate_desc.selector;
 	cpu.eip = ((uint32_t)gate_desc.off_h << 16) + (uint32_t)gate_desc.off_l - instr_len;
 */
+	cpu.eip += instr_len;
 	raise_intr(imm);
 	cpu.eip -= instr_len;
 	print_asm("int    $0x%x", imm);
