@@ -73,7 +73,10 @@ void init_cond( )
 #endif
 
 
-	// Here we go!!!
+	// Stop the Kernel, indicating to run the user program
+	asm volatile(".byte 0x82" : : "a"(0x10));
+
+	// Here we go!!! Run the user program.
 	((void(*)(void))eip)();
 
 	HIT_GOOD_TRAP;

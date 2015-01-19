@@ -23,29 +23,19 @@ make_helper(int3)
 	return 1;
 }
 
+
+enum  {  TRAP_good, TRAP_bad, TRAP_stop  };
+static void  hit_trap_good ();
+static void  hit_trap_bad  ();
+static void  hit_trap_stop ();
 make_helper(nemu_trap)
-{
+{ 
 	switch( cpu.eax )
-	{
-		case 0:
-		{
-			printf("nemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "GOOD", cpu.eip);
-			nemu_state = END;
-
-			print_asm("nemu trap");
-
-			return 1;
-		}
-		case 1:
-		{	
-			printf("nemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "BAD", cpu.eip);
-			nemu_state = END;
-
-			print_asm("nemu trap");
-
-			return 1;
-		}
-		case 2:  // SYS_write
+ 	{
+		case TRAP_good	:	hit_trap_good();	break;
+		case TRAP_bad 	:	hit_trap_bad();		break;
+		case TRAP_stop	:	hit_trap_stop();	break;
+	/*	case 2:  // SYS_write
 		{
 			char buffer[1024];
 
@@ -58,8 +48,27 @@ make_helper(nemu_trap)
 			printf("%s", buffer);
 			
 			return 1;
-		}
-		default:
-		{	assert(0);  return 0;    }
+		} */
+		default			:	assert(0);
 	}
+	print_asm("nemu trap");
+	return 1;
+}
+
+static void hit_trap_good()
+{
+	printf("\nnemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "GOOD", cpu.eip);
+	nemu_state = END;
+}
+
+static void hit_trap_bad()
+{	
+	printf("\nnemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "BAD", cpu.eip);
+	nemu_state = END;
+}
+
+static void hit_trap_stop()
+{
+	printf("\nnemu: HIT \33[1;31m%s\33[0m TRAP at eip = 0x%08x\n\n", "STOP", cpu.eip);
+	nemu_state = STOP;
 }
