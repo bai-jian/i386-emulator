@@ -1,6 +1,6 @@
 #include "exec/template-start.h"
 
-
+#include "memory.h"
 #include "cpu/modrm.h"
 
 make_helper( concat(push_i_, SUFFIX) )
@@ -9,7 +9,7 @@ make_helper( concat(push_i_, SUFFIX) )
 
 	// Push imm
 	if ( instr_fetch(eip, 1) == 0x6A )
-	{	cpu.esp -= 4;          MEM_W(cpu.esp, imm);  }
+	{	cpu.esp -= 4;          swaddr_write(cpu.esp, 4, imm);  }
 	else
 	{	cpu.esp -= DATA_BYTE;  MEM_W(cpu.esp, imm);	 }
 
