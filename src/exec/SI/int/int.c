@@ -10,6 +10,7 @@ void swaddr_write(swaddr_t addr, size_t len, uint32_t data);
 void raise_intr(uint8_t no);
 make_helper(INT)
 {
+	Log("cs %x  eip %x\n", cpu.CS, cpu.eip);
 	uint8_t instr_len = 2;
 	uint8_t imm = instr_fetch(eip + 1, 1);
 /*
@@ -60,5 +61,5 @@ void raise_intr(uint8_t no)
 	// Load CS, EIP with the Gate Descriptor
 	cpu.CS = gate_desc.selector;
 	cpu.eip = ((uint32_t)gate_desc.off_h << 16) + (uint32_t)gate_desc.off_l;
-	Log("cs %x, eip %x", cpu.CS, cpu.eip);
+	Log("cs %x, eip %x\n", cpu.CS, cpu.eip);
 }
