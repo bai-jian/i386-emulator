@@ -50,7 +50,7 @@ int fs_open(const char* pathname, int flags)
 		if (strcmp(pathname, file_table[i].name) == 0)
 			break;
 	if (i == NR_FILES)  assert(0);
-assert(0);
+
 	fstat[i + 3].opened = true;
 	fstat[i + 3].offset = 0;
 
