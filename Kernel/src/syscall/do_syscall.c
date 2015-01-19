@@ -42,7 +42,7 @@ static void sys_write(TrapFrame* tf)
 	uint32_t buf = tf->ecx;
 	uint32_t len = tf->edx;
 	uint32_t fd  = tf->ebx;
-
+assert(0);
 	// fd = 1: stdout;  fd = 2: stderr
 	assert(fd == 1 || fd == 2);
 	uint32_t i;
