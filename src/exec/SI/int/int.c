@@ -60,4 +60,5 @@ void raise_intr(uint8_t no)
 	// Load CS, EIP with the Gate Descriptor
 	cpu.CS = gate_desc.selector;
 	cpu.eip = ((uint32_t)gate_desc.off_h << 16) + (uint32_t)gate_desc.off_l;
+	Log("cs %x, eip %x", cpu.CS, cpu.eip);
 }
