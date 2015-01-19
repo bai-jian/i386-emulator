@@ -30,7 +30,8 @@ void add_irq_handle(int irq, void (*func)(void) )
 void do_syscall(TrapFrame*);
 void irq_handle(TrapFrame *tf)
 {
-	Log("%x %x %x\n", tf->eax, tf->irq, tf->error_code);
+	Log("%x %x %x %x %x %x %x %x\n", tf->edi, tf->esi, tf->ebp, tf->xxx, tf->ebx, tf->edx, tf->ecx, tf->eax);
+	Log("%x %x %x %x %x\n", tf->irq, tf->error_code, tf->eip, tf->cs, tf->eflags);
 	int irq = tf->irq;
 
 	if (irq < 0)
