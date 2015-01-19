@@ -8,8 +8,7 @@ static void sys_brk(TrapFrame* tf);
 static void sys_write(TrapFrame* tf);
 void do_syscall(TrapFrame* tf)
 {
-	Log("%x %x %x\n", tf->eax, tf->irq, tf->error_code);
-	Log("%x\n", SYS_brk);
+	Log("brk %x, write %x, open %x, \n", SYS_brk, SYS_write, SYS_open);
 	switch(tf->eax)
 	{
 		/* The ``add_irq_handle'' system call is artificial. We use it to 
@@ -21,6 +20,7 @@ void do_syscall(TrapFrame* tf)
 
 		case SYS_write:  	sys_write(tf);  break;
 		case SYS_brk:  		sys_brk(tf);	break;
+		case SYS_open:		assert(0);
 
 		default: panic("Unhandled system call: id = %d", tf->eax);
 	}
