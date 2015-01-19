@@ -10,7 +10,7 @@ make_helper(iret)
 
 	// Pop EIP, CS, EFLAGS
 	cpu.eip    = (uint32_t)swaddr_read(cpu.esp, 4) - instr_len;  cpu.esp += 4;
-	cpu.CS     = (uint16_t)swaddr_read(cpu.esp, 2);              cpu.esp += 2;
+	cpu.CS     = (uint16_t)swaddr_read(cpu.esp, 4);              cpu.esp += 4;
 	cpu.eflags = (uint32_t)swaddr_read(cpu.esp, 4);              cpu.esp += 4;
 
 	print_asm("iret");

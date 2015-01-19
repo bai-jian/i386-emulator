@@ -55,7 +55,7 @@ void raise_intr(uint8_t no)
 	
 	// Push EFLAGS, CS, EIP
 	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
-	cpu.esp -= 2;  swaddr_write(cpu.esp, 2, cpu.CS);
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.CS);
 	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eip);
 
 	// Load CS, EIP with the Gate Descriptor
