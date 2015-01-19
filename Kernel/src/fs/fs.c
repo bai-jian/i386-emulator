@@ -45,6 +45,7 @@ void ide_write(uint8_t *, uint32_t, uint32_t);
 
 int fs_open(const char* pathname, int flags)
 {
+	Log("%s\n", pathname);
 	uint32_t i;
 	for (i = 0; i < NR_FILES; ++ i)
 		if (strcmp(pathname, file_table[i].name) == 0)
