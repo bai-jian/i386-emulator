@@ -54,7 +54,7 @@ int fs_open(const char* pathname, int flags)
 	fstat[i].opened = true;
 	fstat[i].offset = 0;
 
-	return file_table[i].disk_offset;
+	return i;
 }
 
 
