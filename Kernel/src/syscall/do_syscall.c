@@ -4,8 +4,9 @@
 #include <stdio.h>
 
 void add_irq_handle(int, void (*)(void));
-static void sys_brk(TrapFrame* tf);
-static void sys_write(TrapFrame* tf);
+static void sys_write (TrapFrame* tf);
+static void sys_open  (TrapFrame* tf);
+static void sys_brk   (TrapFrame* tf);
 void do_syscall(TrapFrame* tf)
 {
 	Log("brk %x, write %x, open %x, \n", SYS_brk, SYS_write, SYS_open);
@@ -18,9 +19,9 @@ void do_syscall(TrapFrame* tf)
 		 */
 		case 0: add_irq_handle(tf->ebx, (void*)tf->ecx); break;
 
-		case SYS_write:  	sys_write(tf);  break;
-		case SYS_brk:  		sys_brk(tf);	break;
-		case SYS_open:		assert(0);
+/*04*/	case SYS_write:  	sys_write(tf);  break;
+/*05*/	case SYS_open:		sys_open(tf);	break;
+/*2D*/	case SYS_brk:  		sys_brk(tf);	break;
 
 		default: panic("Unhandled system call: id = %d", tf->eax);
 	}
@@ -34,7 +35,6 @@ static void sys_brk(TrapFrame* tf)
 #endif
 	tf->eax = 0;
 }
-
 
 void serial_printc(char ch);
 static void sys_write(TrapFrame* tf)
@@ -50,4 +50,13 @@ static void sys_write(TrapFrame* tf)
 		serial_printc(*(char*)(void*)(buf + i));
 
 	tf->eax = len;
+}
+
+int fs_open(const char* pathname, int flags);
+static void sys_open(TrapFrame* tf)
+{
+	uint32_t pathname = tf->ebx;
+	uint32_t flags = tf->ecx;
+	uint32_t fp = fs_open((void*)pathname, flags);
+	tf->eax = fp;
 }
