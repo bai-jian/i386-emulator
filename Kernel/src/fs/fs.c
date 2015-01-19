@@ -45,11 +45,13 @@ void ide_write(uint8_t *, uint32_t, uint32_t);
 
 int fs_open(const char* pathname, int flags)
 {
+	Log("pathname: %s\n", pathname);
 	uint32_t i;
 	for (i = 0; i < NR_FILES; ++ i)
 		if (strcmp(pathname, file_table[i].name) == 0)
 			break;
 	if (i == NR_FILES)  assert(0);
+	Log("file_table name: %s\n", file_table[i].name);
 
 	fstat[i + 3].opened = true;
 	fstat[i + 3].offset = 0;
