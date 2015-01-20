@@ -5,7 +5,6 @@
 #include "ui/watchpoint.h"
 #include "ui/expr.h"
 
-
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
@@ -14,12 +13,8 @@
 #include <readline/history.h>
 
 
-extern uint32_t hit, miss;
-extern uint32_t cache_L2_hit, cache_L2, miss;
-
 // enum { END, STOP, RUNNING, INT }
 int nemu_state = END;
-
 
 
 // Commond Resolution
@@ -51,20 +46,21 @@ static uint32_t instr_len;
 void cpu_exec(uint32_t);
 
 static void cmd_END_r();
-static void cmd_END_si();
 static void cmd_STOP_r();
 static void cmd_STOP_c();
-static void cmd_STOP_si();
-static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
+static void cmd_INT_r();
+static void cmd_INT_c();
+static void cmd_INT_si();
+static void cmd_INT_info();
+static void cmd_INT_x();
+static void cmd_INT_p();
+static void cmd_INT_bt();
 /*
-static void cmd_info();
-static void cmd_x();
-static void cmd_p();
-static void cmd_bt();
 static void cmd_b();
 static void cmd_d();
 static void cmd_w();
 */
+static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
 void main_loop() 
 { 
  	while( true )
@@ -75,10 +71,9 @@ void main_loop()
 			{
         		command();
 				if (cmdptr == NULL)             {  continue;  }
-				if (strcmp(cmdptr, "q") == 0)   {  return;    }
+				if (strcmp(cmdptr, "q")  == 0)  {  return;    }
 				if (strcmp(cmdptr, "r")  == 0)	{  cmd_END_r();   nemu_state = RUNNING;  continue;  }
-				if (strcmp(cmdptr, "si") == 0)	{  cmd_END_si();  nemu_state = RUNNING;  continue;  }
-				puts("The Program does not start. Use command 'r' or 'si' to start the program.");
+				puts("The Program does not start. Use command 'r' to start the program.");
 				break;
 			}
 			case STOP:
@@ -88,28 +83,36 @@ void main_loop()
 				if (strcmp(cmdptr, "q") == 0)   {  return;    }
 				if (strcmp(cmdptr, "r")  == 0)	{  cmd_STOP_r();   nemu_state = RUNNING;  continue;  }
 				if (strcmp(cmdptr, "c")  == 0)	{  cmd_STOP_c();   nemu_state = RUNNING;  continue;  }
-				if (strcmp(cmdptr, "si") == 0)	{  cmd_STOP_si();  nemu_state = RUNNING;  continue;  }
-				puts("The Program has stopped. Use command 'r' or 'c' or 'si' to continue the program.");
-				break;
-			}
-/*				// Look up information of registers, memory, breakpoint, watchpoint, stack frame linked lists
-				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
-				if (strcmp(p, "x") == 0)	{ cmd_x();	   continue;  }
-				if (strcmp(p, "p") == 0)	{ cmd_p();     continue;  }
-				if (strcmp(p, "bt") == 0)   { cmd_bt();    continue;  }
-
-				// Create or delete breakpoints and watchpoints
+	/*			// Create or delete breakpoints and watchpoints
 				if (strcmp(p, "b") == 0)	{ cmd_b();     continue;  }
 				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
-				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  }
-*/
-			case RUNNING:  cmd_RUNNING(); nemu_state = STOP;  break;
+				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  } */
+				printf("Unnow command '%s'.\n", cmdptr);
+				break;
+			}
+			case INT:
+			{
+				command();
+				if (cmdptr == NULL)             {  continue; }
+				if (strcmp(cmdptr, "q")  == 0)  {  return;   }
+				if (strcmp(cmdptr, "r")  == 0)  {  cmd_INT_r();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(cmdptr, "c")  == 0)  {  cmd_INT_c();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(cmdptr, "si") == 0)	{  cmd_INT_si();  nemu_state = RUNNING;  continue;  }
+
+				// Look up information of registers, memory, breakpoint, watchpoint, stack frame linked lists
+				if (strcmp(cmdptr, "info") == 0)  {  cmd_INT_info();  continue;  } 
+				if (strcmp(cmdptr, "x")    == 0)  {  cmd_INT_x();     continue;  }
+				if (strcmp(cmdptr, "p")    == 0)  {  cmd_INT_p();     continue;  }
+				if (strcmp(cmdptr, "bt")   == 0)  {  cmd_INT_bt();    continue;  }
+				printf("Unnow command '%s'.\n", cmdptr);
+				break;
+			}
+			case RUNNING:  cmd_RUNNING();
 	 	}
     }
 }
 
 static void cmd_END_r()  {  restart();  instr_len = INSTR_END;  }
-static void cmd_END_si() {  restart();  instr_len =	INSTR_LEN;  }
 
 static void cmd_STOP_r()
 {
@@ -124,19 +127,33 @@ static void cmd_STOP_r()
 			case 'y': goto restart_;
 			case 'n': return;
 			default : puts("Please answer y or n.");
+	 	}
+	}  
+restart_:  cmd_END_r();
+}
+static void cmd_STOP_c() {  instr_len = INSTR_END;  }
+
+static void cmd_INT_r()
+{
+	char c;
+	while( true ) 
+	{
+		printf("The program is running. Restart the program? (y or n)");
+		fflush(stdout);
+		scanf(" %c", &c);
+		switch(c)
+		{
+			case 'y': goto restart_;
+			case 'n': return;
+			default : puts("Please answer y or n.");
 		}
 	} 
-restart_:
-
-	restart();
-	instr_len = INSTR_END;
+restart_:  cmd_END_r();
 }
+static void cmd_INT_c()  {  instr_len = INSTR_END;  }
+static void cmd_INT_si() {  instr_len = INSTR_LEN;  }
 
-static void cmd_STOP_c()  {  instr_len = INSTR_END;  }
-static void cmd_STOP_si() {  instr_len = INSTR_LEN;  }
-
-/*
-static void cmd_info()
+static void cmd_INT_info()
 {
 	if (*saveptr == '\0')
 	{
@@ -168,8 +185,7 @@ static void cmd_info()
 
 	printf("Unknown command 'info %s'\n", line_read);
 }
-
-static void cmd_x()
+static void cmd_INT_x()
 {
 	if (*saveptr == '\0')
 	{
@@ -198,10 +214,17 @@ static void cmd_x()
 		printf("    0x%.2X\n", swaddr_read(addr+4*i+3, 1) );
 	}
 }
+static void cmd_INT_p()
+{
+	char* e = strtok_r(NULL, "", &saveptr);
+	size_t val = expr(e);
+
+	printf("%s = %u\n", e, val);
+}
 
 extern char funcname[];
 void find_funcname(swaddr_t addr);
-static void cmd_bt()
+static void cmd_INT_bt()
 {
 	// Initialization
 	funcname[0] = '\0';
@@ -218,6 +241,7 @@ static void cmd_bt()
 		ebp = swaddr_read(ebp, 4);
 	}
 }
+/*
 static void cmd_b()
 {
 	char* e = strtok_r(NULL, "", &saveptr);
@@ -238,13 +262,6 @@ static void cmd_w()
 {
 	char* e = strtok_r(NULL, "", &saveptr);
 	new_wp(e);
-}
-static void cmd_p()
-{
-	char* e = strtok_r(NULL, "", &saveptr);
-	size_t val = expr(e);
-
-	printf("%s = %u\n", e, val);
 }
 */
 

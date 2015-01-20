@@ -98,6 +98,7 @@ void cpu_exec(volatile uint32_t n)
 			raise_intr(intr_no);
 		}
 
+		if (n == 0)  nemu_state = n_temp == -1 ? STOP : INT;
 		switch(nemu_state)
 		{
 			case RUNNING :  continue;;

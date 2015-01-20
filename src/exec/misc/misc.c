@@ -5,20 +5,21 @@
 
 #include "nemu.h"
 
-make_helper(inv) {
-	/* invalid opcode */
 
+// invalid opcode
+make_helper(inv)
+{
 	uint8_t temp[8];
 	((uint32_t *)temp)[0] = instr_fetch(eip, 4);
 	((uint32_t *)temp)[1] = instr_fetch(eip + 4, 4);
 	printf("invalid opcode(eip = 0x%08x): %02x %02x %02x %02x %02x %02x %02x %02x ...\n", 
 			eip, temp[0], temp[1], temp[2], temp[3], temp[4], temp[5], temp[6], temp[7]);
-
 	assert(0);
 }
 
 make_helper(int3)
 {
+	nemu_state = INT;
 	bp_state = TRIG;
 	return 1;
 }
