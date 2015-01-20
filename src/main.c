@@ -40,7 +40,6 @@ static void process_args(int argc, char* argv[])
 void init_signal();
 void init_device();
 void init_sdl();
-void load_table();
 void reg_test();
 void main_loop();
 int main(int argc, char* argv[])
@@ -51,8 +50,6 @@ int main(int argc, char* argv[])
 	init_signal();
 	init_device();
 	init_sdl();
-
-	load_table();
 
    		// Test whether the 'CPU_state' structure is organized correctly.
 		reg_test(); 

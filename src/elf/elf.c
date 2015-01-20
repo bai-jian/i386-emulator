@@ -19,7 +19,7 @@ void set_main_args(int argc, char *argv[])
 static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry = 0;
-void load_table( )
+void init_elf_table()
 {
 	FILE* fp = fopen(exec_file, "rb");
 	test(fp, "file not exist!");
@@ -108,5 +108,3 @@ swaddr_t symbol(char* name)
 	}
 	return 0;
 }
-
-

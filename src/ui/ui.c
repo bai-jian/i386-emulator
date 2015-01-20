@@ -139,11 +139,13 @@ static void cmd_STOP_c() {  instr_len = INSTR_END;  }
 void init_regex();
 void init_bp_pool();
 void init_wp_pool();
+void init_elf_table();
 static void cmd_STOP_d()
 {
 	init_regex();
 	init_bp_pool();
 	init_wp_pool();
+	init_elf_table();
 	puts("Debug the user program.");
 }
 
