@@ -37,9 +37,6 @@ static void process_args(int argc, char* argv[])
 }
 
 
-void init_bp_pool();
-void init_wp_pool();
-void init_regex();
 void init_signal();
 void init_device();
 void init_sdl();
@@ -51,10 +48,7 @@ int main(int argc, char* argv[])
 	process_args(argc, argv);
 
 	// Perform some global initialization
-	init_regex();
 	init_signal();
-	init_bp_pool();
-	init_wp_pool();
 	init_device();
 	init_sdl();
 

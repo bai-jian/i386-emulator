@@ -48,6 +48,7 @@ void cpu_exec(uint32_t);
 static void cmd_END_r();
 static void cmd_STOP_r();
 static void cmd_STOP_c();
+static void cmd_STOP_d();
 static void cmd_INT_r();
 static void cmd_INT_c();
 static void cmd_INT_si();
@@ -55,11 +56,9 @@ static void cmd_INT_info();
 static void cmd_INT_x();
 static void cmd_INT_p();
 static void cmd_INT_bt();
-/*
-static void cmd_b();
-static void cmd_d();
-static void cmd_w();
-*/
+static void cmd_INT_b();
+static void cmd_INT_w();
+static void cmd_INT_d();
 static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
 void main_loop() 
 { 
@@ -79,14 +78,11 @@ void main_loop()
 			case STOP:
 			{
 				command();
-				if (cmdptr == NULL)             {  continue;  }
-				if (strcmp(cmdptr, "q") == 0)   {  return;    }
-				if (strcmp(cmdptr, "r")  == 0)	{  cmd_STOP_r();   nemu_state = RUNNING;  continue;  }
-				if (strcmp(cmdptr, "c")  == 0)	{  cmd_STOP_c();   nemu_state = RUNNING;  continue;  }
-	/*			// Create or delete breakpoints and watchpoints
-				if (strcmp(p, "b") == 0)	{ cmd_b();     continue;  }
-				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
-				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  } */
+				if (cmdptr == NULL)            {  continue;  }
+				if (strcmp(cmdptr, "q") == 0)  {  return;    }
+				if (strcmp(cmdptr, "r") == 0)  {  cmd_STOP_r();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(cmdptr, "c") == 0)  {  cmd_STOP_c();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(cmdptr, "d") == 0)  {  cmd_STOP_d();   nemu_state = INT;      continue;  }
 				printf("Unnow command '%s'.\n", cmdptr);
 				break;
 			}
@@ -98,12 +94,15 @@ void main_loop()
 				if (strcmp(cmdptr, "r")  == 0)  {  cmd_INT_r();   nemu_state = RUNNING;  continue;  }
 				if (strcmp(cmdptr, "c")  == 0)  {  cmd_INT_c();   nemu_state = RUNNING;  continue;  }
 				if (strcmp(cmdptr, "si") == 0)	{  cmd_INT_si();  nemu_state = RUNNING;  continue;  }
-
 				// Look up information of registers, memory, breakpoint, watchpoint, stack frame linked lists
 				if (strcmp(cmdptr, "info") == 0)  {  cmd_INT_info();  continue;  } 
 				if (strcmp(cmdptr, "x")    == 0)  {  cmd_INT_x();     continue;  }
 				if (strcmp(cmdptr, "p")    == 0)  {  cmd_INT_p();     continue;  }
 				if (strcmp(cmdptr, "bt")   == 0)  {  cmd_INT_bt();    continue;  }
+				// Create or delete breakpoints and watchpoints
+				if (strcmp(cmdptr, "b") == 0)  {  cmd_INT_b();  continue;  }
+				if (strcmp(cmdptr, "w") == 0)  {  cmd_INT_w();  continue;  }
+				if (strcmp(cmdptr, "d") == 0)  {  cmd_INT_d();  continue;  }   
 				printf("Unnow command '%s'.\n", cmdptr);
 				break;
 			}
@@ -133,23 +132,17 @@ restart_:  cmd_END_r();
 }
 static void cmd_STOP_c() {  instr_len = INSTR_END;  }
 
-static void cmd_INT_r()
+void init_regex();
+void init_bp_pool();
+void init_wp_pool();
+static void cmd_STOP_d()
 {
-	char c;
-	while( true ) 
-	{
-		printf("The program is running. Restart the program? (y or n)");
-		fflush(stdout);
-		scanf(" %c", &c);
-		switch(c)
-		{
-			case 'y': goto restart_;
-			case 'n': return;
-			default : puts("Please answer y or n.");
-		}
-	} 
-restart_:  cmd_END_r();
+	init_regex();
+	init_bp_pool();
+	init_wp_pool();
 }
+
+static void cmd_INT_r()  {  cmd_STOP_r();           }
 static void cmd_INT_c()  {  instr_len = INSTR_END;  }
 static void cmd_INT_si() {  instr_len = INSTR_LEN;  }
 
@@ -241,29 +234,27 @@ static void cmd_INT_bt()
 		ebp = swaddr_read(ebp, 4);
 	}
 }
-/*
-static void cmd_b()
+
+static void cmd_INT_b()
 {
 	char* e = strtok_r(NULL, "", &saveptr);
 	swaddr_t addr = expr(e);
 
 	new_bp(addr);
 }
-
-static void cmd_d()
+static void cmd_INT_d()
 {
 	char* p = strtok_r(NULL, "", &saveptr);
 	int n = strtol(p, NULL, 0);
 
 	free_bp(n);
 }
-
-static void cmd_w()
+static void cmd_INT_w()
 {
 	char* e = strtok_r(NULL, "", &saveptr);
 	new_wp(e);
 }
-*/
+
 
 // This function will be called when you press <C-c>. And it will return to where you press <C-c>. 
 static void control_C(int signum) 
