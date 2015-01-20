@@ -234,13 +234,11 @@ static void cmd_INT_bt()
 	int i;
 	for (i = 0; ebp != 0; ++ i)
 	{
-		Log("%%ebp: 0x%x\n", ebp);
 		find_funcname(addr);
 		printf("    #%d    0x%.8x    %s\n", i, addr, funcname);
 
 		addr = swaddr_read(ebp + 4, 4);
 		ebp = swaddr_read(ebp, 4);
-		Log("%%ebp: 0x%x\n", ebp);
 	}
 }
 
