@@ -21,21 +21,6 @@ extern uint32_t cache_L2_hit, cache_L2, miss;
 int nemu_state = END;
 
 
-// This function will be called when you press <C-c>. And it will return to where you press <C-c>. 
-static void control_C(int signum) 
-{
-	if(nemu_state == RUNNING) 
-		nemu_state = INT;
-}
-void init_signal() 
-{
-	// Register a signal handler
-	struct sigaction s;
-	memset(&s, 0, sizeof(s));
-	s.sa_handler = control_C;
-	int ret = sigaction(SIGINT, &s, NULL);
-	assert(ret == 0);
-}
 
 // Commond Resolution
 static char* line_read = NULL;
@@ -57,23 +42,21 @@ void command()
 	cmdptr = strtok_r(line_read, " ", &saveptr);
 }
 
-
+// Initialize the nemu
+void restart();
 // Execute instructions of some length
 #define INSTR_LEN  ( (strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0) )
 #define INSTR_END  -1
+static uint32_t instr_len;
 void cpu_exec(uint32_t);
 
-// Instruction length when NEMU is in some state
-static uint32_t instr_len;
-
-void restart();
 static void cmd_END_r();
 static void cmd_END_si();
-static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
-/*
 static void cmd_STOP_r();
 static void cmd_STOP_c();
 static void cmd_STOP_si();
+static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
+/*
 static void cmd_info();
 static void cmd_x();
 static void cmd_p();
@@ -91,21 +74,25 @@ void main_loop()
 			case END:
 			{
         		command();
-				if (cmdptr == NULL)             {  continue; }
-				if (strcmp(cmdptr, "q") == 0)   {  return;   }
+				if (cmdptr == NULL)             {  continue;  }
+				if (strcmp(cmdptr, "q") == 0)   {  return;    }
 				if (strcmp(cmdptr, "r")  == 0)	{  cmd_END_r();   nemu_state = RUNNING;  continue;  }
 				if (strcmp(cmdptr, "si") == 0)	{  cmd_END_si();  nemu_state = RUNNING;  continue;  }
-				puts("The Program does not start. Use 'r' or 'si' command to start the program.");
+				puts("The Program does not start. Use command 'r' or 'si' to start the program.");
 				break;
 			}
-/*			case STOP:
+			case STOP:
 			{
-				if (p == NULL)              {  continue;                                        }
-				if (strcmp(p, "r")  == 0)	{ cmd_STOP_r();  continue; }
-				if (strcmp(p, "c")  == 0)	{ cmd_STOP_c();	 continue; }
-				if (strcmp(p, "si") == 0)	{ cmd_STOP_si(); continue; }
-
-				// Look up information of registers, memory, breakpoint, watchpoint, stack frame linked lists
+				command();
+				if (cmdptr == NULL)             {  continue;  }
+				if (strcmp(cmdptr, "q") == 0)   {  return;    }
+				if (strcmp(cmdptr, "r")  == 0)	{  cmd_STOP_r();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(cmdptr, "c")  == 0)	{  cmd_STOP_c();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(cmdptr, "si") == 0)	{  cmd_STOP_si();  nemu_state = RUNNING;  continue;  }
+				puts("The Program has stopped. Use command 'r' or 'c' or 'si' to continue the program.");
+				break;
+			}
+/*				// Look up information of registers, memory, breakpoint, watchpoint, stack frame linked lists
 				if (strcmp(p, "info") == 0) { cmd_info();  continue;  } 
 				if (strcmp(p, "x") == 0)	{ cmd_x();	   continue;  }
 				if (strcmp(p, "p") == 0)	{ cmd_p();     continue;  }
@@ -115,14 +102,12 @@ void main_loop()
 				if (strcmp(p, "b") == 0)	{ cmd_b();     continue;  }
 				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
 				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  }
-
-				if (strcmp(p, "q") == 0)    {  return;                                          }
-				printf("Unknown command '%s'\n", p); 
-
-				break;
-			}*/
+*/
 			case RUNNING:
-				cmd_RUNNING();  break;
+			{
+				cmd_RUNNING();
+				break;
+			}
 	/* 		case INT:
 				if (p == NULL)              {  continue;                                        }
 				if (strcmp(p, "q") == 0)    {  return;                                          }
@@ -131,18 +116,9 @@ void main_loop()
     }
 }
 
-static void cmd_END_r()
-{
-	restart();
-	instr_len = -1;
-}
-static void cmd_END_si()
-{
+static void cmd_END_r()  {  restart();  instr_len = INSTR_END;  }
+static void cmd_END_si() {  restart();  instr_len =	INSTR_LEN;  }
 
-instr_len =	INSTR_END;
-	restart();
-}
-/*
 static void cmd_STOP_r()
 {
 	char c;
@@ -160,27 +136,14 @@ static void cmd_STOP_r()
 	} 
 restart_:
 
-	nemu_state = RUNNING;
-
 	restart();
-	cpu_exec(-1);
+	instr_len = INSTR_END;
 }
 
-static void cmd_STOP_c()
-{
-	nemu_state = RUNNING;
-	cpu_exec(-1);
-}
+static void cmd_STOP_c()  {  instr_len = INSTR_END;  }
+static void cmd_STOP_si() {  instr_len = INSTR_LEN;  }
 
-static void cmd_STOP_si()
-{
-	assert(saveptr == NULL);
-	Log("%s\n", saveptr);	
-//	(strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0)
-	nemu_state = STOP;
-//	cmd_exec(INSTR_LEN);
-}
-
+/*
 static void cmd_info()
 {
 	if (*saveptr == '\0')
@@ -292,3 +255,19 @@ static void cmd_p()
 	printf("%s = %u\n", e, val);
 }
 */
+
+// This function will be called when you press <C-c>. And it will return to where you press <C-c>. 
+static void control_C(int signum) 
+{
+	if(nemu_state == RUNNING) 
+		nemu_state = INT;
+}
+void init_signal() 
+{
+	// Register a signal handler
+	struct sigaction s;
+	memset(&s, 0, sizeof(s));
+	s.sa_handler = control_C;
+	int ret = sigaction(SIGINT, &s, NULL);
+	assert(ret == 0);
+}
