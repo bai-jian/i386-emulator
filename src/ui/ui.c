@@ -144,7 +144,7 @@ static void cmd_STOP_d()
 	init_regex();
 	init_bp_pool();
 	init_wp_pool();
-	puts("Debug the user program!\n");
+	puts("Debug the user program.");
 }
 
 static void cmd_INT_r()  {  cmd_STOP_r();           }
