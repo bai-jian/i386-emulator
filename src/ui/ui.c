@@ -17,6 +17,7 @@
 extern uint32_t hit, miss;
 extern uint32_t cache_L2_hit, cache_L2, miss;
 
+// enum { END, STOP, RUNNING, INT }
 int nemu_state = END;
 
 
@@ -45,13 +46,19 @@ static char* saveptr = NULL;
 #define INSTR_LEN  ( (strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0) )
 #define INSTR_END  -1
 void cpu_exec(uint32_t);
-static void cmd_exec(uint32_t num)  {  cpu_exec(num);  }
+//static void cmd_exec(uint32_t num)  {  cpu_exec(num);  }
+
+// Instruction length when NEMU is in some state
+static uint32_t instr_len;
 
 char* rl_gets();
 void restart();
+static void cmd_END_r();
+static void cmd_END_si();
 static void cmd_STOP_r();
 static void cmd_STOP_c();
 static void cmd_STOP_si();
+static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
 static void cmd_info();
 static void cmd_x();
 static void cmd_p();
@@ -73,8 +80,8 @@ void main_loop()
 		switch( nemu_state )  // NEMU: a State Machine(nemu_state = END when initialization)
 		{
 			case END:
-				if (strcmp(p, "r")  == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_END);   continue;  }
-				if (strcmp(p, "si") == 0)	{ nemu_state = RUNNING;  restart();  cmd_exec(INSTR_LEN);   continue;  }
+				if (strcmp(p, "r")  == 0)	{  cmd_END_r();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(p, "si") == 0)	{  cmd_END_si();  nemu_state = RUNNING;  continue;  }
 
 				puts("The Program does not start. Use 'r' or 'si' command to start the program.");
 
@@ -100,7 +107,8 @@ void main_loop()
 
 				break;
 
-			case RUNNING:  break;
+			case RUNNING:
+				cmd_RUNNING();  break;
 			case INT:      break;
 	 	}
     }
@@ -120,6 +128,18 @@ char* rl_gets()
 		add_history(line_read);
 
 	return line_read;
+}
+
+static void cmd_END_r()
+{
+	instr_len = -1;
+	restart();
+}
+
+static void cmd_END_si()
+{
+//	( (strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0) )
+	restart();
 }
 
 static void cmd_STOP_r()
@@ -155,7 +175,7 @@ static void cmd_STOP_si()
 {
 	Log("%s\n", saveptr);	
 //	(strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0)
-	nemu_state = RUNNING;
+	nemu_state = STOP;
 //	cmd_exec(INSTR_LEN);
 }
 
