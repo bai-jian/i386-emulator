@@ -230,7 +230,7 @@ static void cmd_INT_bt()
 	swaddr_t ebp = cpu.ebp;
 	swaddr_t addr = cpu.eip;
 	int i;
-	for (i = 0; strcmp(funcname, "main") != 0; ++i)
+	for (i = 0; ebp != 0; ++i)
 	{
 		find_funcname(addr);
 		printf("    #%d    0x%.8x    %s\n", i, addr, funcname);

@@ -8,7 +8,6 @@
 
 
 // The start address of 'loader' is at 0x100000
-// The start address of 'user program' is at 0x800000
 #define LOADER_START 0x100000
 extern uint8_t loader [];
 extern uint32_t loader_len;
@@ -21,7 +20,6 @@ void sdl_clear_event_queue();
 void restart() 
 {
 	// Perform some initialization to restart a program
-//  load_prog();
 	memcpy(hwa_to_va(LOADER_START), loader, loader_len);
 
 	cpu.eip = LOADER_START;
