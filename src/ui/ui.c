@@ -37,28 +37,43 @@ void init_signal()
 	assert(ret == 0);
 }
 
-
 // Commond Resolution
 static char* line_read = NULL;
 static char* saveptr = NULL;
+static char* cmdptr = NULL;
+void command() 
+{
+	if (line_read) 
+	{
+		free(line_read);
+		line_read = NULL; 
+	}
+
+	line_read = readline("(nemu) ");
+
+	if (line_read && *line_read)
+		add_history(line_read);
+
+	cmdptr = strtok_r(line_read, " ", &saveptr);
+}
+
 
 // Execute instructions of some length
 #define INSTR_LEN  ( (strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0) )
 #define INSTR_END  -1
 void cpu_exec(uint32_t);
-//static void cmd_exec(uint32_t num)  {  cpu_exec(num);  }
 
 // Instruction length when NEMU is in some state
 static uint32_t instr_len;
 
-char* rl_gets();
 void restart();
 static void cmd_END_r();
 static void cmd_END_si();
+static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
+/*
 static void cmd_STOP_r();
 static void cmd_STOP_c();
 static void cmd_STOP_si();
-static void cmd_RUNNING()	{ return cpu_exec(instr_len); }
 static void cmd_info();
 static void cmd_x();
 static void cmd_p();
@@ -66,27 +81,26 @@ static void cmd_bt();
 static void cmd_b();
 static void cmd_d();
 static void cmd_w();
+*/
 void main_loop() 
 { 
- 	while(1)
+ 	while( true )
  	{ 
-        rl_gets();
-		char* p = strtok_r(line_read, " ", &saveptr);
-
-		if (p == NULL)            { continue; }
-		if (strcmp(p, "q") == 0)  { return;   }
-
 		switch( nemu_state )  // NEMU: a State Machine(nemu_state = END when initialization)
 		{
 			case END:
-				if (strcmp(p, "r")  == 0)	{  cmd_END_r();   nemu_state = RUNNING;  continue;  }
-				if (strcmp(p, "si") == 0)	{  cmd_END_si();  nemu_state = RUNNING;  continue;  }
-
+			{
+        		command();
+				if (cmdptr == NULL)             {  continue; }
+				if (strcmp(cmdptr, "q") == 0)   {  return;   }
+				if (strcmp(cmdptr, "r")  == 0)	{  cmd_END_r();   nemu_state = RUNNING;  continue;  }
+				if (strcmp(cmdptr, "si") == 0)	{  cmd_END_si();  nemu_state = RUNNING;  continue;  }
 				puts("The Program does not start. Use 'r' or 'si' command to start the program.");
-
 				break;
-
-			case STOP:
+			}
+/*			case STOP:
+			{
+				if (p == NULL)              {  continue;                                        }
 				if (strcmp(p, "r")  == 0)	{ cmd_STOP_r();  continue; }
 				if (strcmp(p, "c")  == 0)	{ cmd_STOP_c();	 continue; }
 				if (strcmp(p, "si") == 0)	{ cmd_STOP_si(); continue; }
@@ -102,46 +116,33 @@ void main_loop()
 				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
 				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  }
 
+				if (strcmp(p, "q") == 0)    {  return;                                          }
 				printf("Unknown command '%s'\n", p); 
 
 				break;
-
+			}*/
 			case RUNNING:
 				cmd_RUNNING();  break;
-			case INT:      break;
+	/* 		case INT:
+				if (p == NULL)              {  continue;                                        }
+				if (strcmp(p, "q") == 0)    {  return;                                          }
+				break;*/
 	 	}
     }
 }
 
-char* rl_gets() 
-{
-	if (line_read) 
-	{
-		free(line_read);
-		line_read = NULL; 
-	}
-
-	line_read = readline("(nemu) ");
-
-	if (line_read && *line_read)
-		add_history(line_read);
-
-	return line_read;
-}
-
 static void cmd_END_r()
 {
-	instr_len = -1;
 	restart();
+	instr_len = -1;
 }
-
 static void cmd_END_si()
 {
 
-//	( (strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0) )
+instr_len =	INSTR_END;
 	restart();
 }
-
+/*
 static void cmd_STOP_r()
 {
 	char c;
@@ -290,3 +291,4 @@ static void cmd_p()
 
 	printf("%s = %u\n", e, val);
 }
+*/
