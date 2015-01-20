@@ -103,15 +103,7 @@ void main_loop()
 				if (strcmp(p, "w") == 0)	{ cmd_w();     continue;  }
 				if (strcmp(p, "d") == 0)	{ cmd_d();     continue;  }
 */
-			case RUNNING:
-			{
-				cmd_RUNNING();
-				break;
-			}
-	/* 		case INT:
-				if (p == NULL)              {  continue;                                        }
-				if (strcmp(p, "q") == 0)    {  return;                                          }
-				break;*/
+			case RUNNING:  cmd_RUNNING(); nemu_state = STOP;  break;
 	 	}
     }
 }

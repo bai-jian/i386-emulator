@@ -43,11 +43,12 @@ void restart()
 }
 
 
-char assembly[40];
 extern int enable_debug;
 extern int quiet;
+char assembly[40];
+static void print_instr(swaddr_t eip, int len);
+
 int exec(swaddr_t);
-static void print_bin_instr(swaddr_t, int);
 void raise_intr(uint8_t);
 void cpu_exec(volatile uint32_t n) 
 {
@@ -59,11 +60,7 @@ void cpu_exec(volatile uint32_t n)
 		int instr_len = exec(cpu.eip);
 
  	 	if(n_temp != -1 || (enable_debug && !quiet)) 
-		{
-			// print the instruction executed
-			print_bin_instr(eip_temp, instr_len);
-			puts(assembly);
-		} 
+			print_instr(eip_temp, instr_len);
 
 		cpu.eip += instr_len;
 
@@ -112,7 +109,7 @@ void cpu_exec(volatile uint32_t n)
 }
 
 uint32_t instr_fetch(swaddr_t eip, size_t len);
-static void print_bin_instr(swaddr_t eip, int len) 
+static void print_instr(swaddr_t eip, int len) 
 {
 	printf("  0x%.8x:   ", eip);
 
@@ -121,4 +118,6 @@ static void print_bin_instr(swaddr_t eip, int len)
 		printf("%.2x ", instr_fetch(eip + i, 1));
 
 	printf("%*.s", 50 - (12 + 3 * len), "");
+
+	puts(assembly);
 }
