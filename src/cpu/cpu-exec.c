@@ -48,7 +48,6 @@ extern int enable_debug;
 extern int quiet;
 int exec(swaddr_t);
 static void print_bin_instr(swaddr_t, int);
-static bool CHECK_nemu_state();
 void raise_intr(uint8_t);
 void cpu_exec(volatile uint32_t n) 
 {
@@ -102,7 +101,13 @@ void cpu_exec(volatile uint32_t n)
 			raise_intr(intr_no);
 		}
 
-		if ( CHECK_nemu_state() ) return;
+		switch(nemu_state)
+		{
+			case RUNNING :  continue;;
+			case END     :  return;
+			case STOP    :  return;
+			case INT     :  return;
+		}
 	} 
 }
 
@@ -116,16 +121,4 @@ static void print_bin_instr(swaddr_t eip, int len)
 		printf("%.2x ", instr_fetch(eip + i, 1));
 
 	printf("%*.s", 50 - (12 + 3 * len), "");
-}
-
-static bool CHECK_nemu_state()
-{
-	switch(nemu_state)
-	{
-		case END     :  return true;
-		case STOP    :  return true;
-		case INT     :  return true;
-		case RUNNING :  return false;
-	}
-	assert(0); return 0;
 }
