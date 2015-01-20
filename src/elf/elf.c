@@ -2,11 +2,17 @@
 
 #include <stdlib.h>
 #include <elf.h>
-#include <sys/stat.h>
 
+
+char *exec_file;
 static int main_argc;
 static char **main_argv;
-char *exec_file;
+void set_main_args(int argc, char *argv[])
+{
+	main_argc = argc;
+	main_argv = argv;
+	exec_file = main_argv[0];
+}
 
 static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
@@ -40,12 +46,6 @@ swaddr_t symbol(char* name)
 	return 0;
 }
 
-void set_main_args(int argc, char *argv[])
-{
-	main_argc = argc;
-	main_argv = argv;
-	exec_file = main_argv[0];
-}
 
 /* Load symbol table and string table from ELF file */
 void load_table( )
