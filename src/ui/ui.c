@@ -29,7 +29,11 @@ void command()
 		line_read = NULL; 
 	}
 
-	line_read = readline("(nemu) ");
+	if (nemu_state == INT)
+		line_read = readline("(nemu/debug) ");
+	else
+		line_read = readline("(nemu) ");
+
 
 	if (line_read && *line_read)
 		add_history(line_read);
@@ -140,6 +144,7 @@ static void cmd_STOP_d()
 	init_regex();
 	init_bp_pool();
 	init_wp_pool();
+	puts("Debug the user program!\n");
 }
 
 static void cmd_INT_r()  {  cmd_STOP_r();           }
