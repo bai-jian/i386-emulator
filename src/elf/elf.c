@@ -14,40 +14,11 @@ void set_main_args(int argc, char *argv[])
 	exec_file = main_argv[0];
 }
 
-static char *strtab = NULL;
-static Elf32_Sym *symtab = NULL;
-static int nr_symtab_entry;
-
-
-#define FUNCNAME_SIZE 32
-char funcname[FUNCNAME_SIZE];
-void find_funcname(swaddr_t addr)
-{
-	int i;
-	for (i = 0; i < nr_symtab_entry; ++i)
-	{
-		if ( (symtab[i].st_info & 0x0F) == STT_FUNC )  // TYPE == FUNC
-		if ( addr >= symtab[i].st_value  &&  addr < symtab[i].st_value + symtab[i].st_size )  // addr is in the function
-		{	strcpy(funcname, strtab + symtab[i].st_name);  break;  }
-	}
-	if (i == nr_symtab_entry)  assert(0);
-}
-
-swaddr_t symbol(char* name)
-{ 
-	int i;
-	for (i = 0; i < nr_symtab_entry; ++i)
-	{
-		//  symtab->st_info is a bit field and the Low 4 bits represent the symbol type.
-		if (  (symtab[i].st_info & 0x0F)  ==  STT_OBJECT  || (symtab[i].st_info & 0x0F)  ==  STT_FUNC  )
-		if (   strcmp(name, strtab + symtab[i].st_name) == 0    )
-				return symtab[i].st_value;
-	}
-	return 0;
-}
-
 
 /* Load symbol table and string table from ELF file */
+static char *strtab = NULL;
+static Elf32_Sym *symtab = NULL;
+static int nr_symtab_entry = 0;
 void load_table( )
 {
 	FILE* fp = fopen(exec_file, "rb");
@@ -110,3 +81,32 @@ void load_table( )
 
 	fclose(fp);
 }
+
+#define FUNCNAME_SIZE 32
+char funcname[FUNCNAME_SIZE];
+void find_funcname(swaddr_t addr)
+{
+	int i;
+	for (i = 0; i < nr_symtab_entry; ++i)
+	{
+		if ( (symtab[i].st_info & 0x0F) == STT_FUNC )  // TYPE == FUNC
+		if ( addr >= symtab[i].st_value  &&  addr < symtab[i].st_value + symtab[i].st_size )  // addr is in the function
+		{	strcpy(funcname, strtab + symtab[i].st_name);  break;  }
+	}
+	if (i == nr_symtab_entry)  assert(0);
+}
+
+swaddr_t symbol(char* name)
+{ 
+	int i;
+	for (i = 0; i < nr_symtab_entry; ++i)
+	{
+		//  symtab->st_info is a bit field and the Low 4 bits represent the symbol type.
+		if (  (symtab[i].st_info & 0x0F)  ==  STT_OBJECT  || (symtab[i].st_info & 0x0F)  ==  STT_FUNC  )
+		if (   strcmp(name, strtab + symtab[i].st_name) == 0    )
+				return symtab[i].st_value;
+	}
+	return 0;
+}
+
+
