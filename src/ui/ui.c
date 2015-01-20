@@ -173,7 +173,7 @@ static void cmd_STOP_c()
 
 static void cmd_STOP_si()
 {
-	assert(saveptr == '\0');
+	assert(saveptr == NULL);
 	Log("%s\n", saveptr);	
 //	(strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0)
 	nemu_state = STOP;
