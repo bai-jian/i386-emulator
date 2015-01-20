@@ -76,7 +76,6 @@ void main_loop()
 		if (p == NULL)            { continue; }
 		if (strcmp(p, "q") == 0)  { return;   }
 
-
 		switch( nemu_state )  // NEMU: a State Machine(nemu_state = END when initialization)
 		{
 			case END:
@@ -138,6 +137,7 @@ static void cmd_END_r()
 
 static void cmd_END_si()
 {
+
 //	( (strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0) )
 	restart();
 }
@@ -173,6 +173,7 @@ static void cmd_STOP_c()
 
 static void cmd_STOP_si()
 {
+	assert(saveptr == '\0');
 	Log("%s\n", saveptr);	
 //	(strtol(saveptr, NULL, 0) < 1)  ?  1  :  strtol(saveptr, NULL, 0)
 	nemu_state = STOP;
