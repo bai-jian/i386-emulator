@@ -68,7 +68,8 @@ void init_cond( )
 
 
 #ifdef IA32_PAGE
-	// Set the %esp for user program
+	// Set the %ebp %esp for user program
+	asm volatile("movl $0, %ebp");
 	asm volatile("movl %0, %%esp" : : "i"(KOFFSET));
 #endif
 
