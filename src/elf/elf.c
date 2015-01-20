@@ -115,7 +115,7 @@ void load_table( )
 
 	fclose(fp);
 }
-
+/*
 void load_prog( )
 {
 	struct stat st;
@@ -124,12 +124,12 @@ void load_prog( )
 
 	FILE* fp = fopen(exec_file, "rb");
 	assert(fp);
-
+*/
 	/* We do not have a virtual hard disk now. Before we have a virutal hard disk,
 	 * the beginning of physical memory is used as a "disk". The loader in NEMU
 	 * will load the program from this "disk" (at the beginning of the physical
 	 * memory).
-	 */
+	 *
 	fread(hwa_to_va(0), st.st_size, 1, fp);
 	fclose(fp);
-}
+}*/
