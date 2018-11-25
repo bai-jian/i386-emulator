@@ -1,27 +1,16 @@
 #include "common.h"
 
 
-#ifndef IA32_SEG
+#define GDT_ENTRY(n) ((n) << 3)
 
-	.globl start
-	start:
-		# Set up a stack for C code.
-		movl $0, %ebp
-		movl $(128 << 20), %esp
-		jmp init				     # never return
+#define MAKE_NULL_SEG_DESC   \
+	.word 0, 0;              \
+	.byte 0, 0, 0, 0
 
-#else
-
-	#define GDT_ENTRY(n) ((n) << 3)
-
-	#define MAKE_NULL_SEG_DESC   \
-		.word 0, 0;              \
-		.byte 0, 0, 0, 0
-
-	#define MAKE_SEG_DESC(type, base, lim)                        \
-		.word (((lim) >> 12) & 0xffff), ((base) & 0xffff);        \
-		.byte (((base) >> 16) & 0xff), (0x90 | (type)),           \
-		(0xC0 | (((lim) >> 28) & 0xf)), (((base) >> 24) & 0xff)
+#define MAKE_SEG_DESC(type, base, lim)                        \
+	.word (((lim) >> 12) & 0xffff), ((base) & 0xffff);        \
+	.byte (((base) >> 16) & 0xff), (0x90 | (type)),           \
+	(0xC0 | (((lim) >> 28) & 0xf)), (((base) >> 24) & 0xff)
 
 
 	#ifdef IA32_PAGE
@@ -32,30 +21,30 @@
 	#endif
 
 
-	.globl start
-	start:
-		lgdt    va_to_pa(gdtdesc)
-		movl    %cr0, %eax        # %CR0 |= PROTECT_ENABLE_BIT
-		orl     $0x1, %eax
-		movl    %eax, %cr0
+.globl start
+start:
 
-	# Complete transition to 32-bit protected mode by using long jmp
-	# to reload %CS and %EIP.  The segment descriptors are set up with no
-	# translation, so that the mapping is still the identity mapping.
-		ljmp    $GDT_ENTRY(1), $va_to_pa(start_cond)
+	lgdt    va_to_pa(gdtdesc)
 
+	# %CR0 |= PROTECT_ENABLE_BIT
+	movl    %cr0, %eax    
+	orl     $0x1, %eax
+	movl    %eax, %cr0
 
-	start_cond:
-		# Set up the protected-mode data segment registers
-		movw    $GDT_ENTRY(2), %ax
-		movw    %ax, %ds          # %DS = %AX
-		movw    %ax, %es          # %ES = %AX
-		movw    %ax, %ss          # %SS = %AX
+	ljmp    $GDT_ENTRY(1), $va_to_pa(start_cond)
 
-		# Set up a stack for C code.
-		movl $0,           %ebp
-		movl $(128 << 20), %esp
-		jmp init				# never return
+start_cond:
+
+	# Set the segment registers
+	movw    $GDT_ENTRY(2), %ax
+	movw    %ax, %ds
+	movw    %ax, %es
+	movw    %ax, %ss
+
+	# Set the stack
+	movl $0,         %ebp
+	movl $(1 << 27), %esp
+	jmp init
 
 
 	## GDT ######################################################
@@ -69,5 +58,3 @@
 		.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1
 		.long   va_to_pa(gdt)          # address of GDT
 	#############################################################
-
-#endif

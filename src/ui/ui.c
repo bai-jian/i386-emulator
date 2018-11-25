@@ -124,7 +124,7 @@ static void cmd_STOP_r()
 	{
 		printf("The program is running. Restart the program? (y or n)");
 		fflush(stdout);
-		scanf(" %c", &c);
+		scanf("%c", &c);
 		switch(c)
 		{
 			case 'y': goto restart_;
