@@ -1,0 +1,27 @@
+
+
+##USAGE
+nemu [-d] [-q] [FILE]...
+
+-d  debug
+-q  quiet
+
+
+q     quit
+e     exit
+
+r     run
+c     continue
+t     terminate
+
+d     debug
+si    single instruction
+
+info  show registers information
+x     show memory information
+p     show breakpoint and watchpoint
+bt    show stack frame linked lists
+b     create a breakpoint
+w     create a watchpoint
+d     delete a breakpoint or watchpoint
+
