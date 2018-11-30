@@ -1,45 +1,51 @@
-# setting compiler and compile options
-CC      = gcc
-LD      = ld
-# CFLAGS  = -ggdb -MD -Wall -Werror -fno-strict-aliasing -I./include -O2
-CFLAGS  = -ggdb -MD -Wall           -fno-strict-aliasing -I./include -O2
 
-# target to compile
-CFILES  = $(shell find src/ -name "*.c")
-OBJS    = $(CFILES:.c=.o)
 
-# test files
-TESTFILE = testcase/game/game
-C_TEST_FILE_LIST = $(shell find testcase/c/ -name "*.c")
-S_TEST_FILE_LIST = $(shell find testcase/asm/ -name "*.S")
-TEST_FILE_LIST = $(C_TEST_FILE_LIST:.c=) $(S_TEST_FILE_LIST:.S=)
+CC := gcc
+LD := ld
+MAKE := make
+INSTALL := install
+CP := cp -af
+RM := rm -rf
 
-nemu: $(OBJS)
-	$(CC) -o nemu $(OBJS) $(CFLAGS) -lreadline -lSDL
-#	-@git add -A --ignore-errors # KEEP IT
-#	-@while (test -e .git/index.lock); do sleep 0.1; done # KEEP IT
-#	-@(echo "> compile" && uname -a && uptime && pstree -A) | git commit -F - $(GITFLAGS) # KEEP IT
 
-$(TEST_FILE_LIST):
-	cd `dirname $@` && make
+BIN_DIR := bin
+BUILD_DIR := build_dir
 
-LOADER_DIR = Kernel
-loader:
-	cd $(LOADER_DIR) && make
-	objcopy -S -O binary $(LOADER_DIR)/loader loader
+
+build/prepare:
+	$(INSTALL) -d $(BIN_DIR) $(BUILD_DIR)
+
+nemu/build: build/prepare
+	$(CP) nemu $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/nemu all
+	$(INSTALL) $(BUILD_DIR)/nemu/nemu $(BIN_DIR)
+
+nemu/loader: nkernel/build
+	objcopy -S -O binary $(BIN_DIR)/loader loader
 	xxd -i loader > src/elf/loader.c
 	rm loader
 
-run: nemu
-	./nemu  $(TESTFILE) # 2>&1 | tee log.txt
+nemu/clean:
+	$(RM) $(BUILD_DIR)/nemu
+	$(RM) $(BIN_DIR)/nemu
 
-gdb: nemu
-	gdb --args ./nemu -dq $(TESTFILE)
+nkernel/build: build/prepare
+	$(CP) nkernel $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/nkernel all
+	$(INSTALL) $(BUILD_DIR)/nkernel/loader $(BIN_DIR)
 
-test: nemu $(TEST_FILE_LIST)
-	bash test.sh $(TEST_FILE_LIST)
+nkernel/clean:
+	$(RM) $(BUILD_DIR)/nkernel
+	$(RM) $(BIN_DIR)/loader
 
--include $(OBJS:.o=.d)
+napp/asm/build: build/prepare
+	$(CP) napp/asm $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/napp/asm all
+
+napp/c/build: build/prepare
+	$(CP) napp/c $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/napp/c all
 
 clean:
-	-@rm -f nemu $(OBJS) $(OBJS:.o=.d) log.txt 2> /dev/null
+	$(RM) $(BIN_DIR) $(BUILD_DIR)
+

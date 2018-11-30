@@ -11,7 +11,6 @@ all: $(OBJS)
 
 $(OBJS): % : %.o
 	$(LD) $(LDFLAGS) -o $@ $<
-	objdump -d $@ > $@.txt
 
 clean:
 	-rm $(OBJS) $(SRCS:.S=.o) $(SRCS:.S=.txt) 2> /dev/null
