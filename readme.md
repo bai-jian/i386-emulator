@@ -1,6 +1,6 @@
+# ncs
 
-
-##USAGE
+## USAGE
 nemu [-d] [-q] [FILE]...
 
 -d  debug
@@ -25,9 +25,9 @@ b     create a breakpoint
 w     create a watchpoint
 d     delete a breakpoint or watchpoint
 
-##COMPATIBILITY
+## COMPATIBILITY
 
-    - Support only 80386 protection mode
-        - No support for backward compatibility with 80286, etc
-        - No support for 80386 real-address mode and virtual 8086 mode
-    - No support for 16-bit addressing instruction
+- Support only 80386 protection mode
+    - No support for backward compatibility with 80286, etc
+    - No support for 80386 real-address mode and virtual 8086 mode
+- No support for 16-bit addressing instruction
