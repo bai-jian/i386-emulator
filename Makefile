@@ -1,51 +1,61 @@
-
-
 CC := gcc
 LD := ld
+
+CUR_DIR := $(shell pwd)
+BIN_DIR := $(CUR_DIR)/bin
+BUILD_DIR := $(CUR_DIR)/build_dir
+
+LIBC := $(CUR_DIR)/newlibc
+LIBC_HEADER := $(LIBC)/include
+LIBC_OBJECT := $(LIBC)/libc.a
+NEMU_HEADER := $(LIBC)/nemu
+
+TESTCASE_OUT_ASM := mov
+
+export CC LD
+export LIBC_HEADER LIBC_OBJECT NEMU_HEADER
+
+
 MAKE := make
 INSTALL := install
-CP := cp -af
+CP := cp -afu
 RM := rm -rf
-
-
-BIN_DIR := bin
-BUILD_DIR := build_dir
-
 
 build/prepare:
 	$(INSTALL) -d $(BIN_DIR) $(BUILD_DIR)
 
-nemu/build: build/prepare
+build/nemu: build/prepare loader
 	$(CP) nemu $(BUILD_DIR)
 	$(MAKE) -C $(BUILD_DIR)/nemu all
 	$(INSTALL) $(BUILD_DIR)/nemu/nemu $(BIN_DIR)
 
-nemu/loader: nkernel/build
-	objcopy -S -O binary $(BIN_DIR)/loader loader
-	xxd -i loader > src/elf/loader.c
-	rm loader
+build/loader: build/prepare
+	$(CP) loader $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/loader all
+	$(INSTALL) $(BUILD_DIR)/loader/loader $(BIN_DIR)
 
-nemu/clean:
+build/testcase/asm: build/prepare
+	$(CP) testcase/asm $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/asm all
+	cd $(BUILD_DIR)/asm && $(INSTALL) $(TESTCASE_OUT_ASM) $(BIN_DIR)
+
+build/testcase/c: build/prepare
+	$(CP) napp/c $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/napp/c all
+
+loader: build/loader
+	objcopy -S -O binary $(BIN_DIR)/loader $(BIN_DIR)/loader
+	cd $(BIN_DIR) && xxd -i loader > ../nemu/elf/loader.c
+
+clean/nemu:
 	$(RM) $(BUILD_DIR)/nemu
 	$(RM) $(BIN_DIR)/nemu
 
-nkernel/build: build/prepare
-	$(CP) nkernel $(BUILD_DIR)
-	$(MAKE) -C $(BUILD_DIR)/nkernel all
-	$(INSTALL) $(BUILD_DIR)/nkernel/loader $(BIN_DIR)
-
-nkernel/clean:
-	$(RM) $(BUILD_DIR)/nkernel
+clean/loader:
+	$(RM) $(BUILD_DIR)/loader
 	$(RM) $(BIN_DIR)/loader
-
-napp/asm/build: build/prepare
-	$(CP) napp/asm $(BUILD_DIR)
-	$(MAKE) -C $(BUILD_DIR)/napp/asm all
-
-napp/c/build: build/prepare
-	$(CP) napp/c $(BUILD_DIR)
-	$(MAKE) -C $(BUILD_DIR)/napp/c all
 
 clean:
 	$(RM) $(BIN_DIR) $(BUILD_DIR)
 
+.PHONY: build/prepare build/nemu build/loader loader clean/nemu clean/loader clean

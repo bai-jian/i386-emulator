@@ -1,5 +1,5 @@
 TARGET := nemu
-CFLAGS := -MD -Wall -fno-strict-aliasing -O2 -Iinclude
+CFLAGS := -MD -Wall -Wno-unused -fno-strict-aliasing -O2 -Iinclude
 
 SRCS   := $(shell find . -name "*.c")
 OBJS   := $(SRCS:.c=.o)

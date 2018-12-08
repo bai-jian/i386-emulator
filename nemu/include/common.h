@@ -10,6 +10,9 @@
 #include <time.h>
 #include <unistd.h>
 
+typedef uint8_t ub_t;
+typedef uint16_t uw_t;
+typedef uint32_t ud_t;
 
 typedef uint8_t bool;
 typedef uint32_t hwaddr_t;
