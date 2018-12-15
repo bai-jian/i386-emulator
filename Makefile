@@ -31,9 +31,10 @@ build/loader: build/prepare
 build/cases: build/prepare
 	$(CP) testcase/cases $(BUILD_DIR)
 	$(MAKE) -C $(BUILD_DIR)/cases all
-	$(INSTALL) -d $(BIN_DIR)/cases
+	$(RM) $(BIN_DIR)/cases/ && $(INSTALL) -d $(BIN_DIR)/cases
 	$(INSTALL) $(BUILD_DIR)/cases/*.out $(BIN_DIR)/cases
 	rename 's/.out//' $(BIN_DIR)/cases/*.out
+	$(INSTALL) $(BUILD_DIR)/cases/runall.sh $(BIN_DIR)
 
 load: build/loader
 	objcopy -S -O binary $(BIN_DIR)/loader $(BIN_DIR)/loader
