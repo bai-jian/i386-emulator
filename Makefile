@@ -45,7 +45,8 @@ build/testcase/c: build/prepare
 
 loader: build/loader
 	objcopy -S -O binary $(BIN_DIR)/loader $(BIN_DIR)/loader
-	cd $(BIN_DIR) && xxd -i loader > ../nemu/elf/loader.c
+	cd $(BIN_DIR) && xxd -i loader > ../nemu/loader/loader.c
+	rm $(BIN_DIR)/loader
 
 clean/nemu:
 	$(RM) $(BUILD_DIR)/nemu

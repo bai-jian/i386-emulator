@@ -10,15 +10,13 @@
 #include <time.h>
 #include <unistd.h>
 
-typedef uint8_t ub_t;
-typedef uint16_t uw_t;
-typedef uint32_t ud_t;
-
 typedef uint8_t bool;
+
 typedef uint32_t hwaddr_t;
 typedef uint32_t lnaddr_t;
 typedef uint32_t swaddr_t;
-typedef  int16_t ioaddr_t;
+
+typedef uint16_t ioaddr_t;
 
 #define false 0
 #define true 1
