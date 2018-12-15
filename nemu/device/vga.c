@@ -1,7 +1,5 @@
 #include "vga.h"
-
-#include "io/port-io.h"
-#include "io/mmio.h"
+#include "cpu/io.h"
 #include "device/i8259.h"
 
 enum {Horizontal_Total_Register, End_Horizontal_Display_Register, 
@@ -102,8 +100,9 @@ void vga_crtc_io_handler(ioaddr_t addr, size_t len, bool is_write) {
 	}
 }
 
-void init_vga() {
-	vga_dac_port_base = add_pio_map(VGA_DAC_WRITE_INDEX, 2, vga_dac_io_handler);
-	vga_crtc_port_base = add_pio_map(VGA_CRTC_INDEX, 2, vga_crtc_io_handler);
-	vmem_base = add_mmio_map(0xa0000, 0x20000, vga_vmem_io_handler);
+void init_vga()
+{
+	vga_dac_port_base = i386_pio.register_device(VGA_DAC_WRITE_INDEX, 2, vga_dac_io_handler);
+	vga_crtc_port_base = i386_pio.register_device(VGA_CRTC_INDEX, 2, vga_crtc_io_handler);
+	vmem_base = i386_mmio.register_device(0xa0000, 0x20000, vga_vmem_io_handler);
 }

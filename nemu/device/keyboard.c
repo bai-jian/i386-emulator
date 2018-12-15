@@ -1,4 +1,4 @@
-#include "io/port-io.h"
+#include "cpu/io.h"
 #include "device/i8259.h"
 #include "ui/ui.h"
 
@@ -22,8 +22,9 @@ void i8042_io_handler(ioaddr_t addr, size_t len, bool is_write) {
 	}
 }
 
-void init_i8042() {
-	i8042_data_port_base = add_pio_map(I8042_DATA_PORT, 1, i8042_io_handler);
+void init_i8042()
+{
+	i8042_data_port_base = i386_pio.register_device(I8042_DATA_PORT, 1, i8042_io_handler);
 	newkey = false;
 }
 

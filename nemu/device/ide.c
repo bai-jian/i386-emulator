@@ -1,5 +1,5 @@
 #include "common.h"
-#include "io/port-io.h"
+#include "cpu/io.h"
 #include "device/i8259.h"
 
 #define IDE_CTRL_PORT 0x3F6
@@ -63,7 +63,7 @@ void ide_io_handler(ioaddr_t addr, size_t len, bool is_write) {
 
 void init_ide()
 {
-	ide_port_base = add_pio_map(IDE_PORT, 8, ide_io_handler);
+	ide_port_base = i386_pio.register_device(IDE_PORT, 8, ide_io_handler);
 	ide_port_base[7] = 0x40;
 
 	extern char* exec_file;

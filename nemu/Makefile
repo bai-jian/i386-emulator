@@ -5,7 +5,7 @@ cpu/isa.o : $(patsubst %.c,%.o,$(wildcard cpu/isa/*.c))
 	$(LD) -r -o $@ $^
 
 OBJS := main.o \
-        cpu/cpu.o cpu/isa.o cpu/reg.o io/port-io.o io/mmio.o \
+        cpu/cpu.o cpu/isa.o cpu/reg.o cpu/io.o \
         memory/memory.o memory/seg_tran.o memory/page_tran.o memory/ph_memory.o \
         memory/cache.o memory/cache_L2.o memory/dram.o \
         device/device.o device/sdl.o device/i8259.o device/ide.o device/keyboard.o \
