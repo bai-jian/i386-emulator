@@ -13,7 +13,7 @@
 
 		/* The following code will be included if the source file is a "*.c" file. */
 
-		#include "trap.h"
+		#include <nemu/trap.h>
 
 		#include "stdint.h"
 		#include "sys/types.h"
