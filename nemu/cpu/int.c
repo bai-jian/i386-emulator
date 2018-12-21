@@ -1,5 +1,27 @@
 #include "common.h"
 #include "cpu/reg.h"
+#include "memory.h"
+
+void int_handle(uint8_t intid)
+{
+	uint8_t offset = intid;
+	uint32_t base = cpu.IDTR.base;
+	uint32_t lnaddr = base + (offset << 3);
+
+	uint64_t descriptor_l = lnaddr_read(lnaddr    , 4);
+	uint64_t descriptor_h = lnaddr_read(lnaddr + 4, 4);
+	uint64_t descriptor   = (descriptor_h << 32) + descriptor_l;
+	gate_descriptor_t gate_desc = *(gate_descriptor_t*)(&descriptor);
+	
+	// Push EFLAGS, CS, EIP
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.CS);
+	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eip);
+
+	// Load CS, EIP with the Gate Descriptor
+	cpu.CS = gate_desc.selector;
+	cpu.eip = ((uint32_t)gate_desc.offset_31_16 << 16) + (uint32_t)gate_desc.offset_15_0;
+}
 
 #define IRQ_BASE 32
 #define NO_INTR -1
@@ -52,7 +74,8 @@ static void do_i8259() {
 }
 
 /* device interface */
-void i8259_raise_intr(int n) {
+void i8259_irq(int n)
+{
 	assert(n >= 0 && n < 16);
 	if(n < 8) {
 		master.IRR |= MASK(n);
@@ -71,11 +94,13 @@ void i8259_raise_intr(int n) {
 }
 
 /* CPU interface */
-uint8_t i8259_query_intr() {
-	return intr_NO;
+void i8259_irq_query(uint8_t *irqno)
+{
+	*irqno = intr_NO;
 }
 
-void i8259_ack_intr() {
+void i8259_irq_ack()
+{
 	if(intr_NO == NO_INTR) {
 		return;
 	}
@@ -96,3 +121,4 @@ void i8259_ack_intr() {
 
 	do_i8259();
 }
+

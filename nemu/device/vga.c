@@ -1,17 +1,54 @@
-#include "vga.h"
+#include "device/vga.h"
 #include "cpu/io.h"
-#include "device/i8259.h"
 
-enum {Horizontal_Total_Register, End_Horizontal_Display_Register, 
-	Start_Horizontal_Blanking_Register, End_Horizontal_Blanking_Register,
-   	Start_Horizontal_Retrace_Register, End_Horizontal_Retrace_Register,
-   	Vertical_Total_Register, Overflow_Register, Preset_Row_Scan_Register,
-   	Maximum_Scan_Line_Register, Cursor_Start_Register, Cursor_End_Register,
-   	Start_Address_High_Register, Start_Address_Low_Register, Cursor_Location_High_Register,
-   	Cursor_Location_Low_Register, Vertical_Retrace_Start_Register,
-   	Vertical_Retrace_End_Register, Vertical_Display_End_Register, Offset_Register,
-   	Underline_Location_Register, Start_Vertical_Blanking_Register, End_Vertical_Blanking,
-   	CRTC_Mode_Control_Register, Line_Compare_Register
+#define VGA_DAC_PORT_BASE 0x3c8
+#define VGA_DAC_PORT_SIZE 2
+#define VGA_DAC_OFFSET_INDEX 0
+#define VGA_DAC_OFFSET_DATA 1
+
+#define VGA_CRTC_PORT_BASE 0x3d4
+#define VGA_CRTC_PORT_SIZE 2
+#define VGA_CRTC_OFFSET_INDEX 0
+#define VGA_CRTC_OFFSET_DATA 1
+
+#define VGA_MM_BASE 0xa0000
+#define VGA_MM_SIZE 0x20000
+
+void vga_register()
+{
+	pio_register(VGA_DAC_PORT_BASE, VGA_DAC_PORT_SIZE, vga_dac_io_handler);
+	pio_register(VGA_CRTC_PORT_BASE, VGA_CRTC_PORT_SIZE, vga_crtc_io_handler);
+	mmio_register(VGA_MM_BASE, VGA_MM_SIZE, vga_vmem_io_handler);
+}
+
+
+enum
+{
+    Horizontal_Total_Register,
+	End_Horizontal_Display_Register, 
+	Start_Horizontal_Blanking_Register,
+	End_Horizontal_Blanking_Register,
+   	Start_Horizontal_Retrace_Register,
+   	End_Horizontal_Retrace_Register,
+   	Vertical_Total_Register,
+   	Overflow_Register,
+   	Preset_Row_Scan_Register,
+   	Maximum_Scan_Line_Register,
+   	Cursor_Start_Register,
+   	Cursor_End_Register,
+   	Start_Address_High_Register,
+   	Start_Address_Low_Register,
+   	Cursor_Location_High_Register,
+   	Cursor_Location_Low_Register,
+   	Vertical_Retrace_Start_Register,
+   	Vertical_Retrace_End_Register,
+   	Vertical_Display_End_Register,
+   	Offset_Register,
+   	Underline_Location_Register,
+   	Start_Vertical_Blanking_Register,
+   	End_Vertical_Blanking,
+   	CRTC_Mode_Control_Register,
+   	Line_Compare_Register
 };
 
 static uint8_t *vga_dac_port_base;

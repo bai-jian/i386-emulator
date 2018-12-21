@@ -1,6 +1,6 @@
-#include "nemu.h"
-
-#include "device/i8259.h"
+#include "cpu/reg.h"
+#include "cpu/io.h"
+#include "cpu/int.h"
 
 #include "ui/ui.h"
 #include "ui/breakpoint.h"
@@ -47,7 +47,6 @@ char assembly[40];
 static void print_instr(swaddr_t eip, int len);
 
 int exec(swaddr_t);
-void raise_intr(uint8_t);
 void cpu_exec(volatile uint32_t n) 
 {
 	volatile uint32_t n_temp = n;
@@ -91,9 +90,10 @@ void cpu_exec(volatile uint32_t n)
 
 		if (cpu.INTR & cpu.IF )
 		{
-			uint8_t intr_no = i8259_query_intr();
-			i8259_ack_intr();
-			raise_intr(intr_no);
+			uint8_t irqno;
+			i8259_irq_query(&irqno);
+			i8259_irq_ack();
+			int_handle(irqno);
 		}
 
 		if (n == 0)  nemu_state = n_temp == -1 ? STOP : INT;

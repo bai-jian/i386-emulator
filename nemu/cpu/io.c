@@ -1,140 +1,106 @@
 #include "common.h"
 #include "cpu/io.h"
 
-static void _pio_read(ioaddr_t addr, size_t len, uint32_t *data);
-static void _pio_write(ioaddr_t addr, size_t len, uint32_t data);
-static uint8_t* _pio_register(ioaddr_t addr, size_t len, pio_callback_t callback);
+#define NR_DEVICE (8)
 
-static bool _mmio_check(hwaddr_t addr);
-static void _mmio_read(hwaddr_t addr, size_t len, uint32_t *data);
-static void _mmio_write(hwaddr_t addr, size_t len, uint32_t data);
-static uint8_t* _mmio_register(hwaddr_t addr, size_t len, mmio_callback_t callback);
-
-struct pio_t i386_pio =
+struct pio_device_t
 {
-	.nr_device = 0,
-	.read = _pio_read,
-	.write = _pio_write,
-	.register_device = _pio_register
+	ioaddr_t low;
+	ioaddr_t high;
+	pio_read_cb_t read_cb;
+	pio_write_cb_t write_cb;
 };
 
-struct mmio_t i386_mmio =
+static struct pio_device_t pio_devices[NR_DEVICE];
+static int pio_nr_device = 0;
+
+struct mmio_device_t
 {
-	.space_free_idx = 0,
-	.nr_device = 0,
-	.check = _mmio_check,
-	.read = _mmio_read,
-	.write = _mmio_write,
-	.register_device = _mmio_register
+	hwaddr_t low;
+	hwaddr_t high;
+	mmio_read_cb_t read_cb;
+	mmio_write_cb_t write_cb;
 };
 
-void _pio_read(ioaddr_t addr, size_t len, uint32_t *data)
+static struct mmio_device_t mmio_devices[NR_DEVICE];
+static int mmio_nr_device = 0;
+
+void pio_register(ioaddr_t addr, size_t len, pio_read_cb_t read_cb, pio_write_cb_t write_cb)
 {
-	assert(len == 1 || len == 2 || len == 4);
-	assert(addr + len - 1 < PIO_SPACE_MAX);
-
-	struct pio_device_t *device = NULL;
-	for (device = i386_pio.devices; device < i386_pio.devices + i386_pio.nr_device; device++)
-		if (addr >= device->low && addr + len - 1 <= device->high)
-			break;
-	if (device == i386_pio.devices + i386_pio.nr_device)
-		return;
-
-	memcpy(data, i386_pio.space + addr, len);
-	
-	if (device->callback)
-		device->callback(addr, len, false);
-}
-
-void _pio_write(ioaddr_t addr, size_t len, uint32_t data)
-{
-	assert(len == 1 || len == 2 || len == 4);
-	assert(addr + len - 1 < PIO_SPACE_MAX);
-
-	struct pio_device_t *device = NULL;
-	for (device = i386_pio.devices; device < i386_pio.devices + i386_pio.nr_device; device++)
-		if (addr >= device->low && addr + len - 1 <= device->high)
-			break;
-	if (device == i386_pio.devices + i386_pio.nr_device)
-		return;
-
-	memcpy(i386_pio.space + addr, &data, len);
-
-	if (device->callback)
-		device->callback(addr, len, true);
-}
-
-static uint8_t* _pio_register(ioaddr_t addr, size_t len, pio_callback_t callback)
-{
-	assert(i386_pio.nr_device < PIO_NR_DEVICE);
-	assert(addr + len -1 < PIO_SPACE_MAX);
-
-	struct pio_device_t *device = i386_pio.devices + i386_pio.nr_device;
+	struct pio_device_t *device = pio_devices + pio_nr_device++;
 	device->low = addr;
 	device->high = addr + len - 1;
-	device->callback = callback;
-	++ i386_pio.nr_device;
-	
-	return i386_pio.space + addr;
+	device->read_cb = read_cb;
+	device->write_cb = write_cb;
 }
 
-static bool _mmio_check(hwaddr_t addr)
+void pio_read(ioaddr_t addr, size_t len, uint32_t *data)
+{
+	struct pio_device_t *device = NULL;
+	for (device = pio_devices; device < pio_devices + pio_nr_device; device++)
+		if (addr >= device->low && addr + len - 1 <= device->high)
+			break;
+	if (device == pio_devices + pio_nr_device)
+		return;
+
+	if (device->read_cb)
+		device->read_cb(addr - device->low, len, data);
+}
+
+void pio_write(ioaddr_t addr, size_t len, uint32_t data)
+{
+	struct pio_device_t *device = NULL;
+	for (device = pio_devices; device < pio_devices + pio_nr_device; device++)
+		if (addr >= device->low && addr + len - 1 <= device->high)
+			break;
+	if (device == pio_devices + pio_nr_device)
+		return;
+
+	if (device->write_cb)
+		device->write_cb(addr - device->low, len, data);
+}
+
+void mmio_register(hwaddr_t addr, size_t len, mmio_read_cb_t read_cb, mmio_write_cb_t write_cb)
+{
+	struct mmio_device_t *device = mmio_devices + mmio_nr_device++;
+	device->low = addr;
+	device->high = addr + len - 1;
+	device->read_cb = read_cb;
+	device->write_cb = write_cb;
+}
+
+bool mmio_check(hwaddr_t addr)
 {
 	struct mmio_device_t *device = NULL;
-	for (device = i386_mmio.devices; device < i386_mmio.devices + i386_mmio.nr_device; device++)
+	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)
 		if (addr >= device->low && addr <= device->high)
 			return true;
 	return false;
 }
 
-static void _mmio_read(hwaddr_t addr, size_t len, uint32_t *data)
+void mmio_read(hwaddr_t addr, size_t len, uint32_t *data)
 {
-	assert(len == 1 || len == 2 || len == 4);
-
 	struct mmio_device_t *device = NULL;
-	for (device = i386_mmio.devices; device < i386_mmio.devices + i386_mmio.nr_device; device++)
+	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)
 		if (addr >= device->low && addr + len - 1 <= device->high)
 			break;
-	if (device == i386_mmio.devices + i386_mmio.nr_device)
+	if (device == mmio_devices + mmio_nr_device)
 		return;
 
-	memcpy(data, device->space + (addr - device->low), len);
-
-	if (device->callback)
-		device->callback(addr, len, false);
+	if (device->read_cb)
+		device->read_cb(addr - device->low, len, data);
 }
 
-static void _mmio_write(hwaddr_t addr, size_t len, uint32_t data)
+void mmio_write(hwaddr_t addr, size_t len, uint32_t data)
 {
-	assert(len == 1 || len == 2 || len == 4);
-
 	struct mmio_device_t *device = NULL;
-	for (device = i386_mmio.devices; device < i386_mmio.devices + i386_mmio.nr_device; device++)
+	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)
 		if (addr >= device->low && addr + len - 1 <= device->high)
 			break;
-	if (device == i386_mmio.devices + i386_mmio.nr_device)
+	if (device == mmio_devices + mmio_nr_device)
 		return;
 
-	memcpy(device->space + (addr - device->low), &data, len);
-
-	if (device->callback)
-		device->callback(addr, len, true);
-}
-
-static uint8_t* _mmio_register(hwaddr_t addr, size_t len, mmio_callback_t callback)
-{
-	assert(i386_mmio.nr_device < MMIO_NR_DEVICE);
-	assert(i386_mmio.space_free_idx + len -1 < MMIO_SPACE_MAX);
-
-	struct mmio_device_t *device = i386_mmio.devices + i386_mmio.nr_device;
-	device->low = addr;
-	device->high = addr + len - 1;
-	device->space = i386_mmio.space + i386_mmio.space_free_idx;
-	device->callback = callback;
-
-	i386_mmio.space_free_idx += len;
-	++i386_mmio.nr_device;
-
-	return device->space;
+	if (device->write_cb)
+		device->write_cb(addr - device->low, len, data);
 }
 

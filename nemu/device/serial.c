@@ -1,30 +1,29 @@
-#include "common.h"
+#include "device/serial.h"
 #include "cpu/io.h"
 
-/* http://en.wikibooks.org/wiki/Serial_Programming/8250_UART_Programming */
+void serial_register()
+{
+	pio_register(SERIAL_PORT_BASE, SERIAL_PORT_SIZE, serial_read_handler, serial_write_handler);
+}
 
-#define SERIAL_PORT 0x3F8
-#define CH_OFFSET 0
-#define LSR_OFFSET 5		/* line status register */
-
-static uint8_t *serial_port_base;
-
-void serial_io_handler(ioaddr_t addr, size_t len, bool is_write) {
-	if(is_write) {
-		assert(len == 1);
-		if(addr == SERIAL_PORT + CH_OFFSET) {
-			char c = serial_port_base[CH_OFFSET];
-			/* We bind the serial port with the host stdout in NEMU. */
-			putc(c, stdout);
-			if(c == '\n') {
-				fflush(stdout);
-			}
-		}
+void serial_read_handler(offset_t offset, size_t len, uint32_t *data)
+{
+	if (offset == SERIAL_OFFSET_LS && len == 1)
+	{
+		/* the status is always free */
+		*data = 0x20;
 	}
 }
 
-void init_serial()
+void serial_write_handler(offset_t offset, size_t len, uint32_t data)
 {
-	serial_port_base = i386_pio.register_device(SERIAL_PORT, 8, serial_io_handler);
-	serial_port_base[LSR_OFFSET] = 0x20; /* the status is always free */
+	if(offset == SERIAL_OFFSET_CH && len == 1)
+	{
+		/* bind the serial port with the host stdout in nemu. */
+		char c = data;
+		putc(c, stdout);
+		if(c == '\n')
+			fflush(stdout);
+	}
 }
+

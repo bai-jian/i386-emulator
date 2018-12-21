@@ -1,7 +1,9 @@
 #include "helper.h"
 #include "ui/ui.h"
 #include "ui/breakpoint.h"
-#include "nemu.h"
+#include "common.h"
+#include "memory.h"
+#include "cpu/reg.h"
 
 // invalid opcode
 make_helper(inv)
