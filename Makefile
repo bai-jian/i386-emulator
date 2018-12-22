@@ -36,6 +36,11 @@ build/cases: build/prepare
 	rename 's/.out//' $(BIN_DIR)/cases/*.out
 	$(INSTALL) $(BUILD_DIR)/cases/runall.sh $(BIN_DIR)
 
+build/typing: build/prepare
+	$(CP) testcase/typing $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/typing all
+	$(INSTALL) $(BUILD_DIR)/typing/typing $(BIN_DIR)
+
 load: build/loader
 	objcopy -S -O binary $(BIN_DIR)/loader $(BIN_DIR)/loader
 	cd $(BIN_DIR) && xxd -i loader > ../nemu/loader/loader.c
@@ -50,7 +55,10 @@ clean/loader:
 clean/cases:
 	$(RM) $(BUILD_DIR)/cases $(BIN_DIR)/cases
 
+clean/typing:
+	$(RM) $(BUILD_DIR)/typing $(BIN_DIR)/typing
+
 clean:
 	$(RM) $(BIN_DIR) $(BUILD_DIR)
 
-.PHONY: build/prepare build/nemu build/loader build/cases load clean/nemu clean/loader clean/cases clean
+.PHONY: build/prepare build/nemu build/loader build/cases build/typing load clean/nemu clean/loader clean/cases clean/typing clean
