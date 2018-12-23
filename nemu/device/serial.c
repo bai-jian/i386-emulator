@@ -1,6 +1,11 @@
 #include "device/serial.h"
 #include "cpu/io.h"
 
+#define SERIAL_PORT_BASE 0x3F8
+#define SERIAL_PORT_SIZE 8
+#define SERIAL_OFFSET_CH 0
+#define SERIAL_OFFSET_LS 5 /* line status register */
+
 void serial_register()
 {
 	pio_register(SERIAL_PORT_BASE, SERIAL_PORT_SIZE, serial_read_handler, serial_write_handler);

@@ -1,11 +1,16 @@
 #include "cpu/reg.h"
 #include "cpu/io.h"
 #include "cpu/int.h"
-
+#include "memory.h"
+#include "device/terminal.h"
+#include "device/serial.h"
+#include "device/ide.h"
+#include "device/timer.h"
+#include "device/keyboard.h"
+#include "device/vga.h"
 #include "ui/ui.h"
 #include "ui/breakpoint.h"
 #include "ui/watchpoint.h"
-
 
 // The start address of 'loader' is at 0x100000
 #define LOADER_START 0x100000
@@ -16,8 +21,7 @@ void init_dram();
 void init_cache();
 void init_cache_L2();
 void init_TLB();
-void sdl_clear_event_queue();
-void restart() 
+void restart()
 {
 	// Perform some initialization to restart a program
 	memcpy(hwa_to_va(LOADER_START), loader, loader_len);
@@ -37,9 +41,14 @@ void restart()
 	init_cache_L2();
 	init_TLB();
 
-	sdl_clear_event_queue();
+	// register devices: serial/ide/timer/keyboard/vga
+	serial_register();
+	ide_register();
+	timer_register();
+	keyboard_register();
+	vga_register();	
+	terminal_clear();
 }
-
 
 extern int enable_debug;
 extern int quiet;

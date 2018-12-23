@@ -1,8 +1,5 @@
 #include "ui/breakpoint.h"
-
-#include "nemu.h"
-
-#include <stdio.h>
+#include "memory.h"
 
 int bp_state;
 

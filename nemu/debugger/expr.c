@@ -1,8 +1,6 @@
 #include "common.h"
-#include "nemu.h"
-
-#include <stdlib.h>
-
+#include "cpu/reg.h"
+#include "memory.h"
 #include <sys/types.h>
 #include <regex.h>
 /* Compile a regular expression into a form suitable for regexec() searches

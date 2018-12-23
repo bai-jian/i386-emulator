@@ -3,12 +3,12 @@
 
 #include "common.h"
 
-#define KEYBOARD_PORT_BASE 0x60
-#define KEYBOARD_PORT_SIZE 1
-#define KEYBOARD_IRQ 1
-
 void vga_register();
-void vga_read_handler(offset_t offset, size_t len, uint32_t *data);
-void vga_write_handler(offset_t offset, size_t len, uint32_t data);
+void vga_dac_read_handler(offset_t offset, size_t len, uint32_t *data);
+void vga_dac_write_handler(offset_t offset, size_t len, uint32_t data);
+void vga_crtc_read_handler(offset_t offset, size_t len, uint32_t *data);
+void vga_crtc_write_handler(offset_t offset, size_t len, uint32_t data);	
+void vga_vmem_read_handler(offset_t offset, size_t len, uint32_t *data);
+void vga_vmem_write_handler(offset_t offset, size_t len, uint32_t data);
 
 #endif

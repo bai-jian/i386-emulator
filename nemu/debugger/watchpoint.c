@@ -1,8 +1,6 @@
+#include "common.h"
 #include "ui/watchpoint.h"
-#include "nemu.h"
-
 #include "ui/expr.h"
-#include <stdio.h>
 
 int WP_STATE = 0; 
 

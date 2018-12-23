@@ -1,14 +1,10 @@
+#include "common.h"
 #include "ui/ui.h"
-
-#include "nemu.h"
 #include "ui/breakpoint.h"
 #include "ui/watchpoint.h"
 #include "ui/expr.h"
-
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
-#include <stdlib.h>
+#include "cpu/reg.h"
+#include "memory.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 

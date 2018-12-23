@@ -2,9 +2,11 @@
 #define __COMMON_H__
 
 #include <assert.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>

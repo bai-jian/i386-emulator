@@ -2,6 +2,10 @@
 #include "cpu/io.h"
 #include "cpu/int.h"
 
+#define IDE_PORT_BASE 0x1F0
+#define IDE_PORT_SIZE 8
+#define IDE_IRQ 14
+
 struct disk_t
 {
 	uint8_t port[IDE_PORT_SIZE];
@@ -10,7 +14,7 @@ struct disk_t
 	uint32_t bytes;
 };
 
-static disk_t disk;
+static struct disk_t disk;
 static bool ide_write;
 
 /*
@@ -30,7 +34,7 @@ void ide_register()
 
 	extern char* exec_file;
 	disk.fp = fopen(exec_file, "r+");
-	assert(disk_fp);
+	assert(disk.fp);
 }
 
 void ide_read_handler(offset_t offset, size_t len, uint32_t *data)
@@ -40,13 +44,22 @@ void ide_read_handler(offset_t offset, size_t len, uint32_t *data)
 	if(offset == 0 && len == 4)
 	{
 		assert(!ide_write);
-		fread(disk.port, 4, 1, disk.fp);
+		fread(data, 4, 1, disk.fp);
+		// memcpy(data, disk.port, 4);
 	
 		disk.bytes += 4;
 		if(disk.bytes == 512)
 		{
 			disk.port[7] = 0x40;
 		}
+	}
+	else if (offset == 7 && len == 1)
+	{
+		*data = disk.port[7];
+	}
+	else
+	{
+		assert(0);
 	}
 }
 
@@ -66,31 +79,34 @@ void ide_write_handler(offset_t offset, size_t len, uint32_t data)
 			i8259_irq(IDE_IRQ);
 		}
 	}
-	else if(offset == 7 && len == 1)
+	else if ((offset >= 2 && offset <= 7) && len == 1)
 	{
-		if (disk.port[7] != 0x20 && disk.port[7] != 0x30)
-			return;
-		
-		uint32_t sector = (disk.port[6] & 0x1f) << 24 | disk.port[5] << 16 | disk.port[4] << 8 | disk.port[3];
-		fseek(disk.fp, sector << 9, SEEK_SET);
+		disk.port[offset] = (uint8_t)data;
 
-		disk.bytes = 0;
+		if (offset == 7)
+		{
+			uint32_t sector = (disk.port[6] & 0x1f) << 24 | disk.port[5] << 16 | disk.port[4] << 8 | disk.port[3];
+			fseek(disk.fp, sector << 9, SEEK_SET);
 
-		if(disk.port[7] == 0x20)
-		{
-			ide_write = false;
-			fread(disk.port, 4, 1, disk.fp);
-			disk.port[7] = 0x40;
-			i8259_irq(IDE_IRQ);
-		}
-		else if(disk.port[7] == 0x30)
-		{
-			ide_write = true;
-		}
-		else {
-			assert(0);
+			disk.bytes = 0;
+
+			if(disk.port[7] == 0x20)
+			{
+				ide_write = false;
+				// fread(disk.port, 4, 1, disk.fp);
+				disk.port[7] = 0x40;
+				i8259_irq(IDE_IRQ);
+			}
+			else if(disk.port[7] == 0x30)
+			{
+				ide_write = true;
+			}
+			else
+				assert(0);
 		}
 	}
+	else
+		assert(0);
 }
 
 void ide_irq()

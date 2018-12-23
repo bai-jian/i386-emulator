@@ -7,18 +7,18 @@ void cache_write(hwaddr_t, size_t, uint32_t);
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len)
 {	
-	if (i386_mmio.check(addr))
+	if (mmio_check(addr))
 	{
 		uint32_t data;
-		i386_mmio.read(addr, len, &data);
+		mmio_read(addr, len, &data);
 		return data;
 	}
 	return cache_read(addr, len);
 }
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data)
 {
-	if (i386_mmio.check(addr))
-		return i386_mmio.write(addr, len, data);
+	if (mmio_check(addr))
+		return mmio_write(addr, len, data);
 	return cache_write(addr, len, data);
 }
 

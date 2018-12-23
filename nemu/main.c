@@ -1,12 +1,10 @@
 #include "common.h"
-
+#include "device/terminal.h"
 
 int enable_debug = false;
 int quiet = false;
 
 void init_signal();
-void init_device();
-void init_sdl();
 void reg_test();
 void main_loop();
 void set_main_args(int, char * []);
@@ -38,8 +36,8 @@ int main(int argc, char* argv[])
 	process_args(argc, argv);
 
 	init_signal();
-	init_device();
-	init_sdl();
+	
+	terminal_init();
 
 	reg_test(); 
 

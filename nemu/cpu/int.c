@@ -1,5 +1,6 @@
 #include "common.h"
 #include "cpu/reg.h"
+#include "cpu/int.h"
 #include "memory.h"
 
 void int_handle(uint8_t intid)
@@ -11,7 +12,7 @@ void int_handle(uint8_t intid)
 	uint64_t descriptor_l = lnaddr_read(lnaddr    , 4);
 	uint64_t descriptor_h = lnaddr_read(lnaddr + 4, 4);
 	uint64_t descriptor   = (descriptor_h << 32) + descriptor_l;
-	gate_descriptor_t gate_desc = *(gate_descriptor_t*)(&descriptor);
+	struct gate_descriptor_t gate_desc = *(struct gate_descriptor_t *)(&descriptor);
 	
 	// Push EFLAGS, CS, EIP
 	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
@@ -74,7 +75,7 @@ static void do_i8259() {
 }
 
 /* device interface */
-void i8259_irq(int n)
+void i8259_irq(uint8_t n)
 {
 	assert(n >= 0 && n < 16);
 	if(n < 8) {
