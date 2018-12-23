@@ -10,6 +10,7 @@ CSRC = $(shell find . -name "*.c")
 OBJS += $(CSRC:.c=.o)
 OBJS += memory/mm_malloc.o 
 
+-include $(OBJS:.o=.d)
 
 all: $(OBJS)
 	$(LD) $(LDFLAGS) -e start -o loader $(OBJ_START) $(OBJS) $(LIBC_OBJECT)

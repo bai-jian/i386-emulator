@@ -12,6 +12,8 @@ OBJS := main.o \
         loader/loader.o loader/elf.o \
         debugger/ui.o debugger/breakpoint.o debugger/expr.o debugger/watchpoint.o
 
+-include $(OBJS:.o=.d)
+
 all: $(OBJS)
 	$(CC) $(CFLAGS) -o $(TARGET) $^ -lreadline -lSDL
 
