@@ -8,15 +8,15 @@ void int_handle(uint8_t intid)
 	cpu.esp -= 4;
 	mem_write(cpu.esp, 4, &cpu.eflags);
 	cpu.esp -= 4;
-	mem_write(cpu.esp, 4, &cpu.CS);
+	mem_write(cpu.esp, 2, &cpu.CS);
 	cpu.esp -= 4;
 	mem_write(cpu.esp, 4, &cpu.eip);
 
-	// TO FIX: lnaddr cannot read throught mem_read.
+	// TO FIX: lnaddr read throught mem_read only in flat architecture.
 	struct gate_descriptor_t descriptor;
 	uint32_t lnaddr = cpu.IDTR.base + (intid << 3);
 	mem_read(lnaddr, 4, (uint8_t *)&descriptor);
-	mem_read(lnaddr + 4, 4, (uint8_t *)&descriptor + 1);
+	mem_read(lnaddr + 4, 4, (uint8_t *)&descriptor + 4);
 
 	cpu.CS = descriptor.selector;
 	cpu.eip = (descriptor.offset_31_16 << 16) + descriptor.offset_15_0;
