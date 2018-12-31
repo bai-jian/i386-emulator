@@ -1,4 +1,4 @@
-TARGET := nemu
+TARGET := emulator
 CFLAGS := -MD -Wall -Wno-unused -Wno-unused-result -Wno-incompatible-pointer-types -fno-strict-aliasing -O2 -Iinclude
 
 cpu/isa.o : $(patsubst %.c,%.o,$(wildcard cpu/isa/*.c))

@@ -2,7 +2,7 @@ CUR_DIR := $(shell pwd)
 BIN_DIR := $(CUR_DIR)/bin
 BUILD_DIR := $(CUR_DIR)/build_dir
 
-LIBC := $(CUR_DIR)/nlibc
+LIBC := $(CUR_DIR)/libc
 LIBC_HEADER := $(LIBC)/include
 LIBC_OBJECT := $(LIBC)/libc.a
 
@@ -18,10 +18,10 @@ export CC LD LIBC_HEADER LIBC_OBJECT
 build/prepare:
 	$(INSTALL) -d $(BIN_DIR) $(BUILD_DIR)
 
-build/nemu: build/prepare load
-	$(CP) nemu $(BUILD_DIR)
-	$(MAKE) -C $(BUILD_DIR)/nemu all
-	$(INSTALL) $(BUILD_DIR)/nemu/nemu $(BIN_DIR)
+build/emulator: build/prepare load
+	$(CP) emulator $(BUILD_DIR)
+	$(MAKE) -C $(BUILD_DIR)/emulator all
+	$(INSTALL) $(BUILD_DIR)/emulator/emulator $(BIN_DIR)
 
 build/loader: build/prepare
 	$(CP) loader $(BUILD_DIR)
@@ -43,11 +43,11 @@ build/typing: build/prepare
 
 load: build/loader
 	objcopy -S -O binary $(BIN_DIR)/loader $(BIN_DIR)/loader
-	cd $(BIN_DIR) && xxd -i loader > ../nemu/loader/loader.c
+	cd $(BIN_DIR) && xxd -i loader > ../emulator/loader/loader.c
 	rm $(BIN_DIR)/loader
 
-clean/nemu:
-	$(RM) $(BUILD_DIR)/nemu $(BIN_DIR)/nemu
+clean/emulator:
+	$(RM) $(BUILD_DIR)/emulator $(BIN_DIR)/emulator
 
 clean/loader:
 	$(RM) $(BUILD_DIR)/loader $(BIN_DIR)/loader
@@ -61,4 +61,4 @@ clean/typing:
 clean:
 	$(RM) $(BIN_DIR) $(BUILD_DIR)
 
-.PHONY: build/prepare build/nemu build/loader build/cases build/typing load clean/nemu clean/loader clean/cases clean/typing clean
+.PHONY: build/prepare build/emulator build/loader build/cases build/typing load clean/emulator clean/loader clean/cases clean/typing clean

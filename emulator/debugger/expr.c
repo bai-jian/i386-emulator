@@ -1,5 +1,5 @@
-#include "common.h"
 #include "cpu/reg.h"
+#include "cpu/mm.h"
 #include <sys/types.h>
 #include <regex.h>
 /* Compile a regular expression into a form suitable for regexec() searches
