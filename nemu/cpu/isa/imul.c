@@ -1,7 +1,4 @@
 #include "helper.h"
-#include "memory.h"
-#include "cpu/reg.h"
-#include "modrm.h"
 
 
 #define  DATA_BYTE 2

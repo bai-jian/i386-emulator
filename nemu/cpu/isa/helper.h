@@ -2,9 +2,10 @@
 #define __EXEC_HELPER_H__
 
 #include "cpu/reg.h"
+#include "cpu/mm.h"
 #include "cpu/io.h"
 #include "cpu/int.h"
-#include "memory.h"
+#include "modrm.h"
 
 /* 'make_helper' returns the length of the instruction. */
 #define make_helper(name) int name(swaddr_t eip)

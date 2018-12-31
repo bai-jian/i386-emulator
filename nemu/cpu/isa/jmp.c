@@ -12,10 +12,6 @@
 #include "jmp-template.h"
 #undef   DATA_BYTE
 
-
-#include "cpu/reg.h"
-#include "memory.h"
-
 extern char suffix;
 
 make_helper(jmp_i_v)

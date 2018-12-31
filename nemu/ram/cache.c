@@ -1,16 +1,9 @@
-#include "common.h"
-
-
-/* physical memory interfaces <- cache <- cache L2 */
-uint32_t cache_L2_read(hwaddr_t, size_t);
-void cache_L2_write(hwaddr_t, size_t, uint32_t);
-
+#include "ram/ram.h"
 
 /* Cache Memory Size: 64KB = (128 Set) * (8 Way/Set) * (64 B/Block) */
 #define BIB_WIDTH 6  //BIB: Bytes In a Block
 #define WAY_WIDTH 3
 #define SET_WIDTH 7
-
 
 /* Define [Cache] & [BLOCK] */
 #define NR_BIB (1 << BIB_WIDTH)
@@ -22,7 +15,6 @@ struct BLOCK
 	uint32_t tag;
 	uint8_t bib[NR_BIB];
 } block[NR_SET][NR_WAY];
-
 
 /* the Mapping between [PA] and [CA] */
 /*     PA:  Physical Address         */
@@ -64,7 +56,6 @@ void init_cache( )
 
 	hit = 0;  miss = 0;
 }
-
 
 uint32_t cache_read(hwaddr_t addr, size_t len)
 {
@@ -114,7 +105,6 @@ uint32_t cache_read(hwaddr_t addr, size_t len)
 	}
 }
 
-
 void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 {
 	cache_addr fstb;  fstb.addr = addr;            //fstb: the first byte
@@ -158,3 +148,4 @@ void cache_write(hwaddr_t addr, size_t len, uint32_t data)
 		return;
 	}
 }
+

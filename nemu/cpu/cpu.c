@@ -1,7 +1,7 @@
 #include "cpu/reg.h"
+#include "cpu/mm.h"
 #include "cpu/io.h"
 #include "cpu/int.h"
-#include "memory.h"
 #include "device/terminal.h"
 #include "device/serial.h"
 #include "device/ide.h"
@@ -13,6 +13,8 @@
 #include "ui/watchpoint.h"
 
 // The start address of 'loader' is at 0x100000
+extern uint8_t *hw_mem;
+#define hwa_to_va(p) ((void *)(hw_mem + (unsigned)p))
 #define LOADER_START 0x100000
 extern uint8_t loader [];
 extern uint32_t loader_len;
@@ -20,7 +22,6 @@ void load_prog();
 void init_dram();
 void init_cache();
 void init_cache_L2();
-void init_TLB();
 void restart()
 {
 	// Perform some initialization to restart a program
@@ -39,7 +40,7 @@ void restart()
 	init_dram();
 	init_cache();
 	init_cache_L2();
-	init_TLB();
+	tlb_flush();
 
 	// register devices: serial/ide/timer/keyboard/vga
 	serial_register();

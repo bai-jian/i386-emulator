@@ -4,7 +4,7 @@
 #include "ui/watchpoint.h"
 #include "ui/expr.h"
 #include "cpu/reg.h"
-#include "memory.h"
+#include "cpu/mm.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 

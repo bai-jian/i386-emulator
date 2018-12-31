@@ -1,27 +1,25 @@
 #include "common.h"
 #include "cpu/reg.h"
+#include "cpu/mm.h"
 #include "cpu/int.h"
-#include "memory.h"
 
 void int_handle(uint8_t intid)
 {
-	uint8_t offset = intid;
-	uint32_t base = cpu.IDTR.base;
-	uint32_t lnaddr = base + (offset << 3);
+	cpu.esp -= 4;
+	mem_write(cpu.esp, 4, &cpu.eflags);
+	cpu.esp -= 4;
+	mem_write(cpu.esp, 4, &cpu.CS);
+	cpu.esp -= 4;
+	mem_write(cpu.esp, 4, &cpu.eip);
 
-	uint64_t descriptor_l = lnaddr_read(lnaddr    , 4);
-	uint64_t descriptor_h = lnaddr_read(lnaddr + 4, 4);
-	uint64_t descriptor   = (descriptor_h << 32) + descriptor_l;
-	struct gate_descriptor_t gate_desc = *(struct gate_descriptor_t *)(&descriptor);
-	
-	// Push EFLAGS, CS, EIP
-	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eflags);
-	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.CS);
-	cpu.esp -= 4;  swaddr_write(cpu.esp, 4, cpu.eip);
+	// TO FIX: lnaddr cannot read throught mem_read.
+	struct gate_descriptor_t descriptor;
+	uint32_t lnaddr = cpu.IDTR.base + (intid << 3);
+	mem_read(lnaddr, 4, (uint8_t *)&descriptor);
+	mem_read(lnaddr + 4, 4, (uint8_t *)&descriptor + 1);
 
-	// Load CS, EIP with the Gate Descriptor
-	cpu.CS = gate_desc.selector;
-	cpu.eip = ((uint32_t)gate_desc.offset_31_16 << 16) + (uint32_t)gate_desc.offset_15_0;
+	cpu.CS = descriptor.selector;
+	cpu.eip = (descriptor.offset_31_16 << 16) + descriptor.offset_15_0;
 }
 
 #define IRQ_BASE 32

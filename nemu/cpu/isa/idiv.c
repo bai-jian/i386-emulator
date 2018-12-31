@@ -1,7 +1,4 @@
 #include "helper.h"
-#include "memory.h"
-#include "modrm.h"
-
 
 make_helper(idiv_b);
 make_helper(idiv_w);

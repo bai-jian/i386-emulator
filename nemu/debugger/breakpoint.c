@@ -1,5 +1,5 @@
 #include "ui/breakpoint.h"
-#include "memory.h"
+#include "cpu/mm.h"
 
 int bp_state;
 

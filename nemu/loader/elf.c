@@ -1,8 +1,7 @@
-#include "memory.h"
-
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <elf.h>
-
 
 char *exec_file;
 static int main_argc;
@@ -22,7 +21,7 @@ static int nr_symtab_entry = 0;
 void init_elf_table()
 {
 	FILE* fp = fopen(exec_file, "rb");
-	test(fp, "file not exist!");
+	assert(fp);
 
 	// Load the first 4M bytes from the exec_file in buf[], containing the ELF header and the Program Headers
 	uint8_t buf[4096];
@@ -84,7 +83,7 @@ void init_elf_table()
 
 #define FUNCNAME_SIZE 32
 char funcname[FUNCNAME_SIZE];
-void find_funcname(swaddr_t addr)
+void find_funcname(uint32_t addr)
 {
 	int i;
 	for (i = 0; i < nr_symtab_entry; ++i)
@@ -96,7 +95,7 @@ void find_funcname(swaddr_t addr)
 	if (i == nr_symtab_entry)  assert(0);
 }
 
-swaddr_t symbol(char* name)
+uint32_t symbol(char* name)
 { 
 	int i;
 	for (i = 0; i < nr_symtab_entry; ++i)

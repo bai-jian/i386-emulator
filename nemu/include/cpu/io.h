@@ -14,7 +14,7 @@ void pio_write(ioaddr_t addr, size_t len, uint32_t data);
 
 void mmio_register(hwaddr_t addr, size_t len, mmio_read_cb_t read_cb, mmio_write_cb_t write_cb);
 bool mmio_check(hwaddr_t addr);
-void mmio_read(hwaddr_t addr, size_t len, uint32_t *data);
-void mmio_write(hwaddr_t addr, size_t len, uint32_t data);
+void mmio_read(hwaddr_t addr, size_t len, uint8_t *data);
+void mmio_write(hwaddr_t addr, size_t len, uint8_t *data);
 
 #endif

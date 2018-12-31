@@ -1,8 +1,4 @@
 #include "helper.h"
-#include "memory.h"
-#include "cpu/reg.h"
-#include "modrm.h"
-
 
 int mul_b(swaddr_t eip);
 int mul_w(swaddr_t eip);

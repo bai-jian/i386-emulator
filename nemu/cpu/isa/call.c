@@ -1,7 +1,6 @@
 #include "helper.h"
 #include "cpu/reg.h"
 #include "modrm.h"
-#include "memory.h"
 
 make_helper(call_i)
 {

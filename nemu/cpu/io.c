@@ -78,7 +78,7 @@ bool mmio_check(hwaddr_t addr)
 	return false;
 }
 
-void mmio_read(hwaddr_t addr, size_t len, uint32_t *data)
+void mmio_read(hwaddr_t addr, size_t len, uint8_t *data)
 {
 	struct mmio_device_t *device = NULL;
 	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)
@@ -88,10 +88,17 @@ void mmio_read(hwaddr_t addr, size_t len, uint32_t *data)
 		return;
 
 	if (device->read_cb)
-		device->read_cb(addr - device->low, len, data);
+	{
+		uint32_t temp = 0;
+		device->read_cb(addr - device->low, len, &temp);
+		data[0] = temp & 0xff;
+		data[1] = (temp >> 8) & 0xff;
+		data[2] = (temp >> 16) & 0xff;
+		data[3] = (temp >> 24) & 0xff;
+	}
 }
 
-void mmio_write(hwaddr_t addr, size_t len, uint32_t data)
+void mmio_write(hwaddr_t addr, size_t len, uint8_t *data)
 {
 	struct mmio_device_t *device = NULL;
 	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)
@@ -101,6 +108,9 @@ void mmio_write(hwaddr_t addr, size_t len, uint32_t data)
 		return;
 
 	if (device->write_cb)
-		device->write_cb(addr - device->low, len, data);
+	{
+		uint32_t temp = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+		device->write_cb(addr - device->low, len, temp);
+	}
 }
 

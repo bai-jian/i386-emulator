@@ -1,6 +1,4 @@
 #include "helper.h"
-#include "memory.h"
-#include "cpu/reg.h"
 
 make_helper(iret)
 {

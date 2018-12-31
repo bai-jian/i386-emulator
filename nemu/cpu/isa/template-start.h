@@ -1,5 +1,5 @@
 #include "common.h"
-#include "memory.h"
+#include "cpu/mm.h"
 
 #if DATA_BYTE == 1
 

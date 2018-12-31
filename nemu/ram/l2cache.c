@@ -1,9 +1,4 @@
-#include "common.h"
-
-/* cache_L2 <- dram */
-uint32_t dram_read(hwaddr_t, size_t);
-void dram_write(hwaddr_t, size_t, uint32_t);
-
+#include "ram/ram.h"
 
 /* Cache L2 Memory Size: 4MB = (4096 Set) * (16 Way/Set) * (64 B/Block) */
 #define BIB_WIDTH 6  //BIB: Bytes In a Block
@@ -194,3 +189,4 @@ void cache_L2_write(hwaddr_t addr, size_t len, uint32_t data)
 		}
 	}
 }
+

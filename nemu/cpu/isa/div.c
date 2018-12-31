@@ -1,7 +1,4 @@
 #include "helper.h"
-#include "memory.h"
-#include "modrm.h"
-
 
 int div_b(swaddr_t eip);
 int div_w(swaddr_t eip);

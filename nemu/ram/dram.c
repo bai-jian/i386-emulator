@@ -1,4 +1,4 @@
-#include "common.h"
+#include "ram/ram.h"
 
 
 //Data:
@@ -153,3 +153,4 @@ void memcpy_with_mask(void* dest, const void* src, size_t len, uint8_t* mask)
 		if (mask[i])
 			((uint8_t*)dest)[i] = ((uint8_t*)src)[i];
 }
+

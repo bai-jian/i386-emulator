@@ -1,6 +1,6 @@
+#include "helper.h"
+
 #include "template-start.h"
-#include "memory.h"
-#include "modrm.h"
 
 make_helper( concat(push_i_, SUFFIX) )
 {

@@ -1,5 +1,4 @@
 #include "helper.h"
-#include "memory.h"
 
 make_helper(ret)
 {
