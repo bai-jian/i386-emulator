@@ -106,9 +106,9 @@ void mem_read(swaddr_t addr, size_t len, uint8_t *data)
 		else
 			ram_read(unspanned_addr, unspanned_len, data);
 		
-		addr = addr + unspanned_len + 1;
+		addr = addr + unspanned_len;
 		len = len - unspanned_len;
-		data = data + unspanned_len + 1;
+		data = data + unspanned_len;
 	}
 
 	addr = paging(addr);
@@ -141,9 +141,9 @@ void mem_write(swaddr_t addr, size_t len, uint8_t *data)
 		else
 			ram_write(unspanned_addr, unspanned_len, data);
 		
-		addr = addr + unspanned_len + 1;
+		addr = addr + unspanned_len;
 		len = len - unspanned_len;
-		data = data + unspanned_len + 1;
+		data = data + unspanned_len;
 	}
 
 	addr = paging(addr);
