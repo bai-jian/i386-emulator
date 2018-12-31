@@ -61,7 +61,7 @@ void vga_crtc_write_handler(offset_t offset, size_t len, uint32_t data)
 	assert(0);
 }
 
-void vga_vmem_read_handler(offset_t offset, size_t len, uint32_t *data)
+void vga_vmem_read_handler(offset_t offset, size_t len, uint8_t *data)
 {
 	if (offset + len <= VGA_VMEM_SIZE)
 	{
@@ -69,11 +69,11 @@ void vga_vmem_read_handler(offset_t offset, size_t len, uint32_t *data)
 	}
 }
 
-void vga_vmem_write_handler(offset_t offset, size_t len, uint32_t data)
+void vga_vmem_write_handler(offset_t offset, size_t len, uint8_t *data)
 {
 	if (offset + len <= VGA_VMEM_SIZE)
 	{
-		memcpy(vga.vmem + offset, &data, len);
+		memcpy(vga.vmem + offset, data, len);
 		vga.vmem_dirty = true;
 		vga.vmem_line_dirty[offset / VGA_VMEM_COL] = true;
 	}

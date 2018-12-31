@@ -88,14 +88,7 @@ void mmio_read(hwaddr_t addr, size_t len, uint8_t *data)
 		return;
 
 	if (device->read_cb)
-	{
-		uint32_t temp = 0;
-		device->read_cb(addr - device->low, len, &temp);
-		data[0] = temp & 0xff;
-		data[1] = (temp >> 8) & 0xff;
-		data[2] = (temp >> 16) & 0xff;
-		data[3] = (temp >> 24) & 0xff;
-	}
+		device->read_cb(addr - device->low, len, data);
 }
 
 void mmio_write(hwaddr_t addr, size_t len, uint8_t *data)
@@ -108,9 +101,6 @@ void mmio_write(hwaddr_t addr, size_t len, uint8_t *data)
 		return;
 
 	if (device->write_cb)
-	{
-		uint32_t temp = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
-		device->write_cb(addr - device->low, len, temp);
-	}
+		device->write_cb(addr - device->low, len, data);
 }
 

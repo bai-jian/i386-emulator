@@ -5,8 +5,8 @@
 
 typedef void (*pio_read_cb_t)(offset_t offset, size_t len, uint32_t *data);
 typedef void (*pio_write_cb_t)(offset_t offset, size_t len, uint32_t data);
-typedef void (*mmio_read_cb_t)(offset_t offset, size_t len, uint32_t *data);
-typedef void (*mmio_write_cb_t)(offset_t offset, size_t len, uint32_t data);
+typedef void (*mmio_read_cb_t)(offset_t offset, size_t len, uint8_t *data);
+typedef void (*mmio_write_cb_t)(offset_t offset, size_t len, uint8_t *data);
 
 void pio_register(ioaddr_t addr, size_t len, pio_read_cb_t read_cb, pio_write_cb_t write_cb);
 void pio_read(ioaddr_t addr, size_t len, uint32_t *data);
