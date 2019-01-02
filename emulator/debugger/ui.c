@@ -1,8 +1,7 @@
 #include "common.h"
-#include "ui/ui.h"
-#include "ui/breakpoint.h"
-#include "ui/watchpoint.h"
-#include "ui/expr.h"
+#include "debugger/breakpoint.h"
+#include "debugger/watchpoint.h"
+#include "debugger/expr.h"
 #include "cpu/reg.h"
 #include "cpu/mm.h"
 #include <readline/readline.h>

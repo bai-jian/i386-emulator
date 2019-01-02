@@ -8,9 +8,8 @@
 #include "device/timer.h"
 #include "device/keyboard.h"
 #include "device/vga.h"
-#include "ui/ui.h"
-#include "ui/breakpoint.h"
-#include "ui/watchpoint.h"
+#include "debugger/breakpoint.h"
+#include "debugger/watchpoint.h"
 
 // The start address of 'loader' is at 0x100000
 extern uint8_t *hw_mem;

@@ -1,6 +1,5 @@
 #include "helper.h"
-#include "ui/ui.h"
-#include "ui/breakpoint.h"
+#include "debugger/breakpoint.h"
 
 // invalid opcode
 make_helper(inv)

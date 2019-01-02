@@ -1,6 +1,5 @@
-#include "common.h"
-#include "ui/watchpoint.h"
-#include "ui/expr.h"
+#include "debugger/watchpoint.h"
+#include "debugger/expr.h"
 
 int WP_STATE = 0; 
 

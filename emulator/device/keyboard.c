@@ -2,7 +2,6 @@
 #include "device/terminal.h"
 #include "cpu/io.h"
 #include "cpu/int.h"
-#include "ui/ui.h"
 
 struct keyboard_t
 {

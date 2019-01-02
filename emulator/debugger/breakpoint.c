@@ -1,4 +1,4 @@
-#include "ui/breakpoint.h"
+#include "debugger/breakpoint.h"
 #include "cpu/mm.h"
 
 int bp_state;

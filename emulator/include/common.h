@@ -11,15 +11,7 @@
 #include <time.h>
 #include <unistd.h>
 
-typedef uint32_t hwaddr_t;
-typedef uint32_t swaddr_t;
-
-typedef uint32_t segment_offset_t;
-typedef uint32_t lgaddr_t;
-typedef uint32_t lnaddr_t;
-typedef uint32_t phyaddr_t;
-typedef uint16_t ioaddr_t;
-typedef uint32_t offset_t;
+#include "emulator.h"
 
 #define str_temp(x) #x
 #define str(x) str_temp(x)

@@ -1,7 +1,6 @@
 #include "device/timer.h"
 #include "device/terminal.h"
 #include "cpu/int.h"
-#include "ui/ui.h"
 
 #define TIMER_IRQ 0
 

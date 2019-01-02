@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+typedef uint32_t hwaddr_t;
+
 void ram_read(phyaddr_t addr, size_t len, uint8_t *data);
 void ram_write(phyaddr_t addr, size_t len, uint8_t *data);
 

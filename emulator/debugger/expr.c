@@ -1,7 +1,9 @@
-#include "cpu/reg.h"
-#include "cpu/mm.h"
 #include <sys/types.h>
 #include <regex.h>
+#include "debugger/expr.h"
+#include "cpu/reg.h"
+#include "cpu/mm.h"
+
 /* Compile a regular expression into a form suitable for regexec() searches
  *     int regcomp(regex_t* preg, const char* regex, int cflags);
  * Turn the error codes that can be returned by regcomp() and regexec() into the error message strings

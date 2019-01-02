@@ -2,7 +2,9 @@
 #define __CPU_MM_H__
 
 #include "common.h"
-#include "cpu/reg.h"
+
+typedef uint32_t segment_offset_t;
+typedef uint32_t lnaddr_t;
 
 struct segment_selector_t
 {

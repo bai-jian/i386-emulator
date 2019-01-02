@@ -16,8 +16,8 @@ static int pio_nr_device = 0;
 
 struct mmio_device_t
 {
-	hwaddr_t low;
-	hwaddr_t high;
+	phyaddr_t low;
+	phyaddr_t high;
 	mmio_read_cb_t read_cb;
 	mmio_write_cb_t write_cb;
 };
@@ -60,7 +60,7 @@ void pio_write(ioaddr_t addr, size_t len, uint32_t data)
 		device->write_cb(addr - device->low, len, data);
 }
 
-void mmio_register(hwaddr_t addr, size_t len, mmio_read_cb_t read_cb, mmio_write_cb_t write_cb)
+void mmio_register(phyaddr_t addr, size_t len, mmio_read_cb_t read_cb, mmio_write_cb_t write_cb)
 {
 	struct mmio_device_t *device = mmio_devices + mmio_nr_device++;
 	device->low = addr;
@@ -69,7 +69,7 @@ void mmio_register(hwaddr_t addr, size_t len, mmio_read_cb_t read_cb, mmio_write
 	device->write_cb = write_cb;
 }
 
-bool mmio_check(hwaddr_t addr)
+bool mmio_check(phyaddr_t addr)
 {
 	struct mmio_device_t *device = NULL;
 	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)
@@ -78,7 +78,7 @@ bool mmio_check(hwaddr_t addr)
 	return false;
 }
 
-void mmio_read(hwaddr_t addr, size_t len, uint8_t *data)
+void mmio_read(phyaddr_t addr, size_t len, uint8_t *data)
 {
 	struct mmio_device_t *device = NULL;
 	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)
@@ -91,7 +91,7 @@ void mmio_read(hwaddr_t addr, size_t len, uint8_t *data)
 		device->read_cb(addr - device->low, len, data);
 }
 
-void mmio_write(hwaddr_t addr, size_t len, uint8_t *data)
+void mmio_write(phyaddr_t addr, size_t len, uint8_t *data)
 {
 	struct mmio_device_t *device = NULL;
 	for (device = mmio_devices; device < mmio_devices + mmio_nr_device; device++)

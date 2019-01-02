@@ -1,6 +1,6 @@
 #include "helper.h"
 
-make_helper(INT)
+make_helper(int_)
 {
 	uint8_t instr_len = 2;
 	uint8_t imm = instr_fetch(eip + 1, 1);
