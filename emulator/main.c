@@ -32,7 +32,11 @@ int main(int argc, char* argv[])
 			case 'c':
 			{
 				emulator_cache_level = atoi(optarg);
-				if (emulator_cache_level <= 0)
+				if (emulator_cache_level == -1)
+				{
+					LOG("disable dram buffer");
+				}
+				else if (emulator_cache_level <= 0)
 				{
 					emulator_cache_level = 0;
 					LOG("disable cache");

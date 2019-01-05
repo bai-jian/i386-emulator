@@ -20,8 +20,10 @@ void ram_read(phyaddr_t addr, size_t len, uint8_t *data)
 			cache_read(addr, len, data);
 		else if (emulator_cache_level == 1)
 			l2cache_read(addr, len, data);
-		else
+		else if (emulator_cache_level == 0)
 			dram_read(addr, len, data);
+		else
+			memcpy(data, phy_mem + addr, len);
 	}
 }
 
@@ -42,8 +44,10 @@ void ram_write(phyaddr_t addr, size_t len, uint8_t *data)
 			cache_write(addr, len, data);
 		else if (emulator_cache_level == 1)
 			l2cache_write(addr, len, data);
-		else
+		else if (emulator_cache_level == 0)
 			dram_write(addr, len, data);
+		else
+			memcpy(phy_mem + addr, data, len);
 	}
 }
 

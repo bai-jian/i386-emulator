@@ -34,7 +34,7 @@ void ide_register()
 
 	extern char* exec_file;
 	disk.fp = fopen(exec_file, "r+");
-	assert(disk.fp);
+	test(disk.fp != NULL, "file does not exist");
 }
 
 void ide_read_handler(offset_t offset, size_t len, uint32_t *data)

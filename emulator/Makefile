@@ -1,5 +1,5 @@
 TARGET := emulator
-CFLAGS := -g -MD -Wall -Wno-unused -Wno-unused-result -Wno-incompatible-pointer-types -fno-strict-aliasing -O2 -Iinclude
+CFLAGS := -g -MD -Wall -Wno-unused -Wno-unused-result -Wno-incompatible-pointer-types -fno-strict-aliasing -O0 -Iinclude
 
 cpu/isa.o : $(patsubst %.c,%.o,$(wildcard cpu/isa/*.c))
 	$(LD) -r -o $@ $^
