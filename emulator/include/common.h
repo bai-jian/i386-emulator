@@ -2,6 +2,7 @@
 #define __COMMON_H__
 
 #include <assert.h>
+#include <getopt.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -30,8 +31,8 @@
 		} \
 	} while(0)
 
-#define Log(format,...) \
-	fprintf(stdout, "\33[1;34m%s,%s,%d: " format "\33[0m\n", __FILE__, __func__, __LINE__, ## __VA_ARGS__), \
+#define LOG(format,...) \
+	fprintf(stdout, "\33[1;34m[emulator] " format "\33[0m\n", ## __VA_ARGS__), \
 	fflush(stdout)
 
 #endif

@@ -48,7 +48,7 @@ struct translation_lookaside_buffer_t
 	uint32_t page_frame_addr : 20;
 };
 
-void tlb_flush();
+void flush_tlb();
 
 void mem_read(swaddr_t addr, size_t len, uint8_t *data);
 void mem_write(swaddr_t addr, size_t len, uint8_t *data);

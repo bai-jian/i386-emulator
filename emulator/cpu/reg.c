@@ -11,12 +11,13 @@ const char *regsb[] = {"al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"};
 uint8_t current_sreg = R_CS;
 const char *sregs[] = {"ES", "CS", "SS", "DS", "FS", "GS"};
 
-void reg_test()
+void test_reg()
 {
 	srand(time(0));
 	uint32_t sample[8];
 	int i;
-	for(i = R_EAX; i <= R_EDI; i ++) {
+	for(i = R_EAX; i <= R_EDI; i ++)
+	{
 		sample[i] = rand();
 		reg_l(i) = sample[i];
 		assert(reg_w(i) == (sample[i] & 0xffff));
@@ -40,3 +41,4 @@ void reg_test()
 	assert(sample[R_ESI] == cpu.esi);
 	assert(sample[R_EDI] == cpu.edi);
 }
+

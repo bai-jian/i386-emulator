@@ -144,4 +144,6 @@ extern uint8_t current_sreg;
 enum { R_ES, R_CS, R_SS, R_DS, R_FS, R_GS };
 extern const char* sregs[];
 
+void test_reg();
+
 #endif

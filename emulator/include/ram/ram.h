@@ -3,18 +3,25 @@
 
 #include "common.h"
 
-typedef uint32_t hwaddr_t;
+#define PHY_MEM_SIZE (1 << 27)
+uint8_t *phy_mem;
+
+void test_ram();
+
+void flush_cache();
+void flush_l2cache();
+void flush_dram();
 
 void ram_read(phyaddr_t addr, size_t len, uint8_t *data);
 void ram_write(phyaddr_t addr, size_t len, uint8_t *data);
 
-uint32_t cache_read(hwaddr_t addr, size_t len);
-void cache_write(hwaddr_t addr, size_t len, uint32_t data);
+void cache_read(phyaddr_t addr, size_t len, uint8_t *data);
+void cache_write(phyaddr_t addr, size_t len, uint8_t *data);
 
-uint32_t cache_L2_read(hwaddr_t, size_t);
-void cache_L2_write(hwaddr_t, size_t, uint32_t);
+void l2cache_read(phyaddr_t addr, size_t len, uint8_t *data);
+void l2cache_write(phyaddr_t addr, size_t len, uint8_t *data);
 
-uint32_t dram_read(hwaddr_t addr, size_t len);
-void dram_write(hwaddr_t addr, size_t len, uint32_t data);
+void dram_read(phyaddr_t addr, size_t len, uint8_t *data);
+void dram_write(phyaddr_t addr, size_t len, uint8_t *data);
 
 #endif

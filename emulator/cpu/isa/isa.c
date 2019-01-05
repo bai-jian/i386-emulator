@@ -126,6 +126,6 @@ make_helper(tran_mean)
 	if ( inst == 0xb7 )  return  1 + movzwl(eip + 1);
 	if ( inst == 0xbe )  return  1 + movsbv(eip + 1);
 	if ( inst == 0xbf )  return  1 + movswl(eip + 1);
-	Log("tran_mean instruction eip = %x", cpu.eip + 1);
+	LOG("tran_mean instruction eip = %x", cpu.eip + 1);
 	assert(0);	return 0;
 }

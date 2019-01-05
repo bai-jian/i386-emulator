@@ -7,7 +7,7 @@
 #define TLB_SIZE 64
 struct translation_lookaside_buffer_t tlb[TLB_SIZE];
 
-void tlb_flush()
+void flush_tlb()
 {
 	int i;
 	for (i = 0; i < TLB_SIZE; i++)

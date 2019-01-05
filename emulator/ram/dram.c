@@ -1,16 +1,5 @@
 #include "ram/ram.h"
 
-
-//Data:
-//	Main Memory & Main Memory Address
-//	Row Buffer
-//Function:
-//	init: initialization
-//	ddr3_read
-//	ddr3_write
-//	dram_read
-//	dram_write
-
 #define COL_WIDTH 10
 #define ROW_WIDTH 10
 #define BANK_WIDTH 3
@@ -20,39 +9,30 @@
 #define NR_ROW (1 << ROW_WIDTH)
 #define NR_BANK (1 << BANK_WIDTH)
 #define NR_RANK (1 << RANK_WIDTH)
-#define HW_MEM_SIZE (1 << (COL_WIDTH + ROW_WIDTH + BANK_WIDTH + RANK_WIDTH))
 
-/* Define the alignment */
-#define BURST_LEN 8
-#define BURST_MASK (BURST_LEN - 1)
-
-/* Define [ Main Memory ] */
 uint8_t dram[NR_RANK][NR_BANK][NR_ROW][NR_COL];
-uint8_t* hw_mem = (void*)dram;
+uint8_t *phy_mem = (void*)dram;
 
-/* Define [ Main Memory Address ] */
-typedef union
+union dram_addr_t
 {
+	uint32_t addr;
 	struct
 	{
-		uint32_t col	: COL_WIDTH;
-		uint32_t row	: ROW_WIDTH;
-		uint32_t bank	: BANK_WIDTH;
-		uint32_t rank	: RANK_WIDTH;
+		uint32_t col : COL_WIDTH;
+		uint32_t row : ROW_WIDTH;
+		uint32_t bank : BANK_WIDTH;
+		uint32_t rank : RANK_WIDTH;
 	};
-	uint32_t addr;
-} dram_addr;
+};
 
-/* Define [ Row Buffer ] */
-typedef struct
+struct rowbuf_t
 {
 	uint8_t buf[NR_COL];
-	int32_t row_idx;
+	uint32_t row;
 	bool valid;
-} ROWBUF;
-ROWBUF rowbufs[NR_RANK][NR_BANK];
+} rowbufs[NR_RANK][NR_BANK];
 
-void init_dram( )
+void flush_dram()
 {
 	int i, j;
 	for(i = 0; i < NR_RANK; ++i)
@@ -60,97 +40,34 @@ void init_dram( )
 			rowbufs[i][j].valid = false;
 }
 
-static void ddr3_read(hwaddr_t addr, void* data)
+static void dram_replace(union dram_addr_t dram_addr)
 {
-	test(addr < HW_MEM_SIZE, "addr = %x\n", addr);
+	uint32_t rank = dram_addr.rank;
+	uint32_t bank = dram_addr.bank;
+	uint32_t row = dram_addr.row;
 
-	dram_addr temp;
-	temp.addr = addr & ~BURST_MASK;
-	uint32_t rank = temp.rank;
-	uint32_t bank = temp.bank;
-	uint32_t row = temp.row;
-	uint32_t col = temp.col;
+	if (rowbufs[rank][bank].valid && rowbufs[rank][bank].row != row)
+		memcpy(dram[rank][bank][rowbufs[rank][bank].row], rowbufs[rank][bank].buf, NR_COL);
 
-	/* read a row into row buffer */
-	if( !(rowbufs[rank][bank].valid && rowbufs[rank][bank].row_idx == row) )
- 	{
-		memcpy(rowbufs[rank][bank].buf, dram[rank][bank][row], NR_COL);
-		rowbufs[rank][bank].row_idx = row;
-		rowbufs[rank][bank].valid = true;
-	} 
-
-	/* burst read */
-	memcpy(data, rowbufs[rank][bank].buf + col, BURST_LEN);
-}
-
-void memcpy_with_mask(void*, const void*, size_t, uint8_t*);
-static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask)
-{
-	test(addr < HW_MEM_SIZE, "addr = %x\n", addr);
-
-	dram_addr temp;
-	temp.addr = addr & ~BURST_MASK;
-	uint32_t rank = temp.rank;
-	uint32_t bank = temp.bank;
-	uint32_t row = temp.row;
-	uint32_t col = temp.col;
-
-
-	/* read a row into row buffer */
-	if( !(rowbufs[rank][bank].valid && rowbufs[rank][bank].row_idx == row) )
+	if (!rowbufs[rank][bank].valid || rowbufs[rank][bank].row != row)
 	{
 		memcpy(rowbufs[rank][bank].buf, dram[rank][bank][row], NR_COL);
-		rowbufs[rank][bank].row_idx = row;
+		rowbufs[rank][bank].row = row;
 		rowbufs[rank][bank].valid = true;
 	}
-
-	/* burst write */
-	memcpy_with_mask(rowbufs[rank][bank].buf + col, data, BURST_LEN, mask);
-
-	/* write back to dram */
-	memcpy(dram[rank][bank][row], rowbufs[rank][bank].buf, NR_COL);
 }
 
-uint32_t dram_read(hwaddr_t addr, size_t len)
+void dram_read(phyaddr_t addr, size_t len, uint8_t *data)
 {
-	assert(len == 1 || len == 2 || len == 4);
-
-	uint32_t offset = addr & BURST_MASK;
-	uint8_t temp[2 * BURST_LEN];
-	
-	ddr3_read(addr, temp);
-
-	/* data cross the burst boundary */
-	if(  (addr ^ (addr+len-1))  &  ~(BURST_MASK)  )
-		ddr3_read(addr + BURST_LEN, temp + BURST_LEN);
-
-	return *(uint32_t *)(temp + offset) & (~0u >> ((4 - len) << 3));
+	union dram_addr_t dram_addr = (union dram_addr_t)addr;
+	dram_replace(dram_addr);
+	memcpy(data, rowbufs[dram_addr.rank][dram_addr.bank].buf + dram_addr.col, len);
 }
 
-void dram_write(hwaddr_t addr, size_t len, uint32_t data)
+void dram_write(phyaddr_t addr, size_t len, uint8_t *data)
 {
-	assert(len == 1 || len == 2 || len == 4);
-
-	uint32_t offset = addr & BURST_MASK;
-	uint8_t temp[2*BURST_LEN];
-	uint8_t mask[2*BURST_LEN];
-
-	memset(mask, 0, 2 * BURST_LEN);
-	*(uint32_t *)(temp + offset) = data;
-	memset(mask + offset, 1, len);
-
-	ddr3_write(addr, temp, mask);
-
-	/* data cross the burst boundary */
-	if(  (addr ^ (addr+len-1))  &  ~(BURST_MASK)  )
-		ddr3_write(addr+BURST_LEN, temp+BURST_LEN, mask+BURST_LEN);
-}
-
-void memcpy_with_mask(void* dest, const void* src, size_t len, uint8_t* mask)
-{
-	int i;
-	for (i = 0; i < len; ++i)
-		if (mask[i])
-			((uint8_t*)dest)[i] = ((uint8_t*)src)[i];
+	union dram_addr_t dram_addr = (union dram_addr_t)addr;	
+	dram_replace(dram_addr);
+	memcpy(rowbufs[dram_addr.rank][dram_addr.bank].buf + dram_addr.col, data, len);
 }
 

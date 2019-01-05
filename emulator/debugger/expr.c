@@ -162,7 +162,7 @@ void make_token(char* e)
  	 		{
 				char* substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
-				Log("match regex[%d] at position %d with len %d: %.*s", i, position, substr_len, substr_len, substr_start);
+				LOG("match regex[%d] at position %d with len %d: %.*s", i, position, substr_len, substr_len, substr_start);
 
 				switch(rules[i].token_type) 
 				{

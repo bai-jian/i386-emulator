@@ -9,4 +9,8 @@ typedef uint32_t offset_t;
 enum { END, STOP, RUNNING, INT };
 int nemu_state;
 
+bool emulator_enable_debug;
+bool emulator_enable_selftest;
+int emulator_cache_level;
+
 #endif
