@@ -10,3 +10,11 @@ After the emulator boots and then loads the mini kernel which initializes the em
     - No support for backward compatibility with 80286, etc
     - No support for 80386 real-address mode and virtual 8086 mode
 - No support for 16-bit addressing instruction
+
+### BUILD & RUN
+
+`start.S` is an assembly file and should not be executed directly. Please compile and run the project using:
+
+```bash
+make run
+```
